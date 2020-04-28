@@ -7,13 +7,15 @@ import lejos.hardware.motor.MotorRegulator;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.TachoMotorPort;
 import lejos.internal.io.NativeDevice;
+import lejos.internal.io.NativeDeviceAsyncWriter;
+import lejos.internal.io.NativeDeviceWriteCommand;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
 import lejos.utility.Delay;
 
 /**
  * Abstraction for an EV3 output port.
- * 
+ *
  * TODO: Sort out a better way to do this, or least clean up the magic numbers.
  *
  */
@@ -26,13 +28,14 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
     static final byte OUTPUT_CLR_COUNT = (byte)7;
     static final byte OUTPUT_POWER = (byte)8;
 
-        
+
     protected static byte[] regCmd2 = new byte[55*4];
     protected static NativeDevice tacho;
     protected static ByteBuffer bbuf;
     protected static IntBuffer ibuf;
     protected static IntBuffer ibufShadow;
-    protected static NativeDevice pwm;
+    protected final static String pwmName = "/dev/lms_pwm";
+    protected static Object syncedLock;
     static
     {
         initDeviceIO();
@@ -79,7 +82,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
         protected EV3MotorRegulatorKernelModule[] syncThis = new EV3MotorRegulatorKernelModule[] {this};
         protected EV3MotorRegulatorKernelModule[] syncWith = syncThis;
         protected EV3MotorRegulatorKernelModule[] syncActive = syncThis;
-        
+
         protected byte[] regCmd = new byte[55];
 
         // state for listener stuff
@@ -96,41 +99,41 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             // cache the actual port number
             this.port = EV3MotorPort.this.port;
         }
-        
+
         // Fixed point routines and constants
         static final int FIX_SCALE = 256;
-        
+
         protected int floatToFix(float f)
         {
             return Math.round(f*FIX_SCALE);
         }
-        
+
         protected int intToFix(int i)
         {
             return i*FIX_SCALE;
         }
-        
+
         protected float FixToFloat(int fix)
         {
             return (float)fix/FIX_SCALE;
         }
-        
+
         protected int FixMult(int a, int b)
         {
             return (a*b)/FIX_SCALE;
         }
-        
+
         protected int FixDiv(int a, int b)
         {
             return (a*FIX_SCALE)/b;
         }
-        
+
         protected int FixRound(int a)
         {
             return (a >= 0 ? (a+FIX_SCALE/2)/FIX_SCALE : (a-FIX_SCALE/2)/FIX_SCALE);
         }
 
-       
+
 
         /**
          * pack a value ready to be written to the kernel module
@@ -171,8 +174,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             setVal(regCmd, 23, floatToFix(holdD));
             setVal(regCmd, 27, offset);
             setVal(regCmd, 31, floatToFix(deadBand));
-            pwm.write(regCmd, 35);
-            
+            NativeDeviceAsyncWriter.getInstance().write(regCmd, 35, pwmName, 0);
         }
 
 
@@ -205,7 +207,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 listener.rotationStarted(motor, getTachoCount(), false, System.currentTimeMillis());
                 notifyAll();
             }
-                
+
         }
 
         /**
@@ -226,7 +228,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 } catch (InterruptedException e){}
             }
         }
-        
+
         /**
          * Start a move using the PID loop in the kernel module
          * @param t1 Time for acceleration phase
@@ -272,12 +274,12 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             if ((v1 != 0 || v2 != 0) && ts == 0)
                 startNewMove();
         }
-        
+
         /**
          * Helper method generate a move by splitting it into three phases, initial
          * acceleration, constant velocity, and final deceleration. We allow for the case
          * were it is not possible to reach the required constant velocity and hence the
-         * move becomes triangular rather than trapezoid.   
+         * move becomes triangular rather than trapezoid.
          * @param curVel Initial velocity
          * @param curPos Initial position
          * @param speed
@@ -354,7 +356,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 int t1 = (int)(1000*(v - curVel)/a1);
                 int t2 = t1;
                 int t3 = t2 + (int)(1000*(v/a3));
-                subMove(t1, t2, t3, curCnt, 0, s1+curCnt, curVel, v, a1, -a3, stallLimit, stallTime, curTime, hold);         
+                subMove(t1, t2, t3, curCnt, 0, s1+curCnt, curVel, v, a1, -a3, stallLimit, stallTime, curTime, hold);
             }
             else
             {
@@ -384,9 +386,9 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                     Delay.msDelay(1);
             }
             for(EV3MotorRegulatorKernelModule r : syncActive)
-                r.checkComplete();                
+                r.checkComplete();
         }
-        
+
         protected void executeMove()
         {
             // first generate all of the active moves
@@ -396,24 +398,24 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                     r.genMove(r.curVelocity, r.curPosition, r.curCnt, (r.curState >= ST_START ? r.curTime : 0), r.curSpeed, r.curAcc, r.curLimit, r.curHold);
             }
             // now write them to the kernel
-            synchronized(pwm)
+            synchronized(syncedLock)
             {
-                int cnt = 0;
+                int cntLen = 0;
                 for(EV3MotorRegulatorKernelModule r : syncActive)
                 {
                     if (r.newMove)
                     {
-                        System.arraycopy(r.regCmd, 0, regCmd2, cnt, 55);
-                        cnt += 55;
+                        System.arraycopy(r.regCmd, 0, regCmd2, cntLen, 55);
+                        cntLen += 55;
                         //pwm.write(r.regCmd, 55);
                         r.newMove = false;
                     }
                 }
-                pwm.write(regCmd2, cnt);
-            }            
+                NativeDeviceAsyncWriter.getInstance().write(regCmd2, cntLen, pwmName, 0);
+            }
         }
 
-        
+
         /**
          * Initiate a new move and optionally wait for it to complete.
          * If some other move is currently executing then ensure that this move
@@ -461,7 +463,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 return ibuf.get(port*8 + 7);
             }
         }
-        
+
         /**
          * Grabs the current state of the regulator and stores in class
          * member variables
@@ -502,11 +504,11 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                     r.curTime = ibufShadow.get(base + 5);
                     r.curState = ibufShadow.get(base + 4);
                     r.curTachoCnt = ibufShadow.get(base+3) - zeroTachoCnt;
-                    r.curSerial = ibufShadow.get(base + 7);                
+                    r.curSerial = ibufShadow.get(base + 7);
                 }
             }
         }
-        
+
         /**
          * returns the current position from the regulator
          * @return current position in degrees
@@ -541,29 +543,29 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 return curState;
             }
         }
-        
+
         public boolean isMoving()
         {
             return getRegState() >= ST_START;
         }
-        
+
         public boolean isStalled()
         {
             return getRegState() == ST_STALL;
         }
-                        
+
         public int getTachoCount()
         {
             if (syncActive.length <= 0) return curTachoCnt;
             return EV3MotorPort.this.getTachoCount() - zeroTachoCnt;
         }
-        
+
         public void resetTachoCount()
         {
             zeroTachoCnt = EV3MotorPort.this.getTachoCount();
         }
 
-        
+
         public void setStallThreshold(int error, int time)
         {
             this.stallLimit = error;
@@ -642,7 +644,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
         {
             return limitAngle;
         }
-        
+
         public synchronized void synchronizeWith(MotorRegulator[] syncList)
         {
             // validate the list
@@ -661,23 +663,23 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             sl[0] = this;
             this.syncWith = sl;
         }
-        
+
         public synchronized void startSynchronization()
         {
-            synchronized(pwm)
+            synchronized(syncedLock)
             {
                 // set slaves to sync
                 for(int i = 1; i < syncWith.length; i++)
                     syncWith[i].syncActive = syncSlave;
                 this.syncActive = this.syncWith;
                 this.updateRegulatorInformation();
-                this.syncActive = syncSlave;                
+                this.syncActive = syncSlave;
             }
         }
-        
+
         public synchronized void endSynchronization(boolean immRet)
         {
-            synchronized(pwm)
+            synchronized(syncedLock)
             {
                 // execute all synchronized operations
                 syncActive = syncWith;
@@ -691,10 +693,10 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             // set master back to normal operation
             syncActive = syncThis;
         }
-    }    
+    }
 
     /** {@inheritDoc}
-     */    
+     */
     @Override
     public boolean open(int typ, int port, EV3Port ref)
     {
@@ -702,22 +704,22 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             return false;
         cmd[0] = OUTPUT_CONNECT;
         cmd[1] = (byte) port;
-        pwm.write(cmd, 2);
+        NativeDeviceAsyncWriter.getInstance().write(cmd, 2, pwmName, 0);
         return true;
     }
 
     /** {@inheritDoc}
-     */    
+     */
     @Override
     public void close()
     {
         cmd[0] = OUTPUT_DISCONNECT;
         cmd[1] = (byte) port;
-        pwm.write(cmd, 2);
+        NativeDeviceAsyncWriter.getInstance().write(cmd, 2, pwmName, 0);
         super.close();
     }
-    
-        
+
+
 
     /**
      * Helper method to adjust the requested power
@@ -728,7 +730,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
         cmd[0] = OUTPUT_POWER;
         cmd[1] = (byte) port;
         cmd[2] = (byte) power;
-        pwm.write(cmd, 3);
+        NativeDeviceAsyncWriter.getInstance().write(cmd, 3, pwmName, 0);
     }
 
     /**
@@ -740,14 +742,13 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
         cmd[0] = OUTPUT_STOP;
         cmd[1] = (byte) port;
         cmd[2] = (byte) (flt ? 0 : 1);
-        pwm.write(cmd, 3);
-
+        NativeDeviceAsyncWriter.getInstance().write(cmd, 3, pwmName, 0);
     }
-    
-    
+
+
     /**
-     * Low-level method to control a motor. 
-     * 
+     * Low-level method to control a motor.
+     *
      * @param power power from 0-100
      * @param mode defined in <code>BasicMotorPort</code>. 1=forward, 2=backward, 3=stop, 4=float.
      * @see BasicMotorPort#FORWARD
@@ -783,23 +784,23 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             return ibuf.get(port*8 + 3);
         }
     }
-    
-    
+
+
     /**
      *resets the tachometer count to 0;
-     */ 
+     */
     public synchronized void resetTachoCount()
     {
         cmd[0] = OUTPUT_CLR_COUNT;
         cmd[1] = (byte)port;
-        pwm.write(cmd,  2);
+        NativeDeviceAsyncWriter.getInstance().write(cmd, 2, pwmName, 0);
     }
-    
+
     public void setPWMMode(int mode)
     {
     }
-    
-    
+
+
     private static void initDeviceIO()
     {
         tacho = new NativeDevice("/dev/lms_motor");
@@ -808,7 +809,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
         ibuf = bbuf.asIntBuffer();
         // allocate the shadow buffer
         ibufShadow = IntBuffer.allocate(4*8);
-        pwm = new NativeDevice("/dev/lms_pwm");
+        syncedLock = new Object();
     }
 
     /**
