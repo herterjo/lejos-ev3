@@ -3,6 +3,9 @@ package lejos.internal.io;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Helper to write tasks asyncronously (for example a command for a motor), no exceptions, no return values
+ */
 public class NativeDeviceAsyncWriter {
     private final List<NativeDevice> devices = new LinkedList<>();
     private final List<NativeDeviceWriteCommand> writes = new LinkedList<>();
@@ -20,14 +23,15 @@ public class NativeDeviceAsyncWriter {
                         toWrite = null;
                     }
                 }
-                if (toWrite != null) {
-                    writeToFile(toWrite);
-                } else {
-                    try {
+                try {
+                    if (toWrite != null) {
+                        writeToFile(toWrite);
+                    } else {
+
                         wait();
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -59,15 +63,32 @@ public class NativeDeviceAsyncWriter {
         }
     }
 
+    /**
+     * Writes the specified array with offset 0
+     * @param toWrite Array to write
+     * @param len How many bytes to write from the array
+     * @param name Name of the file to write to
+     */
     public void write(byte[] toWrite, int len, String name) {
         write(toWrite, len, name, 0);
     }
 
+    /**
+     * Writes the specified array
+     * @param toWrite Array to write
+     * @param len How many bytes to write from the array
+     * @param name Name of the file to write to
+     * @param offset Specifies when to write
+     */
     public void write(byte[] toWrite, int len, String name, int offset) {
         NativeDeviceWriteCommand cmd = new NativeDeviceWriteCommand(toWrite, len, name, offset);
         write(cmd);
     }
 
+    /**
+     * Writes the specified array
+     * @param write Parameter object for the write operation
+     */
     public void write(NativeDeviceWriteCommand write) {
         synchronized (writes) {
             writes.add(write);
