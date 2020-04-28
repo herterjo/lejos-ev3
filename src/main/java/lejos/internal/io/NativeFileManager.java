@@ -1,11 +1,8 @@
 package lejos.internal.io;
 
-import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,6 +29,12 @@ public class NativeFileManager {
         }
     }
 
+    /**
+     * Find a NativeFile object
+     * for native access without opening it, if the Object does not exist, create it.
+     *
+     * @param fname the name of the file to open
+     */
     public NativeFileManager(String fname) {
         synchronized (files) {
             NativeFile[] matchingFiles = files
