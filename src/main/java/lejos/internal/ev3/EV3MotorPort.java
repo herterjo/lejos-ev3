@@ -7,8 +7,7 @@ import lejos.hardware.motor.MotorRegulator;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.TachoMotorPort;
 import lejos.internal.io.NativeDevice;
-import lejos.internal.io.NativeDeviceAsyncWriter;
-import lejos.internal.io.NativeDeviceWriteCommand;
+import lejos.internal.io.AsyncSender;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
 import lejos.utility.Delay;
@@ -174,7 +173,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             setVal(regCmd, 23, floatToFix(holdD));
             setVal(regCmd, 27, offset);
             setVal(regCmd, 31, floatToFix(deadBand));
-            NativeDeviceAsyncWriter.getInstance().write(regCmd, 35, pwmName, 0);
+            AsyncSender.getInstance().write(regCmd, 35, pwmName);
         }
 
 
@@ -411,7 +410,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                         r.newMove = false;
                     }
                 }
-                NativeDeviceAsyncWriter.getInstance().write(regCmd2, cntLen, pwmName, 0);
+                AsyncSender.getInstance().write(regCmd2, cntLen, pwmName);
             }
         }
 
@@ -704,7 +703,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             return false;
         cmd[0] = OUTPUT_CONNECT;
         cmd[1] = (byte) port;
-        NativeDeviceAsyncWriter.getInstance().write(cmd, 2, pwmName, 0);
+        AsyncSender.getInstance().write(cmd, 2, pwmName);
         return true;
     }
 
@@ -715,7 +714,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
     {
         cmd[0] = OUTPUT_DISCONNECT;
         cmd[1] = (byte) port;
-        NativeDeviceAsyncWriter.getInstance().write(cmd, 2, pwmName, 0);
+        AsyncSender.getInstance().write(cmd, 2, pwmName);
         super.close();
     }
 
@@ -730,7 +729,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
         cmd[0] = OUTPUT_POWER;
         cmd[1] = (byte) port;
         cmd[2] = (byte) power;
-        NativeDeviceAsyncWriter.getInstance().write(cmd, 3, pwmName, 0);
+        AsyncSender.getInstance().write(cmd, 3, pwmName);
     }
 
     /**
@@ -742,7 +741,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
         cmd[0] = OUTPUT_STOP;
         cmd[1] = (byte) port;
         cmd[2] = (byte) (flt ? 0 : 1);
-        NativeDeviceAsyncWriter.getInstance().write(cmd, 3, pwmName, 0);
+        AsyncSender.getInstance().write(cmd, 3, pwmName);
     }
 
 
@@ -793,7 +792,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
     {
         cmd[0] = OUTPUT_CLR_COUNT;
         cmd[1] = (byte)port;
-        NativeDeviceAsyncWriter.getInstance().write(cmd, 2, pwmName, 0);
+        AsyncSender.getInstance().write(cmd, 2, pwmName);
     }
 
     public void setPWMMode(int mode)

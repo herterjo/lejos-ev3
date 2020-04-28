@@ -12,20 +12,17 @@ import com.sun.jna.Pointer;
  * @author andy
  *
  */
-public class NativeDevice extends NativeFile
+public class NativeDevice extends NativeFileManager
 {
-    private final String name;
-
     /**
      * Create a native device to provide access to the specified character device
      * @param dname name of the character device
      */
     public NativeDevice(String dname)
     {
-        super();
-        this.name = dname;
+        super(dname);
         try {
-            open(dname, O_RDWR, 0);
+            open(NativeFile.O_RDWR, 0);
         } catch(Exception e)
         {
             throw new IOError(e);
@@ -40,10 +37,6 @@ public class NativeDevice extends NativeFile
      */
     public Pointer mmap(long len)
     {
-        return super.mmap(len, PROT_READ | PROT_WRITE, MAP_SHARED, 0);
-    }
-
-    public String getName() {
-        return name;
+        return super.mmap(len, NativeFile.PROT_READ | NativeFile.PROT_WRITE, NativeFile.MAP_SHARED, 0);
     }
 }
