@@ -1,10 +1,17 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-//task javadocJar(type: Jar) {
-//    classifier = 'javadoc'
-//    from javadoc
-//}
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    if (JavaVersion.current().isJava8Compatible()) {
+        allprojects {
+            tasks.withType(Javadoc) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
+        }
+    }
+    from javadoc
+}
 
 task sourcesJar(type: Jar) {
     classifier = 'sources'
@@ -12,7 +19,7 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-    archives /*javadocJar,*/ sourcesJar
+    archives javadocJar, sourcesJar
 }
 
 //signing {
