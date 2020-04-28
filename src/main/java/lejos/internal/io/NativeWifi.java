@@ -256,7 +256,7 @@ public class NativeWifi {
     /**
      * Perform a Linux style ioctl operation on the associated file.
      * @param req ioctl operation to be performed
-     * @param buf pointer to ioctl parameters
+     * @param data ioctl parameters
      * @return Linux style ioctl return
      */
     public int ioctl(int req, WReqSocket data)
@@ -267,7 +267,7 @@ public class NativeWifi {
     /**
      * Perform a Linux style ioctl operation on the associated file.
      * @param req ioctl operation to be performed
-     * @param buf pointer to ioctl parameters
+     * @param data ioctl parameters
      * @return Linux style ioctl return
      */
     public int ioctl(int req, WReqPoint data)

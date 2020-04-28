@@ -22,7 +22,7 @@ public class TetrixServo implements Servo{
 
     /**
      * Set the allowable pulse width operating range of this servo in microseconds and the total travel range. 
-     * Default for pulse width at instantiation is 750 & 2250 microseconds. Default for travel is 200 degrees. 
+     * Default for pulse width at instantiation is 750 and 2250 microseconds. Default for travel is 200 degrees.
      * <p>
      * The midpoint
      * of the pulse width operating range should normally be 1500 microseconds so the range extents should reflect this.

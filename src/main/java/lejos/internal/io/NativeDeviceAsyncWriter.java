@@ -43,11 +43,12 @@ public class NativeDeviceAsyncWriter {
     private void writeToFile(NativeDeviceWriteCommand toWrite) {
         synchronized (devices) {
             NativeDevice device;
-            var matchingDevices = devices
+            NativeDevice[] matchingDevices = devices
                     .stream().filter(d -> d.getName().equals(toWrite.getDeviceName()))
                     .toArray(NativeDevice[]::new);
             if (matchingDevices.length > 1) {
-                throw new IllegalStateException("More than one device, error");
+                throw new IllegalStateException("More than one device matches this name," +
+                        " this is a programming errror and should not happen");
             } else if (matchingDevices.length == 1) {
                 device = matchingDevices[0];
             } else {
@@ -63,7 +64,7 @@ public class NativeDeviceAsyncWriter {
     }
 
     public void write(byte[] toWrite, int len, String name, int offset) {
-        var cmd = new NativeDeviceWriteCommand(toWrite, len, name, offset);
+        NativeDeviceWriteCommand cmd = new NativeDeviceWriteCommand(toWrite, len, name, offset);
         write(cmd);
     }
 

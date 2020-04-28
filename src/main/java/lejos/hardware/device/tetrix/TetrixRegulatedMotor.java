@@ -110,7 +110,7 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
       * and as such, the actual speed value will not be exact.
       * <p>
       * The maximum reliably sustainable velocity for the TETRIX DC Gear motor P/N 739023 (which was used as the 
-      * test case for creating this class) is 154 RPM => 924 degs/sec.
+      * test case for creating this class) is 154 RPM which results in 924 degs/sec.
       * 
       * @param speed value in degrees/sec
       * @see #getSpeed
