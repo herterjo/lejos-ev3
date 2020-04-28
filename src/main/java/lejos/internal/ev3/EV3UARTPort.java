@@ -692,7 +692,7 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
      */
     public int rawWrite(byte[] buffer, int offset, int len)
     {
-        if (rawInput == null)
+        if (rawOutput == null)
             rawOutput = new byte[RAW_BUFFER_SIZE+2];
         rawOutput[0] = (byte)port;
         if (len > RAW_BUFFER_SIZE)

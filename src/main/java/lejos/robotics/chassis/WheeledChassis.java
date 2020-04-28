@@ -1,6 +1,10 @@
 package lejos.robotics.chassis;
 
+
 import lejos.robotics.RegulatedMotor;
+import lejos.robotics.chassis.Chassis;
+import lejos.robotics.chassis.Wheel;
+import lejos.robotics.localization.DynamicPoseProvider;
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.Pose;
@@ -243,37 +247,50 @@ public class WheeledChassis implements Chassis {
 
   public synchronized void setVelocity(double linearSpeed, double direction, double angularSpeed) {
     if (dummyWheels ==1 && (direction % 180 != 0) ) throw new RuntimeException("Invalid direction for differential a robot."); 
+    if (Double.isNaN(linearSpeed)) throw new RuntimeException("Linear speed is not a number");
+    if (Double.isNaN(direction)) throw new RuntimeException("Direction is not a number"); 
+    if (Double.isNaN(angularSpeed)) throw new RuntimeException("Angular speed is not a number");
     // create matrices with speed and acceleration components using direction;
-    Matrix motorSpeed = forward.times(toCartesianMatrix(linearSpeed, Math.toRadians(direction), angularSpeed));
-    Matrix motorAcceleration = forwardAbs.times(copyAbsolute(toCartesianMatrix(linearAcceleration, Math.toRadians(direction), angularAcceleration)));
-    Matrix currentMotorSpeed = (getAttribute(ROTATIONSPEED));
+    Matrix targetSpeed = toCartesianMatrix(linearSpeed, Math.toRadians(direction), angularSpeed);
+    Matrix targetMotorSpeed = forward.times(targetSpeed);
+    Matrix currentMotorSpeed = getAttribute(ROTATIONSPEED);
+    Matrix currentSpeed = reverse.times(currentMotorSpeed);
 
-    // calculate acceleration for each of the wheels. 
-    // The goal is that all wheels take an even amount of time to reach final speed
-    
-    // Calculate difference between final speed and current speed
-    Matrix dif = motorSpeed.minus(currentMotorSpeed); 
-    // Calculate how much time each wheel needs to reach final speed;
-    Matrix time = dif.arrayRightDivide(motorAcceleration); 
-    // Find the longest time
-    double longestTime = getMax(time); 
-    if (longestTime == 0) return; // Aha, no speed differences. Do nothing.
-    // Devide speed difference by the longest time to get acceleration for each wheel
-    dif = dif.timesEquals(1 / longestTime); 
-    // Set the dynamics and execute motion
+    // calculate acceleration time
+    double duration = getDuration(currentSpeed, targetSpeed);
     master.startSynchronization();
+    
+    // Calculate and apply acceleration
+    if (duration != 0) {
+      for (int i = 0; i < nWheels; i++) {
+        int accel = (int) (Math.abs((targetMotorSpeed.get(i,0) - currentMotorSpeed.get(i,0))/duration));
+        if (accel != 0)
+          motor[i].setAcceleration(accel);
+      }
+    }
+      // apply speed
     for (int i = 0; i < nWheels; i++) {
-      motor[i].setAcceleration((int) dif.get(i, 0));
-      motor[i].setSpeed((int) Math.abs(motorSpeed.get(i, 0)));
-      switch((int)Math.signum(motorSpeed.get(i, 0))) {
+      double speed = (targetMotorSpeed.get(i, 0));
+        motor[i].setSpeed((int)Math.abs(speed));
+        switch((int)Math.signum(speed)) {
         case -1: motor[i].backward(); break;
         case 0: motor[i].stop(); break;
         case 1: motor[i].forward(); break;
       }
     }
     master.endSynchronization();
+
   }
   
+  private double getDuration(Matrix current, Matrix target) {
+    Matrix dif =current.minus(target);
+    double lDifference = Math.sqrt((dif.get(0, 0) * dif.get(0, 0) + dif.get(1, 0) * dif.get(1, 0)));
+    double aDifference = Math.abs(dif.get(2, 0));
+    return Math.max(lDifference/linearAcceleration, aDifference/angularAcceleration);
+  }
+  
+
+
   @Override
   public  void travel(double linear) {
     if (Double.isInfinite(linear) ) {
@@ -593,7 +610,7 @@ public class WheeledChassis implements Chassis {
      * Defines the offset off the wheel
      * 
      * @param val
-     *          The distance between the robots yPose-axis and the center of the
+     *          The distance between the robots center and the center of the
      *          wheel
      * @return the modeler
      */
@@ -642,7 +659,7 @@ public class WheeledChassis implements Chassis {
   
   
   @Override
-  public PoseProvider getPoseProvider() {
+  public DynamicPoseProvider getPoseProvider() {
     if (odometer == null) odometer = new Odometer();
     return  odometer;
   }
@@ -651,14 +668,17 @@ public class WheeledChassis implements Chassis {
    * @author Aswin Bouwmeester
    *
    */
-  private class Odometer implements PoseProvider {
-    Matrix lastTacho;
+  private class Odometer implements DynamicPoseProvider {
+    Matrix lastTacho, speed, lastSpeed, accel;
     double xPose, yPose, aPose;
+    long lastTime;
+    
 
-    int    time = 64;
+    int    interval = 64;
 
     private Odometer() {
       lastTacho = getAttribute(TACHOCOUNT);
+      lastTime = System.currentTimeMillis();
       PoseTracker tracker = new PoseTracker();
       tracker.setDaemon(true);
       tracker.start();
@@ -677,12 +697,15 @@ public class WheeledChassis implements Chassis {
     }
 
     private synchronized void updatePose() {
+      long thisTime;
       Matrix currentTacho = getAttribute(TACHOCOUNT);
+      thisTime = System.currentTimeMillis();
       Matrix delta = currentTacho.minus(lastTacho);
 
       int max = (int) getMax(delta);
 
       delta = reverse.times(delta);
+      // update position
       double sin = Math.sin(Math.toRadians(aPose));
       double cos = Math.cos(Math.toRadians(aPose));
       double x = delta.get(0, 0);
@@ -691,25 +714,92 @@ public class WheeledChassis implements Chassis {
       xPose += cos * x - sin * y;
       yPose += sin * x + cos * y;
       aPose += delta.get(2, 0);
-      while (aPose < 180)
+      while (aPose < -180)
         aPose += 360;
       while (aPose > 180)
         aPose -= 360;
+      
+      // calculate speed
+      speed = delta.times(1000 / (thisTime - lastTime));
+      
+      // calculate acceleration 
+      accel = speed.minus(lastSpeed).times(1000 / (thisTime - lastTime));
 
       // adjust loop speed (between 4 and 64 msec);
-      if (max > 10) time=time / 2;
-      if (max < 10) time=time * 2;
-      time = Math.max(Math.min(time, 64), 4);
+      if (max > 10) interval=interval / 2;
+      if (max < 10) interval=interval * 2;
+      interval = Math.max(Math.min(interval, 64), 4);
       lastTacho = currentTacho;
+      lastSpeed = speed;
+      lastTime = thisTime;
     }
 
     private class PoseTracker extends Thread {
       public void run() {
         while (true) {
           updatePose();
-          Delay.msDelay(time);
+          Delay.msDelay(interval);
         }
       }
+    }
+
+    @Override
+    public double getX() {
+      return xPose;
+    }
+
+    @Override
+    public double getY() {
+      return yPose;
+    }
+
+    @Override
+    public double getHeading() {
+      return aPose;
+    }
+
+    @Override
+    public double getLinearSpeed() {
+      double x = speed.get(0, 0);
+      double y = speed.get(1, 0);
+      return Math.sqrt(x*x + y* y);
+    }
+
+    @Override
+    public double getDirectionOfLinearSpeed() {
+      return Math.toDegrees(Math.atan2(speed.get(1,0), speed.get(0,0)));
+    }
+
+    @Override
+    public double getAngularSpeed() {
+      return speed.get(2, 0);
+    }
+
+    @Override
+    public Matrix getSpeed() {
+      return speed.copy();
+    }
+
+    @Override
+    public double getLinearAcceleration() {
+      double x = accel.get(0, 0);
+      double y = accel.get(1, 0);
+      return Math.sqrt(x*x + y* y);
+    }
+
+    @Override
+    public double getAngularAcceleration() {
+      return accel.get(2, 0);
+    }
+
+    @Override
+    public double getDirectionOfLinearAcceleration() {
+      return Math.toDegrees(Math.atan2(accel.get(1,0), accel.get(0,0)));
+    }
+
+    @Override
+    public Matrix getAcceleration() {
+      return accel.copy();
     }
   }
   

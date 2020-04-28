@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="695.2506680850491" y="53.81068888136696">lejos.internal.ev3.EV3MotorPort.EV3MotorRegulatorKernelModule</node>
+    <node x="337.35752760865705" y="464.5416661682306">lejos.hardware.port.BasicMotorPort</node>
+    <node x="620.3072581307889" y="798.6322606247356">lejos.internal.io.NativeFile</node>
+    <node x="0.0" y="58.81709445142633">lejos.hardware.Brick</node>
+    <node x="53.863811023905555" y="222.17009014811538">lejos.hardware.port.Port</node>
+    <node x="529.3095653794176" y="61.95591262034662">lejos.internal.ev3.EV3Port</node>
+    <node x="721.8042785176988" y="594.4810714755974">lejos.internal.ev3.EV3IOPort</node>
+    <node x="537.9872114566787" y="604.8428854379279">lejos.hardware.port.IOPort</node>
+    <node x="864.2387224871791" y="433.1402848883434">lejos.internal.ev3.EV3MotorPort</node>
+    <node x="250.56967423632807" y="84.06813529762653">lejos.hardware.ev3.LocalEV3</node>
+    <node x="164.58956689368844" y="0.0">lejos.hardware.ev3.EV3</node>
+    <node x="789.2587739705947" y="841.2738078554332">lejos.internal.io.NativeDevice</node>
+    <node x="333.0371130376214" y="209.39436116295923">lejos.hardware.port.TachoMotorPort</node>
+    <node x="356.9431668578103" y="708.683899617041">lejos.internal.io.NativeFile.Linux_C_lib_DirectMapping</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.internal.ev3.EV3IOPort">
+      <point x="3.6119960358635126" y="3.457381181892771" />
+      <point x="3.6119960358635126" y="3.4573811818927425" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.hardware.port.BasicMotorPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.io.NativeFile.Linux_C_lib_DirectMapping" target="lejos.internal.io.NativeFile">
+      <point x="0.0" y="10.687348867718299" />
+      <point x="0.0" y="10.687348867718299" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.hardware.port.TachoMotorPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.hardware.port.Port">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.ev3.LocalEV3" target="lejos.internal.ev3.EV3Port">
+      <point x="-15.02344974909414" y="0.0" />
+      <point x="-15.023449749094155" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort.EV3MotorRegulatorKernelModule" target="lejos.hardware.port.TachoMotorPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.ev3.EV3" target="lejos.hardware.Brick">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.io.NativeDevice" target="lejos.internal.io.NativeFile">
+      <point x="1.764172500009181" y="-4.678428730910753" />
+      <point x="1.764172500009181" y="-4.678428730910753" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3IOPort" target="lejos.internal.ev3.EV3Port">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3IOPort" target="lejos.hardware.port.IOPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.io.NativeFile" target="lejos.internal.io.NativeFile.Linux_C_lib_DirectMapping">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.ev3.LocalEV3" target="lejos.hardware.port.Port">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.internal.ev3.EV3Port">
+      <point x="-3.6137770723202607" y="3.455519537142351" />
+      <point x="-3.6137770723202465" y="3.4555195371423224" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.internal.ev3.EV3MotorPort">
+      <point x="6.9179696200652785" y="0.0" />
+      <point x="6.917969620065264" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.Brick" target="lejos.hardware.port.Port">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.internal.ev3.EV3MotorPort.EV3MotorRegulatorKernelModule">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.hardware.port.BasicMotorPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.ev3.LocalEV3" target="lejos.hardware.ev3.EV3">
+      <point x="5.381655905262633" y="0.0" />
+      <point x="5.381655905262647" y="-1.1368683772161603E-13" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.hardware.port.TachoMotorPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.internal.io.NativeDevice">
+      <point x="-14.170949836180768" y="0.0" />
+      <point x="-14.17094983618074" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort.EV3MotorRegulatorKernelModule" target="lejos.internal.ev3.EV3MotorPort">
+      <point x="10.253398675438063" y="0.0" />
+      <point x="10.253398675438063" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.port.TachoMotorPort" target="lejos.hardware.port.BasicMotorPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.port.BasicMotorPort" target="lejos.hardware.port.IOPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.internal.ev3.EV3IOPort">
+      <point x="10.685274086415987" y="0.0" />
+      <point x="10.685274086415973" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Circular" zoom="0.5999999999999998" x="1080.6409840159833" y="507.0936653925786" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

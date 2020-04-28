@@ -273,11 +273,14 @@ public class EV3AnalogPort extends EV3IOPort implements AnalogPort
         case TYPE_COLORNONE:
             // Sensor type and pin modes are aligned
             //System.out.println("Set type :" + type);
-            if (!setPinMode(type)) System.out.println("Failed to set mode");
+            if (!setPinMode(type)) return false;
             if (type == TYPE_COLORFULL)
+            {
                 // Read NXT color sensor calibration data
                 getColorData();
-            break;
+            }
+            // don't do wait for new data when in color mode
+            return true;
 
         default:
             ret = false;

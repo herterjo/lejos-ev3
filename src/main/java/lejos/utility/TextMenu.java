@@ -1,7 +1,10 @@
 package lejos.utility;
 
+import java.io.File;
+
 import lejos.hardware.BrickFinder;
 import lejos.hardware.Button;
+import lejos.hardware.Sound;
 import lejos.hardware.lcd.TextLCD;
 
 /**
@@ -257,6 +260,7 @@ public class TextMenu
 			}
 		}
 		lcd.refresh();
+		voiceOver(_items[selectedIndex]);
 	}
 	
 	/**
@@ -274,5 +278,19 @@ public class TextMenu
 	public void resetTimeout() {
 		_startTime = (int) System.currentTimeMillis();
 	}	
+	
+	/** Plays a wav file for every word in the text provided there is a wav file named exactly as the word
+	 * @param text
+	 */
+	public void voiceOver(String text) {
+	  String[] words = text.split("[\\s.]+");
+	  for (String word : words) {
+     File file = new File(word.toLowerCase().concat(".wav"));
+     if (file.exists()) {
+       Delay.msDelay(Sound.playSample(file));
+     }
+  }
+	}
 }
+
 

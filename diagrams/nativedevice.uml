@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="454.5682010040804" y="809.825822610869">lejos.internal.ev3.EV3LED</node>
+    <node x="889.4351100950818" y="681.2886770592086">lejos.hardware.Audio</node>
+    <node x="295.27977240238386" y="866.0593602835352">lejos.internal.io.NativeFile</node>
+    <node x="315.63479003826177" y="147.1902282936922">lejos.internal.ev3.EV3AnalogPort</node>
+    <node x="1091.4983994291567" y="318.26953591293693">lejos.hardware.lcd.CommonLCD</node>
+    <node x="934.0006834900802" y="331.07176632006815">lejos.internal.ev3.EV3LCD</node>
+    <node x="47.97912511851791" y="41.66666666666667">lejos.hardware.port.Port</node>
+    <node x="136.22866022369925" y="515.1657616950331">lejos.internal.ev3.EV3UARTPort</node>
+    <node x="35.996934755828306" y="138.0816518637684">lejos.internal.ev3.EV3Port</node>
+    <node x="498.6277818706782" y="349.4968004666788">lejos.internal.ev3.EV3MotorPort</node>
+    <node x="449.6310343920887" y="235.80156998006794">lejos.internal.ev3.EV3I2CPort</node>
+    <node x="640.742533359959" y="734.6318417282039">lejos.internal.ev3.EV3Keys</node>
+    <node x="183.33333333333346" y="368.93479206552513">lejos.internal.ev3.EV3ConfigurationPort</node>
+    <node x="530.2086703762728" y="944.5472847743251">lejos.hardware.LED</node>
+    <node x="798.9237301784149" y="820.2455695189807">lejos.hardware.Sound</node>
+    <node x="733.5278546405918" y="579.315153223366">lejos.internal.ev3.EV3Audio</node>
+    <node x="388.7171650267603" y="525.2482892822886">lejos.internal.io.NativeDevice</node>
+    <node x="721.6121703485846" y="344.99870460703744">lejos.internal.ev3.EV3LCDManager</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="lejos.internal.ev3.EV3AnalogPort" target="lejos.internal.io.NativeDevice">
+      <point x="0.0" y="5.003895211745345" />
+      <point x="0.0" y="5.003895211745345" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.internal.ev3.EV3AnalogPort">
+      <point x="6.925255309146195" y="0.0" />
+      <point x="6.925255309146166" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3LED" target="lejos.hardware.LED">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Audio" target="lejos.hardware.Audio">
+      <point x="2.8908269861769895" y="-4.0795979380314975" />
+      <point x="2.8908269861769895" y="-4.0795979380314975" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3ConfigurationPort" target="lejos.internal.ev3.EV3Port">
+      <point x="0.0" y="-5.198836560447205" />
+      <point x="1.4210854715202004E-14" y="-5.198836560447177" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3LCD" target="lejos.internal.ev3.EV3LCDManager">
+      <point x="0.0" y="10.02848364127862" />
+      <point x="5.6843418860808015E-14" y="10.028483641278623" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Keys" target="lejos.internal.io.NativeDevice">
+      <point x="7.463183814586728" y="0.0" />
+      <point x="7.463183814586756" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3I2CPort" target="lejos.internal.io.NativeDevice">
+      <point x="-5.698265640266293" y="0.0" />
+      <point x="-5.698265640266271" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3AnalogPort" target="lejos.internal.ev3.EV3Port">
+      <point x="-3.609975211597259" y="-3.459491143456418" />
+      <point x="-3.609975211597245" y="-3.4594911434564324" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3LED" target="lejos.internal.io.NativeDevice">
+      <point x="-4.946792176881559" y="0.7274937516868363" />
+      <point x="-4.946792176881559" y="0.7274937516868363" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.hardware.port.Port">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.hardware.Sound" target="lejos.hardware.Audio">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.io.NativeDevice" target="lejos.internal.io.NativeFile">
+      <point x="4.7922391466502745" y="1.42633935699493" />
+      <point x="4.792239146650267" y="1.4263393569949017" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3LCDManager" target="lejos.internal.io.NativeDevice">
+      <point x="-10.598747483851582" y="0.0" />
+      <point x="-10.59874748385161" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Audio" target="lejos.internal.io.NativeDevice">
+      <point x="0.0" y="-5.067143542541288" />
+      <point x="0.0" y="-5.067143542541288" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3I2CPort" target="lejos.internal.ev3.EV3Port">
+      <point x="1.1126046697815681" y="-4.874639560909117" />
+      <point x="1.1126046697815752" y="-4.874639560909117" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.internal.ev3.EV3UARTPort">
+      <point x="5.264937257366995" y="0.0" />
+      <point x="5.264937257367034" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3UARTPort" target="lejos.internal.ev3.EV3Port">
+      <point x="-4.748394667955171" y="-1.5661251793311237" />
+      <point x="-4.748394667955168" y="-1.5661251793311237" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.internal.ev3.EV3Port">
+      <point x="-5.913411245722614" y="0.0" />
+      <point x="-5.913411245722628" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.internal.ev3.EV3MotorPort">
+      <point x="4.227678231931407" y="-2.66959486949861" />
+      <point x="4.227678231931407" y="-2.669594869498603" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.internal.ev3.EV3I2CPort">
+      <point x="0.0" y="5.128584316362776" />
+      <point x="0.0" y="5.128584316362748" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Port" target="lejos.internal.ev3.EV3ConfigurationPort">
+      <point x="1.3695795950193173" y="4.808768213680793" />
+      <point x="1.3695795950193315" y="4.808768213680793" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3LCDManager" target="lejos.internal.ev3.EV3LCD">
+      <point x="-5.6843418860808015E-14" y="-10.02848364127862" />
+      <point x="0.0" y="-10.028483641278612" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3Keys" target="lejos.hardware.Sound">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3ConfigurationPort" target="lejos.internal.io.NativeDevice">
+      <point x="-9.28471789466056" y="1.4210854715202004E-14" />
+      <point x="-9.284717894660531" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3UARTPort" target="lejos.internal.io.NativeDevice">
+      <point x="12.65822173070914" y="0.0" />
+      <point x="12.65822173070913" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3MotorPort" target="lejos.internal.io.NativeDevice">
+      <point x="-5.20699643021527" y="0.0" />
+      <point x="-5.206996430215298" y="0.0" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3LCD" target="lejos.hardware.lcd.CommonLCD">
+      <point x="0.0" y="5.01424182063932" />
+      <point x="-1.1368683772161603E-13" y="5.014241820639327" />
+    </edge>
+    <edge source="lejos.internal.ev3.EV3ConfigurationPort" target="lejos.internal.ev3.EV3AnalogPort">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Circular" zoom="0.5999999999999998" x="1080.6409840159833" y="566.6666666666669" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

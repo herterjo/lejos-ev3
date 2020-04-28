@@ -5,6 +5,7 @@ import java.lang.IllegalArgumentException;
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
 import lejos.hardware.port.Port;
+import lejos.utility.Delay;
 
 /**
  * Class that implements common methods for all I2C sensors.
@@ -136,6 +137,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
             catch (I2CException e)
             {
                 error = e;
+                Thread.yield();
             }
         }
         throw error;
@@ -177,6 +179,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
             catch (I2CException e)
             {
                 error = e;
+                Thread.yield();
             }
         }
         throw error;

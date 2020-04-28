@@ -17,7 +17,11 @@ public class LocalWifiDevice {
 	LocalWifiDevice(String ifName) {
 		this.ifName = ifName;
 	}
-	
+
+	/**
+	 * Return an array of available access point names
+	 * @return String array of access point names
+	 */
 	public String[] getAccessPointNames() {
 		results = new HashSet<String>();
 		
@@ -86,27 +90,59 @@ public class LocalWifiDevice {
 		
 		return results.toArray(new String[results.size()]);
 	}
-	
-	public String getAccessPoint() {
-		reqS.sockaddr.bd_addr[0] = 1;
-		int ret = wifi.ioctl(NativeWifi.SIOCGIWAP, reqS);
-		
-		if (ret > 0 ) {
-	
-			StringBuilder sb = new StringBuilder();
-			
-			sb = new StringBuilder();
-			for(int j=0;j<6;j++) {
-				String hex = Integer.toHexString(reqS.sockaddr.bd_addr[j] & 0xFF).toUpperCase();
-				if (hex.length() == 1) sb.append('0');
-				sb.append(hex);
-				if (j<5) sb.append(':');
-			}
-			
-			System.out.println("Access Point:" + sb.toString());
-			
-			return sb.toString();
-		}
-		return null;
-	}
+
+	/**
+	 * Return a string version of the current access point BSSID (Mac address)
+	 * @return BSSID as hex digits
+	 */
+    public String getAccessPoint() {
+        reqS.sockaddr.bd_addr[0] = 1;
+        int ret = wifi.ioctl(NativeWifi.SIOCGIWAP, reqS);
+        
+        if (ret > 0 ) {
+    
+            StringBuilder sb = new StringBuilder();
+            for(int j=0;j<6;j++) {
+                String hex = Integer.toHexString(reqS.sockaddr.bd_addr[j] & 0xFF).toUpperCase();
+                if (hex.length() == 1) sb.append('0');
+                sb.append(hex);
+                if (j<5) sb.append(':');
+            }
+            
+            System.out.println("Access Point:" + sb.toString());
+            
+            return sb.toString();
+        }
+        return null;
+    }
+
+    /**
+     * Return the current access point name
+     * @return access point name
+     */
+    public String getAccessPointName() {
+        // Create buffer for the results
+        
+        reqP.point.flags = 0;
+        reqP.point.length = 256;
+        reqP.point.p = new Memory(reqP.point.length);
+        // Copy the name to the request structure
+        System.arraycopy(ifName.getBytes(), 0, reqP.ifname, 0, ifName.length());
+        int ret = wifi.ioctl(NativeWifi.SIOCGIWESSID, reqP);
+        //System.out.println("error " + ret);
+        if (ret >= 0 ) {
+    
+            StringBuilder sb = new StringBuilder();
+            int len = reqP.point.length;
+            //System.out.println("length is " + len);
+            for(int j=0;j<len;j++) {
+                sb.append((char)reqP.point.p.getByte(j));
+            }
+            
+            //System.out.println("Access Point Name:" + sb.toString());
+            
+            return sb.toString();
+        }
+        return null;
+    }
 }
