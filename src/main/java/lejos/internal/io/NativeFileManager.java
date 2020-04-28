@@ -43,7 +43,7 @@ public class NativeFileManager {
             } else if (matchingFiles.length == 1) {
                 nf = matchingFiles[0];
             } else {
-                nf = new NativeFile();
+                nf = new NativeFile(fname);
                 files.add(nf);
             }
         }

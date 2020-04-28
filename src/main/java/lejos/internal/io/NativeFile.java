@@ -82,8 +82,8 @@ public class NativeFile {
     private String name;
     private boolean opened = false;
 
-    protected NativeFile() {
-
+    protected NativeFile(String name) {
+        this.name = name;
     }
 
     /**
@@ -96,6 +96,7 @@ public class NativeFile {
      * @throws FileNotFoundException
      */
     public NativeFile(String fname, int flags, int mode) throws FileNotFoundException {
+        this(fname);
         open(fname, flags, mode);
     }
 
