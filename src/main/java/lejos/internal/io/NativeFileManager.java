@@ -39,7 +39,7 @@ public class NativeFileManager {
                     .toArray(NativeFile[]::new);
             if (matchingFiles.length > 1) {
                 throw new IllegalStateException("More than one device matches this name," +
-                        " this is a programming errror and should not happen");
+                        " this is a programming error and should not happen");
             } else if (matchingFiles.length == 1) {
                 nf = matchingFiles[0];
             } else {
