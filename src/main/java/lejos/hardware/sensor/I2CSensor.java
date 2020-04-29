@@ -1,11 +1,13 @@
 package lejos.hardware.sensor;
 
 import java.lang.IllegalArgumentException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
 import lejos.hardware.port.Port;
 import lejos.utility.AsyncExecutor;
+import lejos.utility.ExceptionWrapper;
 
 /**
  * Class that implements common methods for all I2C sensors.
@@ -89,7 +91,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
      * Set the number of times that a get/send data request should be retried.
      * @param newCount number of times to try the request
      */
-    public void setRetryCount(int newCount)
+    public synchronized void setRetryCount(int newCount)
     {
         if (newCount <= 0)
             throw new IllegalArgumentException("Invalid retry count");
@@ -100,7 +102,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
      * Return the current get/send retry count value
      * @return current retry count
      */
-    public int getRetryCount()
+    public synchronized int getRetryCount()
     {
         return retryCount;
     }
@@ -112,7 +114,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 * @param buf Buffer to return data
 	 * @param len Length of the return data
 	 */
-	public void getData(int register, byte [] buf, int len) {
+	public synchronized void getData(int register, byte [] buf, int len) {
         getData(register, buf, 0, len);
 	}
 
@@ -150,7 +152,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 * @param buf Buffer containing data to send
 	 * @param len Length of data to send
 	 */
-	public void sendData(int register, byte [] buf, int len) {
+	public synchronized void sendData(int register, byte [] buf, int len) {
         sendData(register, buf, 0, len);
 	}
 
@@ -165,29 +167,63 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
      * @param len Length of data to send
 	 */
 	public synchronized void sendData(int register, byte [] buf, int offset, int len) {
-        if (len >= ioBuf.length)
-        	throw new IllegalArgumentException("Invalid buffer length");
-        ioBuf[0] = (byte)register;
-		// avoid NPE in case length==0 and data==null
-        if (buf != null)
-        	System.arraycopy(buf, offset, ioBuf, 1, len);
-        I2CException error = null;
-        for(int i = 0; i < retryCount; i++)
-        {
-            try {
-                port.i2cTransaction(address, ioBuf, 0, len + 1, null, 0, 0);
-                return;
-            }
-            catch (I2CException e)
-            {
-                error = e;
-                Thread.yield();
-            }
-        }
-        throw error;
+		CopyBuffer((byte) register, buf, offset, len);
+		i2cMultipleSendTries(len);
 	}
 
-	    /**
+	/**
+	 *  Executes an I2C async write transaction.
+	 *
+	 * @param register I2C register, e.g 0x42
+	 * @param buf Buffer containing data to send
+     * @param offset Offset of the start of the data
+	 */
+	public synchronized Future<ExceptionWrapper> sendDataAsync(int register, byte [] buf, int offset) {
+		CopyBuffer((byte) register, buf, offset, 0);
+		return AsyncExecutor.execute(()-> {
+			i2cMultipleSendTries(0);
+		});
+	}
+
+	/**
+	 *  Executes an I2C async write transaction.
+	 *
+	 * @param register I2C register, e.g 0x42
+	 * @param buf Buffer containing data to send
+     * @param offset Offset of the start of the data
+     * @param len Length of data to send
+	 */
+	public synchronized Future<ExceptionWrapper> sendDataAsync(int register, byte [] buf, int offset, int len) {
+		CopyBuffer((byte) register, buf, offset, len);
+		return AsyncExecutor.execute(()-> {
+			i2cMultipleSendTries(len);
+		});
+	}
+
+	private void i2cMultipleSendTries(int len) {
+		I2CException error = null;
+		for (int i = 0; i < retryCount; i++) {
+			try {
+				port.i2cTransaction(address, ioBuf, 0, len + 1, null, 0, 0);
+				return;
+			} catch (I2CException e) {
+				error = e;
+				Thread.yield();
+			}
+		}
+		throw error;
+	}
+
+	private void CopyBuffer(byte register, byte[] buf, int offset, int len) {
+		if (len >= ioBuf.length)
+			throw new IllegalArgumentException("Invalid buffer length");
+		ioBuf[0] = register;
+		// avoid NPE in case length==0 and data==null
+		if (buf != null)
+			System.arraycopy(buf, offset, ioBuf, 1, len);
+	}
+
+	/**
      * High level i2c interface. Perform a complete i2c transaction in fire and forget.
      * Writes the specified data to the device.
      *
@@ -196,7 +232,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
      * @param writeOffset   The offset of the data within the write buffer
      * @param writeLen      The number of bytes to write.
      */
-    public void i2cAsyncWrite(int deviceAddress, byte[] writeBuf, int writeOffset, int writeLen){
+    public synchronized void i2cAsyncWrite(int deviceAddress, byte[] writeBuf, int writeOffset, int writeLen){
 
 	}
 
@@ -220,7 +256,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 *
 	 * @return version number
 	 */
-	public String getVersion() {
+	public synchronized String getVersion() {
 		return fetchString(REG_VERSION, 8);
 	}
 
@@ -232,7 +268,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 *
 	 * @return vendor identifier
 	 */
-	public String getVendorID() {
+	public synchronized String getVendorID() {
 		return fetchString(REG_VENDOR_ID, 8);
 	}
 
@@ -244,7 +280,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 *
 	 * @return product identifier
 	 */
-	public String getProductID() {
+	public synchronized String getProductID() {
 		return fetchString(REG_PRODUCT_ID, 8);
 	}
 
@@ -257,7 +293,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
      * @param len maximum length of the string, including the zero termination byte
      * @return the string containing the characters before the zero termination byte
      */
-	protected String fetchString(byte reg, int len) {
+	protected synchronized String fetchString(byte reg, int len) {
 		byte[] buf = new byte[len];
 		try
 		{
@@ -286,7 +322,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 * @deprecated If the device has a changeable address, then constructor of the class should have an address parameter. If not, please report a bug.
 	 */
 	@Deprecated
-	public void setAddress(int addr) {
+	public synchronized void setAddress(int addr) {
         if ((address & 1) != 0) throw new IllegalArgumentException("Bad address format");
 		address = addr;
 	}
@@ -296,7 +332,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 * The sensor uses the address for writing/reading.
 	 * @return the I2C address.
 	 */
-	public int getAddress()
+	public synchronized int getAddress()
 	{
 		return this.address;
 	}
@@ -305,7 +341,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 * Get the port that the sensor is attached to
 	 * @return the I2CPort
 	 */
-	public I2CPort getPort() {
+	public synchronized I2CPort getPort() {
 		return port;
 	}
 }

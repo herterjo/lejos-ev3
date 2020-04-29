@@ -1,10 +1,11 @@
 package lejos.internal.ev3;
 
 import lejos.hardware.LED;
+import lejos.internal.io.NativeDevice;
 import lejos.utility.AsyncExecutor;
 
 public class EV3LED implements LED {
-    private static final String ledpath = "/dev/lms_ui";
+    private static final NativeDevice device = new NativeDevice("/dev/lms_ui");
     public static int COLOR_NONE = 0;
     public static int COLOR_GREEN = 1;
     public static int COLOR_RED = 2;
@@ -19,7 +20,7 @@ public class EV3LED implements LED {
         byte[] cmd = new byte[2];
 
         cmd[0] = (byte) ('0' + pattern);
-        AsyncExecutor.getInstance().write(cmd, cmd.length, ledpath);
+        AsyncExecutor.execute(()-> device.write(cmd, cmd.length));
     }
 
     public void setPattern(int color, int pattern) {

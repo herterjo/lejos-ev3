@@ -378,11 +378,6 @@ public class DLights {
             return sendDataAsync(GRPPWM + AUTOINCREMENT, buf, 2);
         }
 
-        public synchronized Future<ExceptionWrapper> sendDataAsync(int register, byte[] buf, int len) {
-        	//TODO: Not working, because of internal side effects, fuck the original autors
-            return AsyncExecutor.execute(() -> sendData(register, buf, len));
-        }
-
         public Future<ExceptionWrapper> enableBlinking() {
             return setRegister(LEDOUT, BLINKINGON);
         }
