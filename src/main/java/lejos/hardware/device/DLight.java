@@ -1,5 +1,9 @@
 package lejos.hardware.device;
 
+import lejos.utility.ExceptionWrapper;
+
+import java.util.concurrent.Future;
+
 /**
  * Interface for dLights from Dexter Industries
  * @author Aswin Bouwmeester
@@ -10,14 +14,14 @@ public interface DLight {
 	/**
 	 * Enables the dLight. 
 	 */
-	public void enable();
+	public Future<ExceptionWrapper> enable();
 	
 	/**
 	 * Disables the dLight.
 	 * Values for color and blinking pattern are not overwritten and will 
 	 * still be in effect after enabling the dLight again.
 	 */
-	public void disable();
+	public Future<ExceptionWrapper> disable();
 	
 	/** Queries the status of the dLight
 	 * @return
@@ -32,7 +36,7 @@ public interface DLight {
 	 * @param green
 	 * @param blue
 	 */
-	public void setColor(int red, int green, int blue);
+	public Future<ExceptionWrapper> setColor(int red, int green, int blue);
 	
 	/**
 	 * Changes the color of the LED according to specified RGB color.
@@ -40,7 +44,7 @@ public interface DLight {
 	 * @param rgb
 	 * Integer array containing RGB colors
 	 */
-	public void setColor(int[] rgb);
+	public Future<ExceptionWrapper> setColor(int[] rgb);
 	
 	/**
 	 * Changes the color of the LED according to specified HSL color.
@@ -51,7 +55,7 @@ public interface DLight {
 	 * @param luminosity
 	 * The saturation luminosity value in the range of 0-100
 	 */
-	public void setHSLColor(int hue, int saturation, int luminosity);
+	public Future<ExceptionWrapper> setHSLColor(int hue, int saturation, int luminosity);
 	
 	/**
 	 * Specifies the blinking pattern of the LED. Blinnking mode should be enabled 
@@ -61,17 +65,17 @@ public interface DLight {
 	 * @param percentageOn
 	 * The percentage of the time the LED is on within a blinking cycle
 	 */
-	public void setBlinkingPattern(float seconds, int percentageOn);
+	public Future<ExceptionWrapper> setBlinkingPattern(float seconds, int percentageOn);
 	
 	/**
 	 * Enables blinking pattern. The blinking pattern should be set with the SetBlinkingPattern method.
 	 */
-	public void enableBlinking();
+	public Future<ExceptionWrapper> enableBlinking();
 	
 	/**
 	 * Disables blinking. The blinking pattern itself remains in memory. 
 	 */
-	public void disableBlinking();
+	public Future<ExceptionWrapper> disableBlinking();
 	
 	/**
 	 * Queries the blinking mode of the dLight
@@ -93,7 +97,7 @@ public interface DLight {
 	 * @param value
 	 * The values should be between 0 (fully off) and 255 (fully on).
 	 */
-	public void setExternalLED(int value);
+	public Future<ExceptionWrapper> setExternalLED(int value);
 	
 	/**
 	 * Gets the PWM value of the external LED driver of the dLight.

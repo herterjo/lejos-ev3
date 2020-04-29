@@ -4,9 +4,8 @@ import java.lang.IllegalArgumentException;
 
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
-import lejos.hardware.port.I2CWritePort;
 import lejos.hardware.port.Port;
-import lejos.internal.io.AsyncSender;
+import lejos.utility.AsyncExecutor;
 
 /**
  * Class that implements common methods for all I2C sensors.
@@ -155,6 +154,8 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
         sendData(register, buf, 0, len);
 	}
 
+	//TODO: Rewrite this shit, why do you use class variables only for local use????
+
 	/**
 	 *  Executes an I2C write transaction.
 	 *
@@ -174,12 +175,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
         for(int i = 0; i < retryCount; i++)
         {
             try {
-            	if (port instanceof I2CWritePort) {
-					I2CWritePort wport = (I2CWritePort) port;
-					AsyncSender.getInstance().ioctl(ioBuf, len + 1, address, wport);
-				} else {
-					port.i2cTransaction(address, ioBuf, 0, len + 1, null, 0, 0);
-				}
+                port.i2cTransaction(address, ioBuf, 0, len + 1, null, 0, 0);
                 return;
             }
             catch (I2CException e)
@@ -189,6 +185,19 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
             }
         }
         throw error;
+	}
+
+	    /**
+     * High level i2c interface. Perform a complete i2c transaction in fire and forget.
+     * Writes the specified data to the device.
+     *
+     * @param deviceAddress The I2C device address.
+     * @param writeBuf      The buffer containing data to be written to the device.
+     * @param writeOffset   The offset of the data within the write buffer
+     * @param writeLen      The number of bytes to write.
+     */
+    public void i2cAsyncWrite(int deviceAddress, byte[] writeBuf, int writeOffset, int writeLen){
+
 	}
 
 	/**

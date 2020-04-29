@@ -2,7 +2,6 @@ package lejos.internal.ev3;
 
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
-import lejos.hardware.port.I2CWritePort;
 import lejos.internal.io.NativeDevice;
 
 import java.io.IOError;
@@ -15,7 +14,7 @@ import java.io.IOError;
  * to be of limited use because most i2c sensors provide multiple data values etc.
  * Because of this we only implement the basic i2c interface.
  */
-public class EV3I2CPort extends EV3IOPort implements I2CPort, I2CWritePort {
+public class EV3I2CPort extends EV3IOPort implements I2CPort {
     protected static NativeDevice i2c;
 
     static {
