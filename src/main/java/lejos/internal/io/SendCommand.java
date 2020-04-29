@@ -1,6 +1,6 @@
 package lejos.internal.io;
 
-import lejos.hardware.port.IC2WritePort;
+import lejos.hardware.port.I2CWritePort;
 
 /**
  * Class to parameterize the NativeDeviceasyncWriter.write function
@@ -11,7 +11,7 @@ public class SendCommand {
     private final int offset;
     private final SendCommandType type;
     private final int address;
-    private final IC2WritePort port;
+    private final I2CWritePort port;
     private final NativeDevice device;
 
     /**
@@ -33,11 +33,11 @@ public class SendCommand {
      * @param address    Port to write to
      * @param offset     Specifies when to write, can't be less than 0
      */
-    public SendCommand(byte[] toWrite, int toWriteLen, int offset, int address, IC2WritePort port) {
+    public SendCommand(byte[] toWrite, int toWriteLen, int offset, int address, I2CWritePort port) {
         this(toWrite, toWriteLen, offset, address, port, null, SendCommandType.ioctl);
     }
 
-    private SendCommand(byte[] toWrite, int toWriteLen, int offset, int address, IC2WritePort port,
+    private SendCommand(byte[] toWrite, int toWriteLen, int offset, int address, I2CWritePort port,
                         NativeDevice device, SendCommandType type) {
         if (offset < 0) {
             throw new IllegalArgumentException("offset less than 0 is not supported");
@@ -74,7 +74,7 @@ public class SendCommand {
         return type;
     }
 
-    public IC2WritePort getPort() {
+    public I2CWritePort getPort() {
         return port;
     }
 

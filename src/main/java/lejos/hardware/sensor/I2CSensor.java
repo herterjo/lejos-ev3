@@ -4,10 +4,9 @@ import java.lang.IllegalArgumentException;
 
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
-import lejos.hardware.port.IC2WritePort;
+import lejos.hardware.port.I2CWritePort;
 import lejos.hardware.port.Port;
 import lejos.internal.io.AsyncSender;
-import lejos.utility.Delay;
 
 /**
  * Class that implements common methods for all I2C sensors.
@@ -175,8 +174,8 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
         for(int i = 0; i < retryCount; i++)
         {
             try {
-            	if (port instanceof IC2WritePort) {
-					IC2WritePort wport = (IC2WritePort) port;
+            	if (port instanceof I2CWritePort) {
+					I2CWritePort wport = (I2CWritePort) port;
 					AsyncSender.getInstance().ioctl(ioBuf, len + 1, address, wport);
 				} else {
 					port.i2cTransaction(address, ioBuf, 0, len + 1, null, 0, 0);

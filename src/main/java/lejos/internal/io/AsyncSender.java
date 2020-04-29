@@ -1,6 +1,6 @@
 package lejos.internal.io;
 
-import lejos.hardware.port.IC2WritePort;
+import lejos.hardware.port.I2CWritePort;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class AsyncSender {
      * @param len     How many bytes to write from the array
      * @param port    Adress of port to write to
      */
-    public void ioctl(byte[] toWrite, int len, int address, IC2WritePort port) {
+    public void ioctl(byte[] toWrite, int len, int address, I2CWritePort port) {
         ioctl(toWrite, len, address, port, 0);
     }
 
@@ -72,7 +72,7 @@ public class AsyncSender {
      * @param offset  Specifies when to write
      * @param port    Port to write to
      */
-    public void ioctl(byte[] toWrite, int len, int address, IC2WritePort port, int offset) {
+    public void ioctl(byte[] toWrite, int len, int address, I2CWritePort port, int offset) {
         SendCommand cmd = new SendCommand(toWrite, len, offset, address, port);
         addCommand(cmd);
     }

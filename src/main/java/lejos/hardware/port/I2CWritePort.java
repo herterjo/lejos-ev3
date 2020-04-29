@@ -1,6 +1,6 @@
 package lejos.hardware.port;
 
-public interface IC2WritePort {
+public interface I2CWritePort {
     /**
      * High level i2c interface. Perform a complete i2c transaction in fire and forget.
      * Writes the specified data to the device.
