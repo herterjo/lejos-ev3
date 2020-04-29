@@ -79,11 +79,9 @@ public class NativeFile {
     int fd;
     RandomAccessFile jfd;
     FileChannel fc;
-    private String name;
     private boolean opened = false;
 
-    protected NativeFile(String name) {
-        this.name = name;
+    protected NativeFile() {
     }
 
     /**
@@ -96,7 +94,6 @@ public class NativeFile {
      * @throws FileNotFoundException
      */
     public NativeFile(String fname, int flags, int mode) throws FileNotFoundException {
-        this(fname);
         open(fname, flags, mode);
     }
 
@@ -234,10 +231,6 @@ public class NativeFile {
         if (p == null)
             return null;
         return p;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public boolean isOpened() {

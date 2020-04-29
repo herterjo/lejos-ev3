@@ -3,15 +3,18 @@ package lejos.internal.io;
 import com.sun.jna.Pointer;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This is a wrapper for NativeFile, which operates always on the same NativeFile-Object
  */
 public class NativeFileManager {
-    private static final List<NativeFile> files = new LinkedList<>();
+    private static final HashMap<String, NativeFile> files = new HashMap<>();
     private final NativeFile nf;
+    private final String fileName;
 
     /**
      * Find a NativeFile object and open the associated file/device
@@ -36,18 +39,14 @@ public class NativeFileManager {
      * @param fname the name of the file to open
      */
     public NativeFileManager(String fname) {
+        fileName = fname;
         synchronized (files) {
-            NativeFile[] matchingFiles = files
-                    .stream().filter(d -> d.getName().equals(fname))
-                    .toArray(NativeFile[]::new);
-            if (matchingFiles.length > 1) {
-                throw new IllegalStateException("More than one device matches this name," +
-                        " this is a programming error and should not happen");
-            } else if (matchingFiles.length == 1) {
-                nf = matchingFiles[0];
+            NativeFile matchingFile = files.get(fname);
+             if (matchingFile != null) {
+                nf = matchingFile;
             } else {
-                nf = new NativeFile(fname);
-                files.add(nf);
+                nf = new NativeFile();
+                files.put(fname, nf);
             }
         }
     }
@@ -61,7 +60,7 @@ public class NativeFileManager {
      * @throws FileNotFoundException
      */
     public void open(int flags, int mode) throws FileNotFoundException {
-        nf.open(nf.getName(), flags, mode);
+        nf.open(fileName, flags, mode);
     }
 
         /**
