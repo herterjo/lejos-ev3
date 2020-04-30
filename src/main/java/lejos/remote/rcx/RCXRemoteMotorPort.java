@@ -3,6 +3,9 @@ package lejos.remote.rcx;
 import lejos.hardware.device.RCXLink;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.utility.Delay;
+import lejos.utility.ExceptionWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Supports a motor connected to a remote RCX via a mindsensord NRLink adapter
@@ -20,7 +23,7 @@ public class RCXRemoteMotorPort implements BasicMotorPort {
 		this.link = link;
 		this.id = id;
 	}
-	public void controlMotor(int power, int mode) {
+	public Future<ExceptionWrapper> controlMotor(int power, int mode) {
 		//LCD.drawInt(id, 0, 0);
 		//LCD.drawInt(power,4,0,1);
 		//LCD.drawInt(mode,0,2);
@@ -56,7 +59,7 @@ public class RCXRemoteMotorPort implements BasicMotorPort {
 	public void setPWMMode(int mode) {
 	}
     @Override
-    public void close()
+    public Future<ExceptionWrapper> close()
     {
         // TODO Auto-generated method stub
         

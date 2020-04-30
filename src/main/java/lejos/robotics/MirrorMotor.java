@@ -1,5 +1,10 @@
 package lejos.robotics;
 
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
+
 /**
  * <p>This class returns a motor that rotates in the reverse direction of a regular motor. All tachometer
  * readings are also reversed.</p> 
@@ -140,11 +145,11 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		return regMotor.getRotationSpeed();
 	}
 
-	public int getTachoCount() {
+	public Future<ReturnWrapper<Integer>> getTachoCount() {
 		return -regMotor.getTachoCount();// REVERSED
 	}
 
-	public void resetTachoCount() {
+	public Future<ExceptionWrapper> resetTachoCount() {
 		regMotor.resetTachoCount();
 	}
 

@@ -8,9 +8,14 @@ import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
 import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * Abstraction for an EV3 output port.
@@ -153,7 +158,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          * @param offset
          * @param deadBand
          */
-        public synchronized void setControlParams(int typ, float moveP, float moveI, float moveD, float holdP, float holdI, float holdD, int offset, float deadBand) {
+        public synchronized Future<ExceptionWrapper> setControlParams(int typ, float moveP, float moveI, float moveD, float holdP, float holdI, float holdD, int offset, float deadBand) {
             regCmd[0] = OUTPUT_SET_TYPE;
             regCmd[1] = (byte) port;
             regCmd[2] = (byte) typ;
@@ -165,7 +170,11 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             setVal(regCmd, 23, floatToFix(holdD));
             setVal(regCmd, 27, offset);
             setVal(regCmd, 31, floatToFix(deadBand));
-            AsyncExecutor.execute(() -> pwmDevice.write(regCmd, 35));
+            byte[] newCMD = new byte[35];
+            System.arraycopy(regCmd, 0, newCMD, 0, 35);
+            return AsyncExecutor.execute(() -> {
+                pwmDevice.write(newCMD, 35);
+            });
         }
 
 
@@ -173,28 +182,39 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          * Check to see if the current command is complete and if needed call
          * any listeners.
          */
-        protected synchronized void checkComplete() {
-            if (started && !isMoving()) {
-                started = false;
-                if (listener != null)
-                    listener.rotationStopped(motor, getTachoCount(), isStalled(), System.currentTimeMillis());
+        protected synchronized Future<ExceptionWrapper> checkComplete() {
+            if (!started) {
+                return ExceptionWrapper.getCompletedException(null);
             }
+            return AsyncExecutor.execute(() -> {
+                boolean isMoving = isMoving().get().getValue();
+                if (!isMoving) {
+                    started = false;
+                    if (listener != null) {
+                        boolean isStalled = isStalled().get().getValue();
+                        int tachoCount = getTachoCount().get().getValue();
+                        listener.rotationStopped(motor, tachoCount, isStalled, System.currentTimeMillis());
+                    }
+                }
+            });
         }
 
         /**
          * We are starting a new move operation. Handle listeners as required
          */
-        protected synchronized void startNewMove() {
-            if (started)
-                checkComplete();
-            if (started)
-                throw new IllegalStateException("Motor must be stopped");
-            started = true;
-            if (listener != null) {
-                listener.rotationStarted(motor, getTachoCount(), false, System.currentTimeMillis());
-                notifyAll();
-            }
-
+        protected synchronized Future<ExceptionWrapper> startNewMove() {
+            return AsyncExecutor.execute(() -> {
+                if (started)
+                    AsyncExecutor.throwIfException(checkComplete());
+                if (started)
+                    throw new IllegalStateException("Motor must be stopped");
+                started = true;
+                if (listener != null) {
+                    int tachoCount = getTachoCount().get().getValue();
+                    listener.rotationStarted(motor, tachoCount, false, System.currentTimeMillis());
+                    notifyAll();
+                }
+            });
         }
 
         /**
@@ -208,7 +228,10 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                         wait();
                     } catch (InterruptedException e) {
                     }
-                checkComplete();
+                try {
+                    checkComplete().get();
+                } catch (Exception e) {
+                }
                 try {
                     wait(5);
                 } catch (InterruptedException e) {
@@ -233,7 +256,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          * @param ts   Time stamp
          * @param hold What to do after the move
          */
-        protected synchronized void subMove(int t1, int t2, int t3, float c1, float c2, float c3, float v1, float v2, float a1, float a3, int sl, int st, int ts, boolean hold) {
+        protected synchronized Future<ExceptionWrapper> subMove(int t1, int t2, int t3, float c1, float c2, float c3, float v1, float v2, float a1, float a3, int sl, int st, int ts, boolean hold) {
             //System.out.println("t1 " + t1 + " t2 " + t2 + " t3 " + t3 + " c1 " + c1 + " c2 " + c2 + " c3 " + c3 + " v1 " + v1 + " v2 " + v2 + " a1 " + a1 + " a3 " + a3);
             // convert units from /s (i.e 100ms) to be per 1024ms to allow div to be performed by shift
             v1 = (v1 / 1000f) * 1024f;
@@ -259,7 +282,10 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             regCmd[54] = (byte) (hold ? 1 : 0);
             // if we are going to move then tell any listeners.
             if ((v1 != 0 || v2 != 0) && ts == 0)
-                startNewMove();
+                return startNewMove();
+            else {
+                return ExceptionWrapper.getCompletedException(null);
+            }
         }
 
         /**
@@ -275,7 +301,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          * @param limit
          * @param hold
          */
-        protected synchronized void genMove(float curVel, float curPos, float curCnt, int curTime, float speed, float acc, int limit, boolean hold) {
+        protected Future<ExceptionWrapper> genMove(float curVel, float curPos, float curCnt, int curTime, float speed, float acc, int limit, boolean hold) {
             // Save current move params we may need these to adjust speed etc.
             float u2 = curVel * curVel;
             //int len = (int)(limit - curPos);
@@ -290,8 +316,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 if (curVel < 0)
                     a3 = -acc;
                 int t3 = (int) (1000 * (curVel / a3));
-                subMove(0, 0, t3, 0, 0, curCnt, 0, curVel, 0, -a3, stallLimit, stallTime, curTime, hold);
-                return;
+                return subMove(0, 0, t3, 0, 0, curCnt, 0, curVel, 0, -a3, stallLimit, stallTime, curTime, hold);
             }
             float v2 = v * v;
             if (Math.abs(limit) == NO_LIMIT) {
@@ -303,8 +328,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                     a1 = -acc;
                 float s1 = (v2 - u2) / (2 * a1);
                 int t1 = (int) (1000 * (v - curVel) / a1);
-                subMove(t1, NO_LIMIT, 0, curCnt, curCnt + s1, 0, curVel, v, a1, 0, stallLimit, stallTime, curTime, hold);
-                return;
+                return subMove(t1, NO_LIMIT, 0, curCnt, curCnt + s1, 0, curVel, v, a1, 0, stallLimit, stallTime, curTime, hold);
             }
             // We have some sort of target position work out how to get to it
             if (curVel != 0) {
@@ -337,7 +361,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 int t1 = (int) (1000 * (v - curVel) / a1);
                 int t2 = t1;
                 int t3 = t2 + (int) (1000 * (v / a3));
-                subMove(t1, t2, t3, curCnt, 0, s1 + curCnt, curVel, v, a1, -a3, stallLimit, stallTime, curTime, hold);
+                return subMove(t1, t2, t3, curCnt, 0, s1 + curCnt, curVel, v, a1, -a3, stallLimit, stallTime, curTime, hold);
             } else {
                 // trapezoid move
                 //System.out.println("Trap");
@@ -349,28 +373,39 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                 int t2 = t1 + (int) (1000 * s2 / v);
                 int t3 = t2 + (int) (1000 * (v / a3));
                 //System.out.println("v " + v + " a1 " + a1 + " a3 " + (-a3));
-                subMove(t1, t2, t3, curCnt, curCnt + s1, curCnt + s1 + s2, curVel, v, a1, -a3, stallLimit, stallTime, curTime, hold);
-
+                return subMove(t1, t2, t3, curCnt, curCnt + s1, curCnt + s1 + s2, curVel, v, a1, -a3, stallLimit, stallTime, curTime, hold);
             }
         }
 
         /**
          * Waits for the current move operation to complete
+         *
+         * @return
          */
-        public synchronized void waitComplete() {
-            for (EV3MotorRegulatorKernelModule r : syncActive) {
-                while (r.isMoving())
-                    Delay.msDelay(1);
-            }
-            for (EV3MotorRegulatorKernelModule r : syncActive)
-                r.checkComplete();
+        public synchronized Future<ExceptionWrapper> waitComplete() {
+            return AsyncExecutor.execute(() -> {
+                for (EV3MotorRegulatorKernelModule r : syncActive) {
+                    boolean isMoving = r.isMoving().get().getValue();
+                    while (isMoving) {
+                        Delay.msDelay(1);
+                        isMoving = r.isMoving().get().getValue();
+                    }
+                }
+                for (EV3MotorRegulatorKernelModule r : syncActive) {
+                    AsyncExecutor.throwIfException(r.checkComplete());
+                }
+            });
         }
 
-        protected synchronized void executeMove() {
+        protected synchronized Future<ExceptionWrapper> executeMove() {
+            List<Future<ExceptionWrapper>> checkers = new LinkedList<>();
             // first generate all of the active moves
             for (EV3MotorRegulatorKernelModule r : syncActive) {
-                if (r.newMove)
-                    r.genMove(r.curVelocity, r.curPosition, r.curCnt, (r.curState >= ST_START ? r.curTime : 0), r.curSpeed, r.curAcc, r.curLimit, r.curHold);
+                if (r.newMove) {
+                    checkers.add(r.genMove(r.curVelocity, r.curPosition, r.curCnt, (r.curState >= ST_START ? r.curTime : 0),
+                            r.curSpeed, r.curAcc, r.curLimit, r.curHold));
+                }
+
             }
             // now write them to the kernel
             synchronized (syncedLock) {
@@ -384,10 +419,16 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
                     }
                 }
                 int lenCpyBecauseOfFinal = cntLen;
-                AsyncExecutor.execute(() -> pwmDevice.write(regCmd2, lenCpyBecauseOfFinal));
+                byte[] newCMD = new byte[lenCpyBecauseOfFinal];
+                System.arraycopy(regCmd2, 0, newCMD, 0, lenCpyBecauseOfFinal);
+                return AsyncExecutor.execute(() -> {
+                    for (Future<ExceptionWrapper> c : checkers) {
+                        AsyncExecutor.throwIfException(c);
+                    }
+                    pwmDevice.write(newCMD, lenCpyBecauseOfFinal);
+                });
             }
         }
-
 
         /**
          * Initiate a new move and optionally wait for it to complete.
@@ -399,26 +440,33 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          * @param limit
          * @param hold
          * @param waitComplete
+         * @return
          */
-        public synchronized void newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete) {
-            synchronized (this) {
-                limitAngle = limit;
-                if (Math.abs(limit) != NO_LIMIT)
-                    limit += zeroTachoCnt;
-                updateRegulatorInformation();
-                // Ignore repeated commands
-                if (curState != ST_STALL && !waitComplete && (speed == curSpeed) && (curAcc == acceleration) && (curLimit == limit) && (curHold == hold))
-                    return;
-                // save the move parameters
-                curSpeed = speed;
-                curHold = hold;
-                curAcc = acceleration;
-                curLimit = limit;
-                newMove = true;
-                executeMove();
-            }
-            if (waitComplete)
-                waitComplete();
+        public synchronized Future<ExceptionWrapper> newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete) {
+            limitAngle = limit;
+            if (Math.abs(limit) != NO_LIMIT)
+                limit += zeroTachoCnt;
+            int limitCopy = limit;
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    AsyncExecutor.throwIfException(updateRegulatorInformation());
+                    // Ignore repeated commands
+                    if (curState != ST_STALL && !waitComplete && (speed == curSpeed)
+                            && (curAcc == acceleration) && (curLimit == limitCopy) && (curHold == hold)) {
+                        return;
+                    }
+                    // save the move parameters
+                    curSpeed = speed;
+                    curHold = hold;
+                    curAcc = acceleration;
+                    curLimit = limitCopy;
+                    newMove = true;
+                    AsyncExecutor.throwIfException(executeMove());
+                    if (waitComplete) {
+                        AsyncExecutor.throwIfException(waitComplete());
+                    }
+                }
+            });
         }
 
         /**
@@ -429,51 +477,57 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          *
          * @return
          */
-        protected synchronized int getSerialNo() {
-            synchronized (ibuf) {
-                return ibuf.get(port * 8 + 7);
-            }
+        protected synchronized Future<ReturnWrapper<Integer>> getSerialNo() {
+            return AsyncExecutor.execute(() -> {
+                synchronized (ibuf) {
+                    return ibuf.get(port * 8 + 7);
+                }
+            });
         }
 
         /**
          * Grabs the current state of the regulator and stores in class
          * member variables
          */
-        protected synchronized void updateRegulatorInformation() {
-            int time;
-            int time2;
-            // if there are no active regulators nothing to do
-            if (syncActive.length <= 0) return;
-            synchronized (ibufShadow) {
-                // Check to make sure time is not changed during read
-                do {
-                    // TODO: sort out how to handle JIT issues and shared memory.
-                    // The problem is that when the JIT compiler gets to work 
-                    // it ends up seeing the shared memory as a simple array.
-                    // It is not possible to label this array as volatile so
-                    // some of the following code is seen as invariant and so can be
-                    // optimised. Adding the synchronized section seems to help
-                    // with this but it is not ideal. Need a better solution if possible
-                    synchronized (ibuf) {
-                        // copy the main buffer to the shadow to freeze the state
-                        ibuf.rewind();
-                        time = ibuf.get(port * 8 + 5);
-                        ibuf.get(ibufShadow.array());
-                        time2 = ibuf.get(port * 8 + 6);
+        protected synchronized Future<ExceptionWrapper> updateRegulatorInformation() {
+            return AsyncExecutor.execute(() -> {
+                int time;
+                int time2;
+                // if there are no active regulators nothing to do
+                if (syncActive.length <= 0) return;
+                synchronized (ibufShadow) {
+                    // Check to make sure time is not changed during read
+                    do {
+                        // TODO: sort out how to handle JIT issues and shared memory.
+                        // The problem is that when the JIT compiler gets to work
+                        // it ends up seeing the shared memory as a simple array.
+                        // It is not possible to label this array as volatile so
+                        // some of the following code is seen as invariant and so can be
+                        // optimised. Adding the synchronized section seems to help
+                        // with this but it is not ideal. Need a better solution if possible
+                        synchronized (ibuf) {
+                            // copy the main buffer to the shadow to freeze the state
+                            ibuf.rewind();
+                            time = ibuf.get(port * 8 + 5);
+                            ibuf.get(ibufShadow.array());
+                            time2 = ibuf.get(port * 8 + 6);
+                        }
+                    } while (time != time2);
+                    // now cache the values in the active regulators
+                    for (EV3MotorRegulatorKernelModule r : syncActive) {
+                        synchronized (r) {
+                            final int base = r.port * 8;
+                            r.curCnt = FixToFloat(ibufShadow.get(base + 1));
+                            r.curPosition = r.curCnt + ibufShadow.get(base);
+                            r.curVelocity = (FixToFloat(ibufShadow.get(base + 2)) / 1024) * 1000;
+                            r.curTime = ibufShadow.get(base + 5);
+                            r.curState = ibufShadow.get(base + 4);
+                            r.curTachoCnt = ibufShadow.get(base + 3) - zeroTachoCnt;
+                            r.curSerial = ibufShadow.get(base + 7);
+                        }
                     }
-                } while (time != time2);
-                // now cache the values in the active regulators
-                for (EV3MotorRegulatorKernelModule r : syncActive) {
-                    final int base = r.port * 8;
-                    r.curCnt = FixToFloat(ibufShadow.get(base + 1));
-                    r.curPosition = r.curCnt + ibufShadow.get(base);
-                    r.curVelocity = (FixToFloat(ibufShadow.get(base + 2)) / 1024) * 1000;
-                    r.curTime = ibufShadow.get(base + 5);
-                    r.curState = ibufShadow.get(base + 4);
-                    r.curTachoCnt = ibufShadow.get(base + 3) - zeroTachoCnt;
-                    r.curSerial = ibufShadow.get(base + 7);
                 }
-            }
+            });
         }
 
         /**
@@ -481,9 +535,13 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          *
          * @return current position in degrees
          */
-        public synchronized float getPosition() {
-            updateRegulatorInformation();
-            return curPosition - zeroTachoCnt;
+        public synchronized Future<ReturnWrapper<Float>> getPosition() {
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    AsyncExecutor.throwIfException(updateRegulatorInformation());
+                    return curPosition - zeroTachoCnt;
+                }
+            });
         }
 
         /**
@@ -491,9 +549,13 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          *
          * @return velocity in degrees per second
          */
-        public synchronized float getCurrentVelocity() {
-            updateRegulatorInformation();
-            return curVelocity;
+        public synchronized Future<ReturnWrapper<Float>> getCurrentVelocity() {
+            return AsyncExecutor.execute(() -> {
+                AsyncExecutor.throwIfException(updateRegulatorInformation());
+                synchronized (this) {
+                    return curVelocity;
+                }
+            });
         }
 
 
@@ -502,33 +564,43 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          *
          * @return
          */
-        protected synchronized int getRegState() {
-            if (syncActive.length <= 0) return curState;
-            synchronized (ibuf) {
-                curState = ibuf.get(port * 8 + 4);
-                return curState;
-            }
+        protected synchronized Future<ReturnWrapper<Integer>> getRegState() {
+            if (syncActive.length <= 0) return ReturnWrapper.getCompletedReturnNormal(curState);
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    curState = ibuf.get(port * 8 + 4);
+                    return curState;
+                }
+            });
         }
 
-        public synchronized boolean isMoving() {
-            return getRegState() >= ST_START;
+        public synchronized Future<ReturnWrapper<Boolean>> isMoving() {
+            return AsyncExecutor.execute(() -> getRegState().get().getValue() >= ST_START);
         }
 
-        public synchronized boolean isStalled() {
-            return getRegState() == ST_STALL;
+        public synchronized Future<ReturnWrapper<Boolean>> isStalled() {
+            return AsyncExecutor.execute(() -> getRegState().get().getValue() == ST_STALL);
         }
 
-        public synchronized int getTachoCount() {
-            if (syncActive.length <= 0) return curTachoCnt;
-            return EV3MotorPort.this.getTachoCount() - zeroTachoCnt;
+        public synchronized Future<ReturnWrapper<Integer>> getTachoCount() {
+            if (syncActive.length <= 0) return ReturnWrapper.getCompletedReturnNormal(curTachoCnt);
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    return EV3MotorPort.this.getTachoCount().get().getValue() - zeroTachoCnt;
+                }
+            });
         }
 
-        public synchronized void resetTachoCount() {
-            zeroTachoCnt = EV3MotorPort.this.getTachoCount();
+        public synchronized Future<ExceptionWrapper> resetTachoCount() {
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    zeroTachoCnt = EV3MotorPort.this.getTachoCount().get().getValue();
+                }
+            });
         }
 
 
-        public void setStallThreshold(int error, int time) {
+        public synchronized void setStallThreshold(int error, int time) {
             this.stallLimit = error;
             this.stallTime = time;
         }
@@ -539,15 +611,28 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          * regulator.
          *
          * @param newSpeed new target speed.
+         * @return
          */
-        public synchronized void adjustSpeed(float newSpeed) {
-            if (curSpeed != 0 && newSpeed != curSpeed) {
-                updateRegulatorInformation();
-                if (curState >= ST_START && curState <= ST_MOVE) {
-                    curSpeed = newSpeed;
-                    newMove = true;
-                    executeMove();
+        public synchronized Future<ExceptionWrapper> adjustSpeed(float newSpeed) {
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    if (curSpeed != 0 && newSpeed != curSpeed) {
+                        adjust(true, newSpeed);
+                    }
                 }
+            });
+        }
+
+        private synchronized void adjust(boolean speed, float valToSet) throws Exception {
+            AsyncExecutor.throwIfException(updateRegulatorInformation());
+            if (curState >= ST_START && curState <= ST_MOVE) {
+                if (speed) {
+                    curSpeed = valToSet;
+                } else {
+                    curAcc = valToSet;
+                }
+                newMove = true;
+                AsyncExecutor.throwIfException(executeMove());
             }
         }
 
@@ -555,28 +640,29 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
          * The target acceleration has been changed. Updated the regulator.
          *
          * @param newAcc
+         * @return
          */
-        public synchronized void adjustAcceleration(int newAcc) {
-            if (newAcc != curAcc) {
-                updateRegulatorInformation();
-                if (curState >= ST_START && curState <= ST_MOVE) {
-                    curAcc = newAcc;
-                    newMove = true;
-                    executeMove();
+        public synchronized Future<ExceptionWrapper> adjustAcceleration(int newAcc) {
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    if (newAcc != curAcc) {
+                        adjust(false, newAcc);
+                    }
                 }
-            }
+            });
         }
 
 
         @Override
-        public synchronized void setControlParamaters(int typ, float moveP, float moveI,
-                                                      float moveD, float holdP, float holdI, float holdD, int offset) {
-            setControlParams(typ, moveP, moveI, moveD, holdP, holdI, holdD, offset, 0.5f);
+        public synchronized Future<ExceptionWrapper> setControlParamaters(int typ, float moveP, float moveI,
+                                                                          float moveD, float holdP, float holdI,
+                                                                          float holdD, int offset) {
+            return setControlParams(typ, moveP, moveI, moveD, holdP, holdI, holdD, offset, 0.5f);
         }
 
 
         @Override
-        public void addListener(RegulatedMotor motor, RegulatedMotorListener listener) {
+        public synchronized void addListener(RegulatedMotor motor, RegulatedMotorListener listener) {
             this.motor = motor;
             this.listener = listener;
             if (getState() == Thread.State.NEW)
@@ -585,7 +671,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
 
 
         @Override
-        public RegulatedMotorListener removeListener() {
+        public synchronized RegulatedMotorListener removeListener() {
             RegulatedMotorListener old = listener;
             listener = null;
             return old;
@@ -593,7 +679,7 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
 
 
         @Override
-        public int getLimitAngle() {
+        public synchronized int getLimitAngle() {
             return limitAngle;
         }
 
@@ -614,55 +700,77 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
             this.syncWith = sl;
         }
 
-        public synchronized void startSynchronization() {
+        public synchronized Future<ExceptionWrapper> startSynchronization() {
             synchronized (syncedLock) {
                 // set slaves to sync
                 for (int i = 1; i < syncWith.length; i++)
                     syncWith[i].syncActive = syncSlave;
                 this.syncActive = this.syncWith;
-                this.updateRegulatorInformation();
+                Future<ExceptionWrapper> updateFuture = updateRegulatorInformation();
                 this.syncActive = syncSlave;
+                return updateFuture;
             }
         }
 
-        public synchronized void endSynchronization(boolean immRet) {
-            synchronized (syncedLock) {
-                // execute all synchronized operations
-                syncActive = syncWith;
-                executeMove();
-                // reset operations back to normal for slaves
-                for (int i = 1; i < syncWith.length; i++)
-                    syncWith[i].syncActive = syncWith[i].syncThis;
-            }
-            if (!immRet)
-                waitComplete();
-            // set master back to normal operation
-            syncActive = syncThis;
+        public synchronized Future<ExceptionWrapper> endSynchronization(boolean immRet) {
+            return AsyncExecutor.execute(() -> {
+                synchronized (this) {
+                    // execute all synchronized operations
+                    syncActive = syncWith;
+                    AsyncExecutor.throwIfException(executeMove());
+                    // reset operations back to normal for slaves
+                    for (int i = 1; i < syncWith.length; i++)
+                        syncWith[i].syncActive = syncWith[i].syncThis;
+                    if (!immRet)
+                        AsyncExecutor.throwIfException(waitComplete());
+                    // set master back to normal operation
+                    syncActive = syncThis;
+                }
+            });
         }
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
-    public synchronized boolean open(int typ, int port, EV3Port ref) {
-        if (!super.open(typ, port, ref))
-            return false;
-        cmd[0] = OUTPUT_CONNECT;
-        cmd[1] = (byte) port;
-        AsyncExecutor.execute(() -> pwmDevice.write(cmd, 2));
-        return true;
+    public synchronized Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref) {
+        return AsyncExecutor.execute(() -> {
+            Future<ReturnWrapper<Boolean>> opened = super.open(typ, port, ref);
+            if (!opened.get().getValue())
+                return false;
+            byte[] newcmd = new byte[2];
+            synchronized (this) {
+                cmd[0] = OUTPUT_CONNECT;
+                cmd[1] = (byte) port;
+                System.arraycopy(cmd, 0, newcmd, 0, 2);
+            }
+            pwmDevice.write(newcmd, 2);
+            return true;
+        });
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @return
      */
     @Override
-    public synchronized void close() {
+    public synchronized Future<ExceptionWrapper> closeRet() {
         cmd[0] = OUTPUT_DISCONNECT;
         cmd[1] = (byte) port;
-        AsyncExecutor.execute(() -> pwmDevice.write(cmd, 2));
-        super.close();
+        byte[] newcmd = new byte[2];
+        System.arraycopy(cmd, 0, newcmd, 0, 2);
+        return AsyncExecutor.execute(() -> {
+            pwmDevice.write(newcmd, 2);
+            super.close();
+        });
+    }
+
+    private void closePrivate(byte[] newcmd) throws Exception {
+
     }
 
 
@@ -671,11 +779,15 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
      *
      * @param power
      */
-    protected synchronized void setPower(int power) {
+    protected synchronized Future<ExceptionWrapper> setPower(int power) {
         cmd[0] = OUTPUT_POWER;
         cmd[1] = (byte) port;
         cmd[2] = (byte) power;
-        AsyncExecutor.execute(() -> pwmDevice.write(cmd, 3));
+        byte[] newcmd = new byte[3];
+        System.arraycopy(cmd, 0, newcmd, 0, 3);
+        return AsyncExecutor.execute(() -> {
+            pwmDevice.write(newcmd, 3);
+        });
     }
 
     /**
@@ -683,11 +795,15 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
      *
      * @param flt
      */
-    protected synchronized void stop(boolean flt) {
+    protected synchronized Future<ExceptionWrapper> stop(boolean flt) {
         cmd[0] = OUTPUT_STOP;
         cmd[1] = (byte) port;
         cmd[2] = (byte) (flt ? 0 : 1);
-        AsyncExecutor.execute(() -> pwmDevice.write(cmd, 3));
+        byte[] newcmd = new byte[3];
+        System.arraycopy(cmd, 0, newcmd, 0, 3);
+        return AsyncExecutor.execute(() -> {
+            pwmDevice.write(newcmd, 3);
+        });
     }
 
 
@@ -696,42 +812,55 @@ public class EV3MotorPort extends EV3IOPort implements TachoMotorPort {
      *
      * @param power power from 0-100
      * @param mode  defined in <code>BasicMotorPort</code>. 1=forward, 2=backward, 3=stop, 4=float.
+     * @return
      * @see BasicMotorPort#FORWARD
      * @see BasicMotorPort#BACKWARD
      * @see BasicMotorPort#FLOAT
      * @see BasicMotorPort#STOP
      */
-    public synchronized void controlMotor(int power, int mode) {
+    public synchronized Future<ExceptionWrapper> controlMotor(int power, int mode) {
+        Future<ExceptionWrapper> ret;
         // Convert lejos power and mode to EV3 power and mode
         if (mode >= STOP) {
             power = 0;
-            stop(mode == FLOAT);
+            ret = stop(mode == FLOAT);
         } else {
             if (mode == BACKWARD)
                 power = -power;
-            setPower(power);
+            ret = setPower(power);
         }
         curMode = mode;
+        return ret;
     }
 
 
     /**
      * returns tachometer count
+     *
+     * @return
      */
-    public synchronized int getTachoCount() {
-        synchronized (ibuf) {
-            return ibuf.get(port * 8 + 3);
-        }
+    public synchronized Future<ReturnWrapper<Integer>> getTachoCount() {
+        return AsyncExecutor.execute(() -> {
+            synchronized (ibuf) {
+                return ibuf.get(port * 8 + 3);
+            }
+        });
     }
 
 
     /**
      * resets the tachometer count to 0;
+     *
+     * @return
      */
-    public synchronized void resetTachoCount() {
+    public synchronized Future<ExceptionWrapper> resetTachoCount() {
         cmd[0] = OUTPUT_CLR_COUNT;
         cmd[1] = (byte) port;
-        AsyncExecutor.execute(() -> pwmDevice.write(cmd, 2));
+        byte[] newcmd = new byte[2];
+        System.arraycopy(cmd, 0, newcmd, 0, 2);
+        return AsyncExecutor.execute(() -> {
+            pwmDevice.write(newcmd, 2);
+        });
     }
 
     public void setPWMMode(int mode) {

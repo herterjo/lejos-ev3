@@ -4,6 +4,10 @@ import lejos.hardware.motor.UnregulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.robotics.EncoderMotor;
 import lejos.robotics.LinearActuator;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /** A Linear Actuator class that provides blocking and non-blocking move actions with stall detection. Developed for the 
  * Firgelli L12-NXT-50 and L12-NXT-100
@@ -343,14 +347,15 @@ public class LnrActrFirgelliNXT implements LinearActuator{
      * @return tachometer count in encoder ticks.
      * @see #resetTachoCount
      */
-    public int getTachoCount() {
+    public Future<ReturnWrapper<Integer>> getTachoCount() {
        return this.tachoCount;
     }
     
     /**Resets the tachometer (encoder) count to zero at the current actuator shaft position.
      * @see #getTachoCount
+     * @return
      */
-    public void resetTachoCount() {
+    public Future<ExceptionWrapper> resetTachoCount() {
          this.tachoCount=0;
     }
     

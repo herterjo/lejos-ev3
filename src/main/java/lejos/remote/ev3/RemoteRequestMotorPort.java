@@ -2,9 +2,12 @@ package lejos.remote.ev3;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.Future;
 
 import lejos.hardware.motor.MotorRegulator;
 import lejos.hardware.port.TachoMotorPort;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 public class RemoteRequestMotorPort extends RemoteRequestIOPort implements TachoMotorPort {
 	private ObjectInputStream is;
@@ -29,14 +32,14 @@ public class RemoteRequestMotorPort extends RemoteRequestIOPort implements Tacho
 	}
 	
 	@Override
-	public void close() {
+	public Future<ExceptionWrapper> close() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.CLOSE_MOTOR_PORT;
 		sendRequest(req, false);	
 	}
 
 	@Override
-	public void controlMotor(int power, int mode) {
+	public Future<ExceptionWrapper> controlMotor(int power, int mode) {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.CONTROL_MOTOR;
 		req.intValue2 = power;
@@ -50,14 +53,14 @@ public class RemoteRequestMotorPort extends RemoteRequestIOPort implements Tacho
 	}
 
 	@Override
-	public int getTachoCount() {
+	public Future<ReturnWrapper<Integer>> getTachoCount() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.GET_TACHO_COUNT;
 		return sendRequest(req, true).reply;
 	}
 
 	@Override
-	public void resetTachoCount() {
+	public Future<ExceptionWrapper> resetTachoCount() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.RESET_TACHO_COUNT;
 		sendRequest(req, false);

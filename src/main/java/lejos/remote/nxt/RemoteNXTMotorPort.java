@@ -1,11 +1,14 @@
 package lejos.remote.nxt;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.motor.MotorRegulator;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.PortException;
 import lejos.hardware.port.TachoMotorPort;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 /**
  * 
@@ -28,8 +31,9 @@ public class RemoteNXTMotorPort extends RemoteNXTIOPort implements NXTProtocol, 
      * @see BasicMotorPort#BACKWARD
      * @see BasicMotorPort#FLOAT
      * @see BasicMotorPort#STOP
+	 * @return
      */
-    public void controlMotor(int power, int mode)
+    public Future<ExceptionWrapper> controlMotor(int power, int mode)
     {
 		int lcpMode = 0, lcpPower = power, runState = 0;
 		
@@ -59,8 +63,9 @@ public class RemoteNXTMotorPort extends RemoteNXTIOPort implements NXTProtocol, 
 
     /**
      * returns tachometer count
+     * @return
      */
-    public  int getTachoCount()
+    public Future<ReturnWrapper<Integer>> getTachoCount()
     {
 		try {
 			return nxtCommand.getTachoCount(port);
@@ -71,8 +76,9 @@ public class RemoteNXTMotorPort extends RemoteNXTIOPort implements NXTProtocol, 
     
     /**
      *resets the tachometer count to 0;
+     * @return
      */ 
-    public void resetTachoCount()
+    public Future<ExceptionWrapper> resetTachoCount()
     {
 		try {
 			nxtCommand.resetMotorPosition(port, false);

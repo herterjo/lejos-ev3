@@ -7,6 +7,11 @@ import lejos.hardware.port.TachoMotorPort;
 //import lejos.internal.ev3.EV3MotorPort;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
+
 /**
  * Abstraction for a Regulated motor motor.
  * The basic control methods are:
@@ -119,7 +124,7 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      * @return the current tachometer count.
      * @see lejos.robotics.RegulatedMotor#getTachoCount()
      */
-    public int getTachoCount()
+    public Future<ReturnWrapper<Integer>> getTachoCount()
     {
         return reg.getTachoCount();
     }
@@ -284,8 +289,9 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
     /**
      * Reset the tachometer associated with this motor. Note calling this method
      * will cause any current move operation to be halted.
+     * @return
      */
-    public void resetTachoCount()
+    public Future<ExceptionWrapper> resetTachoCount()
     {
         reg.resetTachoCount();
     }

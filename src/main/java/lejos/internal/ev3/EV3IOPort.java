@@ -3,6 +3,10 @@ package lejos.internal.ev3;
 import lejos.hardware.port.BasicSensorPort;
 import lejos.hardware.port.IOPort;
 import lejos.hardware.sensor.EV3SensorConstants;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * This class provides the base operations for local EV3 sensor ports.
@@ -77,7 +81,7 @@ public abstract class EV3IOPort implements IOPort, BasicSensorPort, EV3SensorCon
      * @param ref the Port ref for this port
      * @return
      */
-    public boolean open(int typ, int port, EV3Port ref)
+    public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
         synchronized (openPorts)
         {
@@ -105,6 +109,7 @@ public abstract class EV3IOPort implements IOPort, BasicSensorPort, EV3SensorCon
     }
    
     /** {@inheritDoc}
+     * @return
      */    
     @Override
     public void close()

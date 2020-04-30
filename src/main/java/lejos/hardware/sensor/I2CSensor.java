@@ -41,7 +41,6 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 
 	protected I2CPort port;
 	protected int address;
-	private byte[] ioBuf = new byte[32];
 	protected int retryCount = 3;
 
 	/**
@@ -128,6 +127,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 */
 	public synchronized void getData(int register, byte [] buf, int offset, int len) {
         // need to write the internal address.
+		byte[] ioBuf = new byte[32];
         ioBuf[0] = (byte)register;
         I2CException error = null;
         for(int i = 0; i < retryCount; i++)
@@ -156,8 +156,6 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
         sendData(register, buf, 0, len);
 	}
 
-	//TODO: Rewrite this shit, why do you use class variables only for local use????
-
 	/**
 	 *  Executes an I2C write transaction.
 	 *
@@ -167,8 +165,8 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
      * @param len Length of data to send
 	 */
 	public synchronized void sendData(int register, byte [] buf, int offset, int len) {
-		CopyBuffer((byte) register, buf, offset, len);
-		i2cMultipleSendTries(len);
+		byte[] ioBuf = CopyBuffer((byte) register, buf, offset, len);
+		i2cMultipleSendTries(len, port, address, retryCount, ioBuf);
 	}
 
 	/**
@@ -176,12 +174,12 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 *
 	 * @param register I2C register, e.g 0x42
 	 * @param buf Buffer containing data to send
-     * @param offset Offset of the start of the data
+     * @param len Length of data to send
 	 */
-	public synchronized Future<ExceptionWrapper> sendDataAsync(int register, byte [] buf, int offset) {
-		CopyBuffer((byte) register, buf, offset, 0);
+	public synchronized Future<ExceptionWrapper> sendDataAsync(int register, byte [] buf, int len) {
+		byte[] ioBuf = CopyBuffer((byte) register, buf, 0, len);
 		return AsyncExecutor.execute(()-> {
-			i2cMultipleSendTries(0);
+			i2cMultipleSendTries(len, port, address, retryCount, ioBuf);
 		});
 	}
 
@@ -194,17 +192,17 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
      * @param len Length of data to send
 	 */
 	public synchronized Future<ExceptionWrapper> sendDataAsync(int register, byte [] buf, int offset, int len) {
-		CopyBuffer((byte) register, buf, offset, len);
+		byte[] ioBuf = CopyBuffer((byte) register, buf, offset, len);
 		return AsyncExecutor.execute(()-> {
-			i2cMultipleSendTries(len);
+			i2cMultipleSendTries(len, port, address, retryCount, ioBuf);
 		});
 	}
 
-	private void i2cMultipleSendTries(int len) {
+	private void i2cMultipleSendTries(int len, I2CPort i2cport, int a, int retryC, byte[] toWrite) {
 		I2CException error = null;
-		for (int i = 0; i < retryCount; i++) {
+		for (int i = 0; i < retryC; i++) {
 			try {
-				port.i2cTransaction(address, ioBuf, 0, len + 1, null, 0, 0);
+				i2cport.i2cTransaction(a, toWrite, 0, len + 1, null, 0, 0);
 				return;
 			} catch (I2CException e) {
 				error = e;
@@ -214,13 +212,15 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 		throw error;
 	}
 
-	private void CopyBuffer(byte register, byte[] buf, int offset, int len) {
+	private byte[] CopyBuffer(byte register, byte[] buf, int offset, int len) {
+		byte[] ioBuf = new byte[32];
 		if (len >= ioBuf.length)
 			throw new IllegalArgumentException("Invalid buffer length");
 		ioBuf[0] = register;
 		// avoid NPE in case length==0 and data==null
 		if (buf != null)
 			System.arraycopy(buf, offset, ioBuf, 1, len);
+		return ioBuf;
 	}
 
 	/**
@@ -243,9 +243,9 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 * @param value single byte to send
 	 */
 	public synchronized void sendData(int register, byte value) {
-        ioBuf[0] = (byte)register;
+		byte[] ioBuf = new byte[32];
         ioBuf[1] = value;
-        sendData(register, null, 0, 1);
+        sendData(register, ioBuf, 0, 1);
 	}
 
 	/**

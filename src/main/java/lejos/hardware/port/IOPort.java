@@ -1,6 +1,9 @@
 package lejos.hardware.port;
 
+import lejos.utility.ExceptionWrapper;
+
 import java.io.Closeable;
+import java.util.concurrent.Future;
 
 /**
  * Basic interface for EV3 sensor ports.
@@ -12,9 +15,16 @@ import java.io.Closeable;
 public interface IOPort extends Closeable   {
    
     /**
-     * Close the port, the port can not be used after this call.
+     * Close the port async, the port can not be used after this call.
+     * @return
      */
     public void close();
+
+    /**
+     * Close the port async, the port can not be used after this call.
+     * @return
+     */
+    public Future<ExceptionWrapper> closeRet();
     
     /**
      * Return the string representing this port

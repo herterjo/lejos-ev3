@@ -1,5 +1,9 @@
 package lejos.hardware.port;
 
+import lejos.utility.ExceptionWrapper;
+
+import java.util.concurrent.Future;
+
 /**
  * An abstraction for a motor port that supports RCX
  * type motors, but not NXT motors with tachometers.
@@ -23,7 +27,7 @@ public interface BasicMotorPort extends IOPort {
     /** Maximum power setting = 100% */
     public final static int MAX_POWER = 100;
 	
-	public void controlMotor(int power, int mode);
+	public Future<ExceptionWrapper> controlMotor(int power, int mode);
 	
 	public void setPWMMode(int mode);
 }

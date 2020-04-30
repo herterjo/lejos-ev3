@@ -1,11 +1,14 @@
 package lejos.remote.ev3;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.motor.MotorRegulator;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.PortException;
 import lejos.hardware.port.TachoMotorPort;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
 	protected RMIMotorPort rmi;
@@ -33,8 +36,9 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
      * @see BasicMotorPort#BACKWARD
      * @see BasicMotorPort#FLOAT
      * @see BasicMotorPort#STOP
+	 * @return
      */
-    public void controlMotor(int power, int mode)
+    public Future<ExceptionWrapper> controlMotor(int power, int mode)
     {
     	try {
 			rmi.controlMotor(power, mode);
@@ -46,8 +50,9 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
 
     /**
      * returns tachometer count
+     * @return
      */
-    public  int getTachoCount()
+    public Future<ReturnWrapper<Integer>> getTachoCount()
     {
     	try {
 			return rmi.getTachoCount();
@@ -58,8 +63,9 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
     
     /**
      *resets the tachometer count to 0;
-     */ 
-    public void resetTachoCount()
+	 * @return
+	 */
+    public Future<ExceptionWrapper> resetTachoCount()
     {
     	try {
 			rmi.resetTachoCount();
@@ -77,7 +83,7 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
 		}
     }
     
-    public void close() {
+    public Future<ExceptionWrapper> close() {
     	try {
 			rmi.close();
 		} catch (RemoteException e) {

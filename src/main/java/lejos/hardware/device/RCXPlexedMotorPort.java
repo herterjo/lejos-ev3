@@ -1,6 +1,9 @@
 package lejos.hardware.device;
 
 import lejos.hardware.port.BasicMotorPort;
+import lejos.utility.ExceptionWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Supports a motor connected to the Mindsensors RCX Motor Multiplexer
@@ -17,7 +20,7 @@ public class RCXPlexedMotorPort implements BasicMotorPort {
 		this.id = id;
 	}
 	
-	public void controlMotor(int power, int mode) {
+	public Future<ExceptionWrapper> controlMotor(int power, int mode) {
 		int mmMode = mode;
 		if (mmMode == BasicMotorPort.FLOAT) mmMode = 0; // float
 		int mmPower = (int) (power * 2.55f);
@@ -32,7 +35,7 @@ public class RCXPlexedMotorPort implements BasicMotorPort {
 	}
 
     @Override
-    public void close()
+    public Future<ExceptionWrapper> close()
     {
         // not implemented
     }

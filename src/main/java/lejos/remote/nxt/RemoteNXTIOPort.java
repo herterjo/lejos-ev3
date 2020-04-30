@@ -3,6 +3,9 @@ package lejos.remote.nxt;
 import lejos.hardware.port.BasicSensorPort;
 import lejos.hardware.port.IOPort;
 import lejos.hardware.sensor.EV3SensorConstants;
+import lejos.utility.ExceptionWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * This class provides the base operations for remote NXT sensor ports.
@@ -99,9 +102,10 @@ public abstract class RemoteNXTIOPort implements IOPort, BasicSensorPort, EV3Sen
     }
    
     /** {@inheritDoc}
+     * @return
      */    
     @Override
-    public void close()
+    public Future<ExceptionWrapper> close()
     {
         if (port == -1)
             throw new IllegalStateException("Port is not open");

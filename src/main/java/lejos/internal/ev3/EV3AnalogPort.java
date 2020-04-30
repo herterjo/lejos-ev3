@@ -2,12 +2,14 @@ package lejos.internal.ev3;
 
 import java.io.IOError;
 import java.nio.ByteBuffer;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.AnalogPort;
 import lejos.internal.io.NativeDevice;
 import lejos.utility.Delay;
 
 import com.sun.jna.Pointer;
+import lejos.utility.ReturnWrapper;
 
 /**
  * This class provides access to the EV3 Analog based sensor ports and other
@@ -60,9 +62,10 @@ public class EV3AnalogPort extends EV3IOPort implements AnalogPort
     }
     
     /** {@inheritDoc}
+     * @return
      */    
     @Override
-    public boolean open(int typ, int port, EV3Port ref)
+    public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
         if (!super.open(typ, port, ref))
             return false;

@@ -2,9 +2,12 @@ package lejos.remote.ev3;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.Future;
 
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 public class RemoteRequestRegulatedMotor implements RegulatedMotor {
 	private ObjectInputStream is;
@@ -66,14 +69,14 @@ public class RemoteRequestRegulatedMotor implements RegulatedMotor {
 	}
 
 	@Override
-	public int getTachoCount() {
+	public Future<ReturnWrapper<Integer>> getTachoCount() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_GET_TACHO_COUNT;
 		return sendRequest(req, true).reply;
 	}
 
 	@Override
-	public void resetTachoCount() {
+	public Future<ExceptionWrapper> resetTachoCount() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_RESET_TACHO_COUNT;;
 		sendRequest(req, false);

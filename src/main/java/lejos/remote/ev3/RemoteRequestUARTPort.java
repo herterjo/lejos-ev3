@@ -2,8 +2,10 @@ package lejos.remote.ev3;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.UARTPort;
+import lejos.utility.ExceptionWrapper;
 
 public class RemoteRequestUARTPort extends RemoteRequestIOPort implements UARTPort  {
 	private ObjectInputStream is;
@@ -28,7 +30,7 @@ public class RemoteRequestUARTPort extends RemoteRequestIOPort implements UARTPo
 	}
 	
 	@Override
-	public void close() {
+	public Future<ExceptionWrapper> close() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.CLOSE_SENSOR_PORT;
 		sendRequest(req, false);	

@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
@@ -13,6 +14,8 @@ import lejos.hardware.DeviceException;
 import lejos.hardware.port.UARTPort;
 import lejos.internal.io.NativeDevice;
 import lejos.utility.Delay;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 /**
  * Provide access to EV3 sensor ports operating in UART mode.<p>
@@ -417,9 +420,10 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
 
     
     /** {@inheritDoc}
+     * @return
      */    
     @Override
-    public boolean open(int typ, int port, EV3Port ref)
+    public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
         if (!super.open(typ, port, ref))
             return false;
@@ -429,9 +433,10 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
     }
 
     /** {@inheritDoc}
+     * @return
      */    
     @Override
-    public void close()
+    public Future<ExceptionWrapper> close()
     {
         disconnect();
         super.close();

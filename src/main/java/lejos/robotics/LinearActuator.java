@@ -1,5 +1,10 @@
 package lejos.robotics;
 
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
+
 /**
  * Interface that defines the minimal implementation for a Linear Actuator device. Linear Actuator classes should provide 
  * non-blocking extend/retract actions through the <code>move()</code> and <code>moveTo()</code> methods.
@@ -72,9 +77,10 @@ public interface LinearActuator extends Encoder {
      * 
      * @return tachometer count in encoder ticks.
      */
-    public int getTachoCount();
+    public Future<ReturnWrapper<Integer>> getTachoCount();
     
     /**Reset the tachometer (encoder) count to zero at the current actuator position.
+     * @return
      */
-    public void resetTachoCount();
+    public Future<ExceptionWrapper> resetTachoCount();
 }

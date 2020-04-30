@@ -1,6 +1,10 @@
 package lejos.hardware.device;
 
 import lejos.robotics.EncoderMotor;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Abstraction to drive a basic encoder motor with the NXTMMX motor multiplexer. The 
@@ -75,15 +79,16 @@ public class MMXMotor implements EncoderMotor {
     /* (non-Javadoc)
      * @see lejos.robotics.Encoder#getTachoCount()
      */
-    public int getTachoCount() {
+    public Future<ReturnWrapper<Integer>> getTachoCount() {
         return mmx.doCommand(NXTMMX.CMD_GETTACHO, 0, channel);
     }
     
     /** 
      * Reset the the tachometer count. TODO verify => Calling this method will stop any current motor action. This is imposed by the HiTechic
-     * Motor Controller firmware. 
+     * Motor Controller firmware.
+     * @return
      */
-    public synchronized void resetTachoCount() {
+    public synchronized Future<ExceptionWrapper> resetTachoCount() {
     	mmx.doCommand(NXTMMX.CMD_RESETTACHO, 0, channel);
     }
     

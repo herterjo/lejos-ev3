@@ -1,10 +1,12 @@
 package lejos.remote.ev3;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
 import lejos.hardware.port.PortException;
+import lejos.utility.ExceptionWrapper;
 
 public class RemoteI2CPort extends RemoteIOPort implements I2CPort {
 	protected RMII2CPort rmi;
@@ -26,7 +28,7 @@ public class RemoteI2CPort extends RemoteIOPort implements I2CPort {
 	
 	
 	@Override
-	public void close() {
+	public Future<ExceptionWrapper> close() {
 		try {
 			super.close();
 			rmi.close();

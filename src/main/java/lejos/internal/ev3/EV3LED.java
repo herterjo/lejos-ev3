@@ -3,6 +3,9 @@ package lejos.internal.ev3;
 import lejos.hardware.LED;
 import lejos.internal.io.NativeDevice;
 import lejos.utility.AsyncExecutor;
+import lejos.utility.ExceptionWrapper;
+
+import java.util.concurrent.Future;
 
 public class EV3LED implements LED {
     private static final NativeDevice device = new NativeDevice("/dev/lms_ui");
@@ -16,18 +19,18 @@ public class EV3LED implements LED {
 
 
     @Override
-    public void setPattern(int pattern) {
+    public Future<ExceptionWrapper> setPattern(int pattern) {
         byte[] cmd = new byte[2];
 
         cmd[0] = (byte) ('0' + pattern);
-        AsyncExecutor.execute(()-> device.write(cmd, cmd.length));
+        return AsyncExecutor.execute(() -> {device.write(cmd, cmd.length);});
     }
 
-    public void setPattern(int color, int pattern) {
+    public Future<ExceptionWrapper> setPattern(int color, int pattern) {
         if (color == 0) {
-            setPattern(0);
+            return setPattern(0);
         } else {
-            setPattern(pattern * 3 + color);
+            return setPattern(pattern * 3 + color);
         }
     }
 }

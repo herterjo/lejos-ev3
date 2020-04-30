@@ -2,6 +2,10 @@ package lejos.hardware.motor;
 
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Interface for motor regulation
@@ -23,26 +27,28 @@ public interface MotorRegulator
      * @param holdI The integral control value used while holding position
      * @param holdD The differential control value used while holding position
      * @param offset Motor PWM offset value range 0-10000.
+     * @return
      */
-    public void setControlParamaters(int typ, float moveP, float moveI, float moveD, float holdP, float holdI, float holdD, int offset);
+    public Future<ExceptionWrapper> setControlParamaters(int typ, float moveP, float moveI, float moveD, float holdP, float holdI, float holdD, int offset);
     /**
      * Get the current hardware tachometer reading for the motor,
      * @return hardware reading
      */
-    public int getTachoCount();
+    public Future<ReturnWrapper<Integer>> getTachoCount();
     
     /**
      * Reset the tachometer base value, after this call the tachometer will return
      * zero for the current position. Note that any in progress movements will be
      * aborted.
+     * @return
      */
-    public void resetTachoCount();
+    public Future<ExceptionWrapper> resetTachoCount();
 
     /**
      * Return true if the motor is currently active
      * @return True if the motor is moving.
      */
-    public boolean isMoving();
+    public Future<ReturnWrapper<Boolean>> isMoving();
     
     /**
      * Return the current velocity (in degrees/second) that the motor is currently
@@ -51,7 +57,7 @@ public interface MotorRegulator
      * is functioning correctly this will closely match the actual velocity
      * @return velocity
      */
-    public float getCurrentVelocity();
+    public Future<ReturnWrapper<Float>> getCurrentVelocity();
     
     /**
      * Set the stall detection parameters. The motor will be declared as
@@ -66,7 +72,7 @@ public interface MotorRegulator
      * return the regulations models current position. 
      * @return the models current position
      */
-    public float getPosition();
+    public Future<ReturnWrapper<Float>> getPosition();
 
     /**
      * Initiate a new move and optionally wait for it to complete.
@@ -77,27 +83,31 @@ public interface MotorRegulator
      * @param limit
      * @param hold
      * @param waitComplete
+     * @return
      */
-    public void newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete);
+    public Future<ExceptionWrapper> newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete);
 
     /**
      * The target speed has been changed. Reflect this change in the
      * regulator.
      * @param newSpeed new target speed.
+     * @return
      */
-    public void adjustSpeed(float newSpeed);
+    public Future<ExceptionWrapper> adjustSpeed(float newSpeed);
 
     /**
      * The target acceleration has been changed. Updated the regulator.
      * @param newAcc
+     * @return
      */
-    public void adjustAcceleration(int newAcc);
+    public Future<ExceptionWrapper> adjustAcceleration(int newAcc);
     
     /**
      * Wait until the current movement operation is complete (this can include
      * the motor stalling).
+     * @return
      */
-    public void waitComplete();
+    public Future<ExceptionWrapper> waitComplete();
     
     /**
      * Add a motor listener. Move operations will be reported to this object.
@@ -119,17 +129,19 @@ public interface MotorRegulator
      * Return true if the motor is currently stalled.
      * @return true if the motor is stalled, else false
      */
-    public boolean isStalled();
+    public Future<ReturnWrapper<Boolean>> isStalled();
     
     /**
      * Begin a set of synchronized motor operations
+     * @return
      */
-    public void startSynchronization();
+    public Future<ExceptionWrapper> startSynchronization();
     
     /**
      * Complete a set of synchronized motor operations.
+     * @return
      */
-    public void endSynchronization(boolean b);
+    public Future<ExceptionWrapper> endSynchronization(boolean b);
     
     /**
      * Specify a set of motors that should be kept in synchronization with this one.

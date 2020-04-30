@@ -4,6 +4,10 @@ import lejos.hardware.port.TachoMotorPort;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
 import lejos.utility.Delay;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Java based regulator 
@@ -113,24 +117,24 @@ public class JavaMotorRegulator implements MotorRegulator
     }
     
     
-    public int getTachoCount()
+    public Future<ReturnWrapper<Integer>> getTachoCount()
     {
         return tachoPort.getTachoCount() - zeroTachoCnt;
     }
     
-    public synchronized void resetTachoCount()
+    public synchronized Future<ExceptionWrapper> resetTachoCount()
     {
         newMove(0, 1000, NO_LIMIT, false, true);
         zeroTachoCnt = tachoPort.getTachoCount();
         reset();
     }
 
-    public boolean isMoving()
+    public Future<ReturnWrapper<Boolean>> isMoving()
     {
         return moving;
     }
     
-    public float getCurrentVelocity()
+    public Future<ReturnWrapper<Float>> getCurrentVelocity()
     {
         return curVelocity;
     }
@@ -178,8 +182,8 @@ public class JavaMotorRegulator implements MotorRegulator
 
 
     @Override
-    public void setControlParamaters(int typ, float moveP, float moveI,
-            float moveD, float holdP, float holdI, float holdD, int offset)
+    public Future<ExceptionWrapper> setControlParamaters(int typ, float moveP, float moveI,
+                                                         float moveD, float holdP, float holdI, float holdD, int offset)
     {
         // Stop the motor if needed
         newMove(0, 1000, NO_LIMIT, false, true);
@@ -194,7 +198,7 @@ public class JavaMotorRegulator implements MotorRegulator
 
 
     @Override
-    public void waitComplete()
+    public Future<ExceptionWrapper> waitComplete()
     {
         waitStop();
     }
@@ -208,7 +212,7 @@ public class JavaMotorRegulator implements MotorRegulator
 
 
     @Override
-    public boolean isStalled()
+    public Future<ReturnWrapper<Boolean>> isStalled()
     {
         return stalled;
     }
@@ -275,7 +279,7 @@ public class JavaMotorRegulator implements MotorRegulator
      * if needed.
      * @return the models current position
      */
-    synchronized public float getPosition()
+    synchronized public Future<ReturnWrapper<Float>> getPosition()
     {
         if (!active)
         {
@@ -295,8 +299,9 @@ public class JavaMotorRegulator implements MotorRegulator
      * @param limit
      * @param hold
      * @param waitComplete
+     * @return
      */
-    synchronized public void newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete)
+    synchronized public Future<ExceptionWrapper> newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete)
     {
         if (!active)
         {
@@ -349,8 +354,9 @@ public class JavaMotorRegulator implements MotorRegulator
      * The target speed has been changed. Reflect this change in the
      * regulator.
      * @param newSpeed new target speed.
+     * @return
      */
-    public synchronized void adjustSpeed(float newSpeed)
+    public synchronized Future<ExceptionWrapper> adjustSpeed(float newSpeed)
     {
         if (curTargetVelocity != 0)
         {
@@ -363,8 +369,9 @@ public class JavaMotorRegulator implements MotorRegulator
     /**
      * The target acceleration has been changed. Updated the regulator.
      * @param newAcc
+     * @return
      */
-    public synchronized void adjustAcceleration(int newAcc)
+    public synchronized Future<ExceptionWrapper> adjustAcceleration(int newAcc)
     {
         if (curTargetVelocity != 0)
         {
@@ -571,7 +578,7 @@ public class JavaMotorRegulator implements MotorRegulator
 
 
     @Override
-    public void startSynchronization()
+    public Future<ExceptionWrapper> startSynchronization()
     {
         // TODO Auto-generated method stub
         
@@ -579,7 +586,7 @@ public class JavaMotorRegulator implements MotorRegulator
 
 
     @Override
-    public void endSynchronization(boolean b)
+    public Future<ExceptionWrapper> endSynchronization(boolean b)
     {
         // TODO Auto-generated method stub
         

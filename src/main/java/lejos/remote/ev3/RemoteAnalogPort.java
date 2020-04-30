@@ -1,9 +1,11 @@
 package lejos.remote.ev3;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.AnalogPort;
 import lejos.hardware.port.PortException;
+import lejos.utility.ExceptionWrapper;
 
 public class RemoteAnalogPort extends RemoteIOPort  implements AnalogPort {
 	protected RMIAnalogPort rmi;
@@ -24,7 +26,7 @@ public class RemoteAnalogPort extends RemoteIOPort  implements AnalogPort {
 	}
 	
 	@Override
-	public void close() {
+	public Future<ExceptionWrapper> close() {
 		super.close();
 		try {
 			rmi.close();

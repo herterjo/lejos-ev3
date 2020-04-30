@@ -1,9 +1,11 @@
 package lejos.remote.ev3;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.LED;
 import lejos.hardware.port.PortException;
+import lejos.utility.ExceptionWrapper;
 
 public class RemoteLED implements LED {
 	private RMILED led;
@@ -13,11 +15,11 @@ public class RemoteLED implements LED {
 	}
 	
 	@Override
-	public void setPattern(int pattern) {
+	public Future<ExceptionWrapper> setPattern(int pattern) {
 		try {
-			led.setPattern(pattern);
+			return led.setPattern(pattern);
 		} catch (RemoteException e) {
 			throw new PortException(e);
-		}	
+		}
 	}
 }

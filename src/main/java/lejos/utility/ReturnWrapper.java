@@ -1,5 +1,8 @@
 package lejos.utility;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+
 public class ReturnWrapper<T> extends ExceptionWrapper {
     private final T value;
 
@@ -22,5 +25,17 @@ public class ReturnWrapper<T> extends ExceptionWrapper {
             throw ex;
         }
         return value;
+    }
+
+    public static <Tm> Future<ReturnWrapper<Tm>> getCompletedReturnException(Exception ex) {
+        CompletableFuture<ReturnWrapper<Tm>> compFuture = new CompletableFuture<>();
+        compFuture.complete(ReturnWrapper.newReturnWrapperEx(ex));
+        return compFuture;
+    }
+
+    public static <Tm> Future<ReturnWrapper<Tm>> getCompletedReturnNormal(Tm val) {
+        CompletableFuture<ReturnWrapper<Tm>> compFuture = new CompletableFuture<>();
+        compFuture.complete(ReturnWrapper.newReturnWrapperNormal(val));
+        return compFuture;
     }
 }

@@ -1,5 +1,10 @@
 package lejos.robotics;
 
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
+
 class ReversedEncoderMotor implements EncoderMotor {
 
 	EncoderMotor encoderMotor;
@@ -36,11 +41,11 @@ class ReversedEncoderMotor implements EncoderMotor {
 		encoderMotor.stop();
 	}
 
-	public int getTachoCount() {
+	public Future<ReturnWrapper<Integer>> getTachoCount() {
 		return -encoderMotor.getTachoCount();
 	}
 
-	public void resetTachoCount() {
+	public Future<ExceptionWrapper> resetTachoCount() {
 		encoderMotor.resetTachoCount();
 	}
 }

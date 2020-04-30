@@ -2,6 +2,10 @@ package lejos.hardware.device.tetrix;
 
 import lejos.robotics.Encoder;
 import lejos.utility.Delay;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 
 /** 
@@ -17,15 +21,16 @@ public class TetrixEncoderMotor extends TetrixMotor implements Encoder{
         super(mc, channel);
     }
     
-    public int getTachoCount() {
+    public Future<ReturnWrapper<Integer>> getTachoCount() {
         return (int)(mc.doCommand(TetrixMotorController.CMD_GETTACHO, 0, channel) * .25);
     }
     
     /** 
      * Reset the the tachometer count. Calling this method will stop any current motor action. This is imposed by the HiTechic
-     * Motor Controller firmware. 
+     * Motor Controller firmware.
+     * @return
      */
-    public synchronized void resetTachoCount() {
+    public synchronized Future<ExceptionWrapper> resetTachoCount() {
         mc.doCommand(TetrixMotorController.CMD_RESETTACHO, 0, channel);
     }
    

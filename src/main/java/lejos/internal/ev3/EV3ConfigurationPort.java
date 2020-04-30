@@ -1,11 +1,11 @@
 package lejos.internal.ev3;
 
 import java.io.IOError;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.ConfigurationPort;
-import lejos.hardware.sensor.EV3SensorConstants;
 import lejos.internal.io.NativeDevice;
-import lejos.utility.Delay;
+import lejos.utility.ReturnWrapper;
 
 public class EV3ConfigurationPort extends EV3IOPort  implements ConfigurationPort
 {
@@ -18,9 +18,10 @@ public class EV3ConfigurationPort extends EV3IOPort  implements ConfigurationPor
     /** {@inheritDoc}
      * Note that it can take up to two seconds for the identification data to be available
      * after the port has been opened.
+     * @return
      */    
     @Override
-    public boolean open(int typ, int port, EV3Port ref)
+    public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
         if (!super.open(typ, port, ref))
             return false;

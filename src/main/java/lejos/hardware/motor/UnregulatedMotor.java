@@ -4,6 +4,10 @@ import lejos.hardware.port.Port;
 import lejos.hardware.port.TachoMotorPort;
 import lejos.robotics.Encoder;
 import lejos.robotics.EncoderMotor;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Abstraction for an NXT motor with no speed regulation.
@@ -58,12 +62,12 @@ public class UnregulatedMotor extends BasicMotor implements EncoderMotor {
         this(port, TachoMotorPort.PWM_BRAKE);
     }
     
-    public int getTachoCount()
+    public Future<ReturnWrapper<Integer>> getTachoCount()
     {
         return encoderPort.getTachoCount();
     }
 
-    public void resetTachoCount()
+    public Future<ExceptionWrapper> resetTachoCount()
     {
         encoderPort.resetTachoCount();
     }

@@ -3,6 +3,10 @@ package lejos.hardware.sensor;
 import lejos.hardware.port.Port;
 import lejos.robotics.Tachometer;
 import lejos.utility.Delay;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Provide access to the Lego RCX Rotation Sensor.
@@ -124,7 +128,7 @@ public class RCXRotationSensor extends AnalogSensor implements Tachometer, Senso
 	   * are only accurate to +- 22.5 degrees.
 	   * @return tachometer count in degrees, in increments of 22.5 degrees (rounded off)
 	   */
-    public int getTachoCount()
+    public Future<ReturnWrapper<Integer>> getTachoCount()
     {
         return (360 * count) / ONE_ROTATION;
     }
@@ -140,8 +144,9 @@ public class RCXRotationSensor extends AnalogSensor implements Tachometer, Senso
 
     /**
      * Reset the tacho count to zero.
+     * @return
      */
-    public void resetTachoCount()
+    public Future<ExceptionWrapper> resetTachoCount()
     {
         synchronized(reader)
         {

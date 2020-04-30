@@ -3,8 +3,11 @@ package lejos.internal.ev3;
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
 import lejos.internal.io.NativeDevice;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 import java.io.IOError;
+import java.util.concurrent.Future;
 
 /**
  * Provide access to EV3 I2C sensors.<BR>
@@ -49,8 +52,9 @@ public class EV3I2CPort extends EV3IOPort implements I2CPort {
      * allow access to the specified port
      *
      * @param p port number to open
+     * @return
      */
-    public boolean open(int t, int p, EV3Port r) {
+    public Future<ReturnWrapper<Boolean>> open(int t, int p, EV3Port r) {
         if (!super.open(t, p, r))
             return false;
         // Set pin state to a sane default
@@ -60,9 +64,10 @@ public class EV3I2CPort extends EV3IOPort implements I2CPort {
 
     /**
      * {@inheritDoc}
+     * @return
      */
     @Override
-    public void close() {
+    public Future<ExceptionWrapper> close() {
         cmd[0] = (byte) port;
         i2c.ioctl(IIC_DISCONNECT, cmd);
         super.close();

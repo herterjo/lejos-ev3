@@ -1,5 +1,10 @@
 package lejos.robotics;
 
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
+
 /**
  * Abstraction for the tachometer built into NXT motors.
  * 
@@ -13,12 +18,13 @@ public interface Encoder {
 	   * 
 	   * @return tachometer count in degrees
 	   */
-	  public int getTachoCount();
+	  public Future<ReturnWrapper<Integer>> getTachoCount();
 
 	  
 	  /**
 	   * Reset the tachometer count.
-	   */
-	  public void resetTachoCount();
+       * @return
+       */
+	  public Future<ExceptionWrapper> resetTachoCount();
 
 }
