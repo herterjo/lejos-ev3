@@ -1,5 +1,7 @@
 package lejos.robotics.navigation;
 
+import java.util.concurrent.ExecutionException;
+
 public interface RotateMoveController extends MoveController {
   /**
    * Rotates the NXT robot the specified number of degrees; direction determined by the sign of the parameter.
@@ -7,14 +9,14 @@ public interface RotateMoveController extends MoveController {
    * 
    * @param angle The angle to rotate in degrees. A positive value rotates left, a negative value right (clockwise).
    */
-  public void rotate(double angle);  
+  public void rotate(double angle) throws Exception;
   /**
    * Rotates the NXT robot the specified number of degrees; direction determined by the sign of the parameter.
    * Method returns immediately if immediateReturn flag is true,  otherwise returns when rotation is done.
    * @param angle The angle to rotate in degrees. A positive value rotates left, a negative value right (clockwise).
    * @param immediateReturn  If true, method returns immediately,  otherwise blocks until rotation is complete.
    */
-  public void rotate(double angle, boolean immediateReturn);
+  public void rotate(double angle, boolean immediateReturn) throws Exception;
   /**
    * sets the rotation speed of the robot (the angular velocity of the rotate()
    * methods)
@@ -32,7 +34,7 @@ public interface RotateMoveController extends MoveController {
    * returns the maximum value of the rotation speed;
    * @return max rotation speed
    */
-  public double getMaxAngularSpeed();
+  public double getMaxAngularSpeed() throws Exception;
   
   /**
    * Sets the acceleration at which the robot will accelerate at the start of a move and decelerate at the end of a move.
@@ -47,8 +49,8 @@ public interface RotateMoveController extends MoveController {
    */
   public double getAngularAcceleration();
   
-public void rotateRight();
+public void rotateRight() throws Exception;
   
-public void rotateLeft();
+public void rotateLeft() throws Exception;
 
 }

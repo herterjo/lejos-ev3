@@ -2,6 +2,10 @@ package lejos.hardware.device.tetrix;
 
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /** 
  * Tetrix DC motor abstraction with encoder support that implements <code>RegulatedMotor</code>. The Tetrix motor must have an 
@@ -18,7 +22,7 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
     
     RegulatedMotorListener listener;
     
-    TetrixRegulatedMotor(TetrixMotorController mc, int channel) {
+    TetrixRegulatedMotor(TetrixMotorController mc, int channel) throws Exception {
     	super(mc, channel);
         super.setRegulate(true);
     }
@@ -31,7 +35,7 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
      * @param regulate Ignored
      */
     @Override
-    public void setRegulate(boolean regulate){
+    public void setRegulate(boolean regulate) {
         // ignore and don't allow change of regulation
     }
     
@@ -40,17 +44,20 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
         this.listener = listener;
     }
     
-    void doListenerState(int listenerState) {
+    void doListenerState(int listenerState) throws Exception {
         if (this.listener == null) return;
         if (listenerState == LISTENERSTATE_STOP) {
         	// wait for a complete stop before notifying
-        	new Thread(new Runnable(){
-				public void run() {
-					waitComplete();
-					listener.rotationStopped(TetrixRegulatedMotor.this, getTachoCount(), false, System.currentTimeMillis());
-				}}).start();
+        	new Thread(() -> {
+                waitComplete();
+                try {
+                    listener.rotationStopped(TetrixRegulatedMotor.this, getTachoCount().get().getValue(), false, System.currentTimeMillis());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }).start();
         } else {
-            this.listener.rotationStarted(this, getTachoCount(), false, System.currentTimeMillis());
+            this.listener.rotationStarted(this, getTachoCount().get().getValue(), false, System.currentTimeMillis());
         }
     }
     
@@ -66,22 +73,22 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
      * 
      * @return The current rotational speed in deg/sec
      */
-    public int getRotationSpeed() {
-        return Math.round(.01f * mc.doCommand(TetrixMotorController.CMD_GETSPEED, 0, channel));
+    public Future<ReturnWrapper<Integer>> getRotationSpeed() throws Exception {
+        return ReturnWrapper.getCompletedReturnNormal(Math.round(.01f * mc.doCommand(TetrixMotorController.CMD_GETSPEED, 0, channel)));
     }
     
-    public void stop(boolean immediateReturn) {
+    public void stop(boolean immediateReturn) throws Exception {
         super.stop();
         if (!immediateReturn) waitComplete();
     }
 
-    public void flt(boolean immediateReturn) {
+    public void flt(boolean immediateReturn) throws Exception {
         super.flt();
         if (!immediateReturn) waitComplete();
     }
 
-    public void waitComplete() {
-    	super.waitRotateComplete();
+    public Future<ExceptionWrapper> waitComplete() {
+    	return super.waitRotateComplete();
     }
     
     /**
@@ -89,7 +96,7 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
      * 
      * @param angle number of degrees to rotate relative to the current position.
      */
-    public void rotate(int angle) {
+    public void rotate(int angle) throws Exception {
         rotate(angle, false);
     }
     
@@ -98,7 +105,7 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
      * 
      * @param limitAngle Angle [in degrees] to rotate to.
      */
-    public void rotateTo(int limitAngle) {
+    public void rotateTo(int limitAngle) throws Exception {
         rotateTo(limitAngle, false);
     }
     
@@ -115,7 +122,7 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
       * @param speed value in degrees/sec
       * @see #getSpeed
       */
-    public void setSpeed(int speed) {
+    public void setSpeed(int speed) throws Exception {
         // experimental data gives: speed = 9.7802 * power + 0.5553
         int power = Math.round((Math.abs(speed) - 0.5553f) * 0.102247398f);
         super.setPower(power);
@@ -131,7 +138,7 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
      * @return The speed value (converted from power value) in degrees/sec
      * @see #setSpeed
      */
-    public int getSpeed() {
+    public int getSpeed() throws Exception {
         int speed = Math.round(9.7802f * super.getPower() + 0.5553f);
         return speed;
     }
@@ -148,8 +155,8 @@ public class TetrixRegulatedMotor extends TetrixEncoderMotor implements Regulate
      * NOT IMPLEMENTED as the TEXTRIX motor controller does not support this command.
      * @return Always <code>false</code>
      */
-    public boolean isStalled() {
-        return false;
+    public Future<ReturnWrapper<Boolean>> isStalled() {
+        return ReturnWrapper.getCompletedReturnNormal(false);
     }
     
     /**

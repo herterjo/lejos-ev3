@@ -229,12 +229,12 @@ public class MindsensorsAbsoluteIMU extends I2CSensor implements SensorModes,
     this(port, DEFAULT_I2C_ADDRESS);
   }
 
-  public MindsensorsAbsoluteIMU(Port port, int address) {
+  public MindsensorsAbsoluteIMU(Port port, int address) throws Exception {
     super(port, address);
     init();
   }
 
-  public MindsensorsAbsoluteIMU(Port port) {
+  public MindsensorsAbsoluteIMU(Port port) throws Exception {
     this(port, DEFAULT_I2C_ADDRESS);
   }
 

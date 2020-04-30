@@ -1,5 +1,7 @@
 package lejos.robotics.navigation;
 
+import java.util.concurrent.ExecutionException;
+
 public interface MoveController extends MoveProvider {
 	/**
 	 * NXT 1.0 kit wheel diameter, in centimeters
@@ -24,23 +26,23 @@ public interface MoveController extends MoveProvider {
 	/**
 	 *Starts the  NXT robot moving forward.
 	 */
-	public void forward();
+	public void forward() throws Exception;
 
 	/**
 	 *Starts the  NXT robot moving backwards.
 	 */
-	public void backward();
+	public void backward() throws Exception;
 
 	/**
 	 * Halts the NXT robot
 	 */
-	public void stop();
+	public void stop() throws Exception;
 
 	/**
 	 * true if the robot is moving 
 	 * @return true if the robot is moving under power.
 	 */
-	public boolean isMoving();
+	public boolean isMoving() throws Exception;
 	
 
 	/**
@@ -49,21 +51,21 @@ public interface MoveController extends MoveProvider {
 	 * 
 	 * @param distance The positive or negative distance to move the robot.
 	 */
-	public void travel(double distance);
+	public void travel(double distance) throws Exception;
 
 	/**
 	 * Moves the NXT robot a specific distance. A positive value moves it forward and a negative value moves it backward.
 	 * @param distance The positive or negative distance to move the robot, in wheel diameter units.
 	 * @param immediateReturn If immediateReturn is true then the method returns immediately.
 	 */
-	public void travel(double distance, boolean immediateReturn);
+	public void travel(double distance, boolean immediateReturn) throws Exception;
 
 	/**
 	 * Sets the speed at which the robot will travel forward and backward (and to some extent arcs, although actual arc speed
 	 * is slightly less). Speed is measured in units/second. e.g. If wheel diameter is cm, then speed is cm/sec.
 	 * @param speed In chosen units per second (e.g. cm/sec)
 	 */
-	public void setLinearSpeed(double speed);
+	public void setLinearSpeed(double speed) throws Exception;
 
 	/**
 	 * Returns the speed at which the robot will travel forward and backward (and to some extent arcs, although actual arc speed
@@ -77,7 +79,7 @@ public interface MoveController extends MoveProvider {
 	 * Speed is measured in units/second. e.g. If wheel diameter is cm, then speed is cm/sec.
 	 * @return Speed in chosen units per second (e.g. cm/sec)
 	 */
-	public double getMaxLinearSpeed();
+	public double getMaxLinearSpeed() throws Exception;
 	
 	/**
    * Sets the acceleration at which the robot will accelerate at the start of a move and decelerate at the end of a move.

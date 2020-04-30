@@ -30,8 +30,7 @@ public class UARTSensor extends BaseSensor
     * device into mode 0.
     * @param port The port the sensor is attached to.
     */
-   public UARTSensor(Port port)
-   {
+   public UARTSensor(Port port) throws Exception {
        this(port, 0);
    }
 
@@ -53,8 +52,7 @@ public class UARTSensor extends BaseSensor
      * @param port The port the sensor is attached to.
      * @param mode Operating mode for the sensor.
      */
-    public UARTSensor(Port port, int mode)
-    {
+    public UARTSensor(Port port, int mode) throws Exception {
         this.port = port.open(UARTPort.class);
         if (!this.port.setMode(mode))
         {

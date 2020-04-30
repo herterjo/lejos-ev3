@@ -159,7 +159,11 @@ public class TetrixMotorController extends I2CSensor {
             }
             motorState[channel]=STATE_STOPPED;
             if (motorType[channel]==MOTTYPE_REGULATED) {
-            	((TetrixRegulatedMotor) motors[channel]).doListenerState(TetrixRegulatedMotor.LISTENERSTATE_STOP);
+                try {
+                    ((TetrixRegulatedMotor) motors[channel]).doListenerState(TetrixRegulatedMotor.LISTENERSTATE_STOP);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
             //System.out.println("busy done");
             // exit any wait for state of [ImmediateReturn = false]
@@ -265,7 +269,7 @@ public class TetrixMotorController extends I2CSensor {
      * @see #getEncoderMotor
      * @see #getRegulatedMotor
      */
-	public TetrixMotor getBasicMotor(int motorID) {
+	public TetrixMotor getBasicMotor(int motorID) throws Exception {
         getMotor(motorID, MOTTYPE_BASIC);
         return (TetrixMotor) motors[motorID];
     }
@@ -284,7 +288,7 @@ public class TetrixMotorController extends I2CSensor {
      * @see #getBasicMotor
      * @see #getRegulatedMotor
      */
-    public TetrixEncoderMotor getEncoderMotor(int motorID) {
+    public TetrixEncoderMotor getEncoderMotor(int motorID) throws Exception {
         getMotor(motorID, MOTTYPE_ENCODER);
         return (TetrixEncoderMotor) motors[motorID];
     }
@@ -303,12 +307,12 @@ public class TetrixMotorController extends I2CSensor {
      * @see #getBasicMotor
      * @see #getEncoderMotor
      */
-    public TetrixRegulatedMotor getRegulatedMotor(int motorID) {
+    public TetrixRegulatedMotor getRegulatedMotor(int motorID) throws Exception {
         getMotor(motorID, MOTTYPE_REGULATED);
         return (TetrixRegulatedMotor) motors[motorID];
     }
     
-    private void getMotor(int motorID, byte motorTypeValue){
+    private void getMotor(int motorID, byte motorTypeValue) throws Exception {
     	if (motorID<MOTOR_1 || motorID>MOTOR_2) {
             throw new IllegalArgumentException("Invalid motor ID");
         }
@@ -451,7 +455,7 @@ public class TetrixMotorController extends I2CSensor {
      * @param channel the channel: MOTOR_1, MOTOR_2
      * @return a value depending on the command
      */
-    synchronized int doCommand(int command, int operand, int channel) {
+    synchronized int doCommand(int command, int operand, int channel) throws Exception {
         byte workingByte=0;
         int commandRetVal=0;
         

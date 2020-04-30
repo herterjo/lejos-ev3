@@ -1,6 +1,7 @@
 package lejos.hardware.device;
 
 import lejos.hardware.port.BasicMotorPort;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 
 import java.util.concurrent.Future;
@@ -28,6 +29,7 @@ public class RCXPlexedMotorPort implements BasicMotorPort {
 			mmPower = 255; // Maximum breaking
 		}
 		plex.sendCommand(id, mmMode, mmPower);
+		return ExceptionWrapper.getCompletedException(null);
 	}
 	
 	public void setPWMMode(int mode) {
@@ -35,12 +37,17 @@ public class RCXPlexedMotorPort implements BasicMotorPort {
 	}
 
     @Override
-    public Future<ExceptionWrapper> close()
+    public void close()
     {
         // not implemented
     }
 
-    @Override
+	@Override
+	public Future<ExceptionWrapper> closeRet() {
+		return AsyncExecutor.execute(this::close);
+	}
+
+	@Override
     public String getName()
     {
         return null;

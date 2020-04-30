@@ -30,7 +30,7 @@ public class RemoteRequestUARTPort extends RemoteRequestIOPort implements UARTPo
 	}
 	
 	@Override
-	public Future<ExceptionWrapper> close() {
+	public void close() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.CLOSE_SENSOR_PORT;
 		sendRequest(req, false);	

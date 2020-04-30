@@ -105,7 +105,7 @@ public abstract class RemoteNXTIOPort implements IOPort, BasicSensorPort, EV3Sen
      * @return
      */    
     @Override
-    public Future<ExceptionWrapper> close()
+    public void close()
     {
         if (port == -1)
             throw new IllegalStateException("Port is not open");

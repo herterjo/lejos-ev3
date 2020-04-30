@@ -87,7 +87,7 @@ public class MindsensorsAccelerometer extends I2CSensor  {
 	 * @param port the sensor port
 	 * @param address the I2C address of the sensor
 	 */
-	public MindsensorsAccelerometer(Port port, int address) {
+	public MindsensorsAccelerometer(Port port, int address) throws Exception {
 		super(port, address, TYPE_LOWSPEED_9V);
 		init();
 	}
@@ -97,7 +97,7 @@ public class MindsensorsAccelerometer extends I2CSensor  {
 	 * 
 	 * @param port the sensor port
 	 */
-    public MindsensorsAccelerometer(Port port) {
+    public MindsensorsAccelerometer(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS);
         init();
     }

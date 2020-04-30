@@ -82,7 +82,7 @@ public class DexterPressureSensor250 extends AnalogSensor implements SensorConst
         init();
     }
     
-    public DexterPressureSensor250(Port port) {
+    public DexterPressureSensor250(Port port) throws Exception {
         super(port);
         init();
     }

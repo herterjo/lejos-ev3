@@ -7,6 +7,7 @@ import lejos.hardware.motor.MotorRegulator;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.PortException;
 import lejos.hardware.port.TachoMotorPort;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
@@ -40,11 +41,9 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
      */
     public Future<ExceptionWrapper> controlMotor(int power, int mode)
     {
-    	try {
+    	return AsyncExecutor.execute(() -> {
 			rmi.controlMotor(power, mode);
-		} catch (RemoteException e) {
-			throw new PortException(e);
-		}
+		});
     }
 
 
@@ -54,11 +53,7 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
      */
     public Future<ReturnWrapper<Integer>> getTachoCount()
     {
-    	try {
-			return rmi.getTachoCount();
-		} catch (RemoteException e) {
-			throw new PortException(e);
-		}
+    	return AsyncExecutor.execute(() -> rmi.getTachoCount());
     }
     
     /**
@@ -67,11 +62,7 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
 	 */
     public Future<ExceptionWrapper> resetTachoCount()
     {
-    	try {
-			rmi.resetTachoCount();
-		} catch (RemoteException e) {
-			throw new PortException(e);
-		}
+    	return AsyncExecutor.execute(() -> rmi.resetTachoCount());
     }
     
     public void setPWMMode(int mode)
@@ -83,7 +74,7 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
 		}
     }
     
-    public Future<ExceptionWrapper> close() {
+    public void close() {
     	try {
 			rmi.close();
 		} catch (RemoteException e) {

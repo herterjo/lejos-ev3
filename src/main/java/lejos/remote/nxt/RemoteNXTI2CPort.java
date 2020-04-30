@@ -1,10 +1,13 @@
 package lejos.remote.nxt;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
 import lejos.hardware.port.PortException;
+import lejos.utility.AsyncExecutor;
+import lejos.utility.ExceptionWrapper;
 
 public class RemoteNXTI2CPort extends RemoteNXTIOPort implements I2CPort
 {
@@ -146,4 +149,8 @@ public class RemoteNXTI2CPort extends RemoteNXTIOPort implements I2CPort
         return true;
     }
 
+    @Override
+    public Future<ExceptionWrapper> closeRet() {
+        return AsyncExecutor.execute(this::close);
+    }
 }

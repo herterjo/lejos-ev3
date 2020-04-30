@@ -16,7 +16,7 @@ public interface MoveProvider {
 	 * the move while it is in motion.  	
 	 * @return The move made since the move started.
 	 */
-	public Move getMovement();
+	public Move getMovement() throws Exception;
   
   /**
    * Adds a MoveListener that will be notified of all movement events.

@@ -104,7 +104,7 @@ public class DexterGPSSensor extends I2CSensor {
      * @param sensorPort
      *            the sensor port the sensor is connected to
      */
-    public DexterGPSSensor(Port sensorPort) {
+    public DexterGPSSensor(Port sensorPort) throws Exception {
         super(sensorPort, DGPS_I2C_ADDR);
         init();
     }

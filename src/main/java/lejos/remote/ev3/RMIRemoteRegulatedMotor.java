@@ -104,8 +104,8 @@ public class RMIRemoteRegulatedMotor extends UnicastRemoteObject implements RMIR
 	}
 
 	@Override
-	public boolean isStalled() throws RemoteException {
-		return motor.isStalled();
+	public boolean isStalled() throws Exception {
+		return motor.isStalled().get().getValue();
 	}
 
 	@Override
@@ -139,13 +139,13 @@ public class RMIRemoteRegulatedMotor extends UnicastRemoteObject implements RMIR
 	}
 
 	@Override
-	public int getTachoCount() throws RemoteException {
-		return motor.getTachoCount();
+	public int getTachoCount() throws Exception {
+		return motor.getTachoCount().get().getValue();
 	}
 
 	@Override
-	public boolean isMoving() throws RemoteException {
-		return motor.isMoving();
+	public boolean isMoving() throws Exception {
+		return motor.isMoving().get().getValue();
 	}
 }
 

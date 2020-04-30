@@ -60,7 +60,7 @@ public class PFMate extends I2CSensor{
      * @param port sensor port
      * @param channel PF Channel 1-4
      */
-    public PFMate(Port port, int channel){
+    public PFMate(Port port, int channel) throws Exception {
         this(port, channel, DEFAULT_PFMATE_ADDRESS);
     }
 
@@ -70,7 +70,7 @@ public class PFMate extends I2CSensor{
      * @param channel PF Channel 1-4
      * @param address I2C address of the controller
      */
-    public PFMate(Port port, int channel, int address){
+    public PFMate(Port port, int channel, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED);
         init(channel);
     }

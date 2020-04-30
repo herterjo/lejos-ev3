@@ -7,15 +7,15 @@ import lejos.hardware.lcd.Font;
 
 public interface RMIEV3 extends Remote {
 
-	public RMIAnalogPort openAnalogPort(String portName) throws RemoteException;
+	public RMIAnalogPort openAnalogPort(String portName) throws Exception;
 	
-	public RMII2CPort openI2CPort(String portName) throws RemoteException;
+	public RMII2CPort openI2CPort(String portName) throws Exception;
 
 	public RMIBattery getBattery() throws RemoteException;
 
 	public RMIUARTPort openUARTPort(String portName) throws RemoteException;
 
-	public RMIMotorPort openMotorPort(String portName) throws RemoteException;
+	public RMIMotorPort openMotorPort(String portName) throws Exception;
 	
 	public RMISampleProvider createSampleProvider(String portName, String sensorName, String modeName) throws RemoteException;
 	

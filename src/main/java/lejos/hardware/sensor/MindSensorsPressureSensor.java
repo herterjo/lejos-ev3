@@ -74,7 +74,7 @@ public class MindSensorsPressureSensor extends I2CSensor  {
         init();
     }
     
-    public MindSensorsPressureSensor(Port port) {
+    public MindSensorsPressureSensor(Port port) throws Exception {
         // also works with high speed mode
         super(port, ADDRESS);
         init();

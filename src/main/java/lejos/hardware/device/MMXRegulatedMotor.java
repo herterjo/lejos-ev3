@@ -2,7 +2,12 @@ package lejos.hardware.device;
 
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
 * Abstraction to drive a regulated encoder motor with the NXTMMX motor multiplexer. 
@@ -20,7 +25,7 @@ public class MMXRegulatedMotor extends MMXMotor implements RegulatedMotor {
 	static final int LISTENERSTATE_STOP = 0;
     static final int LISTENERSTATE_START = 1;
     private final int MOTOR_MAX_DPS=Math.round(mmx.getVoltage()*100);
-    private Object lockObj = new Object();
+    private final Object lockObj = new Object();
     
     RegulatedMotorListener listener;
     
@@ -35,18 +40,22 @@ public class MMXRegulatedMotor extends MMXMotor implements RegulatedMotor {
     
     void doListenerState(int listenerState) {
         synchronized (lockObj) {
-    	if (this.listener == null) return;
-        if (listenerState == LISTENERSTATE_STOP) {
-        	// wait for a complete stop before notifying
-//        	new Thread(new Runnable(){
-//				public void run() {
-//					waitComplete();
-//					listener.rotationStopped(MMXRegulatedMotor.this, getTachoCount(), false, System.currentTimeMillis());
-//				}}).start();
-        	listener.rotationStopped(MMXRegulatedMotor.this, getTachoCount(), false, System.currentTimeMillis());
-        } else {
-            this.listener.rotationStarted(this, getTachoCount(), false, System.currentTimeMillis());
-        }
+    	    if (this.listener == null)
+    	        return;
+
+    	    AsyncExecutor.execute(() -> {
+                if (listenerState == LISTENERSTATE_STOP) {
+                    // wait for a complete stop before notifying
+                    //        	new Thread(new Runnable(){
+                    //				public void run() {
+                    //					waitComplete();
+                    //					listener.rotationStopped(MMXRegulatedMotor.this, getTachoCount(), false, System.currentTimeMillis());
+                    //				}}).start();
+                    listener.rotationStopped(MMXRegulatedMotor.this, getTachoCount().get().getValue(), false, System.currentTimeMillis());
+                } else {
+                    this.listener.rotationStarted(this, getTachoCount().get().getValue(), false, System.currentTimeMillis());
+                }
+            });
         }
     }
     
@@ -62,8 +71,8 @@ public class MMXRegulatedMotor extends MMXMotor implements RegulatedMotor {
      * 
      * @return The current rotational speed in deg/sec
      */
-    public int getRotationSpeed() {
-        return Math.round(.01f * mmx.doCommand(NXTMMX.CMD_GETSPEED, 0, channel));
+    public Future<ReturnWrapper<Integer>> getRotationSpeed() {
+        return ReturnWrapper.getCompletedReturnNormal(Math.round(.01f * mmx.doCommand(NXTMMX.CMD_GETSPEED, 0, channel)));
     }
     
     public void stop(boolean immediateReturn) {
@@ -76,10 +85,12 @@ public class MMXRegulatedMotor extends MMXMotor implements RegulatedMotor {
         if (!immediateReturn) waitComplete();
     }
 
-    public synchronized void waitComplete() {
-    	while (isMoving()) {
-            Delay.msDelay(50);
-        }
+    public synchronized Future<ExceptionWrapper> waitComplete() {
+        return AsyncExecutor.execute(() -> {
+            while (isMoving().get().getValue()) {
+                Delay.msDelay(50);
+            }
+        });
     }
     
     /**
@@ -103,14 +114,14 @@ public class MMXRegulatedMotor extends MMXMotor implements RegulatedMotor {
     /**
      * Rotate by the requested number of degrees with option for wait until completion or immediate return where the motor
      * completes its rotation asynchronously.
-     * 
-     * @param degrees number of degrees to rotate relative to the current position.
+     *  @param degrees number of degrees to rotate relative to the current position.
      * @param immediateReturn if <code>true</code>, do not wait for the move to complete. <code>false</code> will block
-     * until the rotation completes.
+     * @return
      */
-    public void rotate(int degrees, boolean immediateReturn){
+    public Future<ExceptionWrapper> rotate(int degrees, boolean immediateReturn){
         mmx.doCommand(NXTMMX.CMD_ROTATE, degrees, channel);
         if (!immediateReturn) mmx.waitRotateComplete(channel);
+        return ExceptionWrapper.getCompletedException(null);
     }
     
     /**
@@ -166,8 +177,8 @@ public class MMXRegulatedMotor extends MMXMotor implements RegulatedMotor {
     }
     
 
-    public boolean isStalled() {
-    	return NXTMMX.MOTPARAM_OP_TRUE==mmx.doCommand(NXTMMX.CMD_ISSTALLED, 0, channel);
+    public Future<ReturnWrapper<Boolean>> isStalled() {
+    	return ReturnWrapper.getCompletedReturnNormal(NXTMMX.MOTPARAM_OP_TRUE==mmx.doCommand(NXTMMX.CMD_ISSTALLED, 0, channel));
     }
     
     /**

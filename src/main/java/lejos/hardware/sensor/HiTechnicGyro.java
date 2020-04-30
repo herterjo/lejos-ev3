@@ -70,7 +70,7 @@ public class HiTechnicGyro extends AnalogSensor implements SensorConstants {
 	 * 
 	 * @param port the Sensor port
 	 */
-    public HiTechnicGyro(Port port) {
+    public HiTechnicGyro(Port port) throws Exception {
         super(port);
         init();
     }

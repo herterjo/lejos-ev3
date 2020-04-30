@@ -153,8 +153,7 @@ public class NXTColorSensor extends AnalogSensor implements SensorConstants,  La
      * Create a new Color Sensor instance and bind it to a port.
      * @param port Port to use for the sensor.
      */
-    public NXTColorSensor(Port port)
-    {
+    public NXTColorSensor(Port port) throws Exception {
         super(port);
         init();
     }

@@ -2,7 +2,11 @@ package lejos.robotics.chassis;
 
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Move;
+import lejos.utility.ExceptionWrapper;
 import lejos.utility.Matrix;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 
 /**
@@ -103,14 +107,14 @@ public interface Chassis {
    * @return
    * A matrix (3x1) containing the current speed of the robot. First row contains linear speed, second row contains direction of linear speed, third row contains angular speed.
    */
-  public Matrix getCurrentSpeed();
+  public Future<ReturnWrapper<Matrix>> getCurrentSpeed();
 
   /**
    * Returns true if the robot is moving.
    * 
    * @return true if the robot is moving
    */
-  public boolean isMoving();
+  public Future<ReturnWrapper<Boolean>> isMoving();
 
   /**
    * Makes the robot stop and returns immediately.
@@ -132,9 +136,9 @@ public interface Chassis {
    * @param direction
    * The direction of the linear speed
    * @param angularSpeed
-   * angular component of the robot speed expressed in degrees/second.
+   * @return
    */
-  public void setVelocity(double linearSpeed, double direction, double angularSpeed);
+  public Future<ExceptionWrapper> setVelocity(double linearSpeed, double direction, double angularSpeed);
   
   /** Moves a holonomic robot with the specified speed. <br>
    * The method will throw an exception when issued on a differential chassis.
@@ -171,14 +175,14 @@ public interface Chassis {
    * 
    * @return Speed in robot units
    */
-  public double getMaxLinearSpeed();
+  public Future<ReturnWrapper<Double>> getMaxLinearSpeed();
 
   /**
    * Returns how fast the robot can rotate.
    * 
    * @return Speed in degrees / second
    */
-  public double getMaxAngularSpeed();
+  public Future<ReturnWrapper<Double>> getMaxAngularSpeed();
 
   /**
    * Blocks while the chassis is moving, returns when all wheels have stopped
@@ -191,7 +195,7 @@ public interface Chassis {
    * 
    * @return true if at least one of the wheels is stalled
    */
-  public boolean isStalled();
+  public Future<ReturnWrapper<Boolean>> isStalled();
 
   /**
    * Returns the smallest possible radius this chassis is able turn
@@ -220,23 +224,25 @@ public interface Chassis {
   /** Returns an Pose provider that uses odometry to keep track of the pose of the chassis
    * @return an Pose provider that uses odometry to keep track of the pose of the chassis
    */
-  public PoseProvider getPoseProvider();  
+  public PoseProvider getPoseProvider() throws Exception;
   
   /** Method used by the MovePilot to tell the chassis that a new move has started. This method is used in conjuction with the getDisplacement method.
-   * 
+   *
+   * @return
    */
-  public void moveStart();
+  public Future<ExceptionWrapper> moveStart();
   
   /** Method used by the MovePilot to update a move object that describes the move executed since the last call to startMove. <p>
    * This method is only to be used by applications that apply just moves that meet the following conditions:<ul>
    * <li> The move must start and end with the robot being motionless</li>
    * <li> The speed ratio between the wheels must be constant during the move</li>
    * </ul>
-   *  
+   *
    * @param move
    * The move object to update
+   * @return
    */
-  public Move getDisplacement(Move move);
+  public Future<ReturnWrapper<Move>> getDisplacement(Move move);
 
   /** Rotates the chassis for the specified number of degrees
    * @param angular
@@ -247,18 +253,18 @@ public interface Chassis {
    * @return
    * linear speed in robot units/second
    */
-  double getLinearVelocity();
+  Future<ReturnWrapper<Double>> getLinearVelocity();
 
   /** Returns the current direction of the linear speed component of the robot
    * @return
    * direction in degrees 
    */
-  double getLinearDirection();
+  Future<ReturnWrapper<Double>> getLinearDirection();
 
   /** Returns the angular component of the current speed of the robot
    * @return
    * Angular speed in degrees/second
    */
-  double getAngularVelocity();
+  Future<ReturnWrapper<Double>> getAngularVelocity();
   
 }

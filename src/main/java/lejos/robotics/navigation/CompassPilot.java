@@ -45,8 +45,7 @@ public class CompassPilot extends DifferentialPilot
    * @param rightMotor
    */
   public CompassPilot(DirectionFinder compass, float wheelDiameter,
-          float trackWidth, RegulatedMotor leftMotor, RegulatedMotor rightMotor)
-  {
+          float trackWidth, RegulatedMotor leftMotor, RegulatedMotor rightMotor) throws Exception {
     this(compass, wheelDiameter, trackWidth, leftMotor, rightMotor, false);
   }
 
@@ -62,8 +61,7 @@ public class CompassPilot extends DifferentialPilot
    * @param reverse if true of motor.forward() drives the robot backwards
    */
   public CompassPilot(DirectionFinder compass, float wheelDiameter,
-          float trackWidth, RegulatedMotor leftMotor, RegulatedMotor rightMotor, boolean reverse)
-  {
+          float trackWidth, RegulatedMotor leftMotor, RegulatedMotor rightMotor, boolean reverse) throws Exception {
     super(wheelDiameter, trackWidth, leftMotor, rightMotor, reverse);
     this.compass = compass;
     regulator.setDaemon(true);
@@ -118,8 +116,7 @@ public class CompassPilot extends DifferentialPilot
    * Rotates the robot 360 degrees while calibrating the compass
    * resets compass zero to heading at end of calibration
    */
-  public synchronized void calibrate()
-  {
+  public synchronized void calibrate() throws Exception {
     setAngularSpeed(50);
     compass.startCalibration();
     super.rotate(360, false);
@@ -152,8 +149,7 @@ public class CompassPilot extends DifferentialPilot
    * @param distance The positive or negative distance to move the robot, same units as _wheelDiameter
    * @param immediateReturn iff true, the method returns immediately.
    */
-  public void travel(float distance, boolean immediateReturn)
-  {
+  public void travel(float distance, boolean immediateReturn) throws Exception {
     movementStart();
     _type = Move.MoveType.TRAVEL;
     super.travel(distance,true);
@@ -178,8 +174,7 @@ public class CompassPilot extends DifferentialPilot
    * Robot steers to maintain its compass heading;
    * @param  distance of robot movement. Unit of measure for distance must be same as wheelDiameter and trackWidth
    **/
-  public void  travel(float distance)
-  {
+  public void  travel(float distance) throws Exception {
     travel(distance, false);
   }
 
@@ -188,8 +183,7 @@ public class CompassPilot extends DifferentialPilot
    * @param  immediateReturn  - if true, method returns immediately.
    * Robot stops when specified angle is reached or when stop() is called
    */
-  public void  rotate(float angle, boolean immediateReturn)
-  {
+  public void  rotate(float angle, boolean immediateReturn) throws Exception {
     movementStart();
     _type = Move.MoveType.ROTATE;
     float heading0 = getCompassHeading();
@@ -212,13 +206,11 @@ public class CompassPilot extends DifferentialPilot
    * Wheels turn in opposite directions producing a  zero radius turn.
    * @param angle  degrees. Positive angle rotates to the left (clockwise); negative to the right. <br>Requires correct values for wheel diameter and track width.
    */
-  public void rotate(float angle)
-  {
+  public void rotate(float angle) throws Exception {
      rotate(angle, false);
   }
 
-  public void reset()
-  {
+  public void reset() throws Exception {
     _left.resetTachoCount();
     _right.resetTachoCount();
     _heading0 = getCompassHeading();
@@ -226,8 +218,7 @@ public class CompassPilot extends DifferentialPilot
   }
 
   // methods required to give regulator access to Pilot superclass
-  protected void stopNow()
-  {
+  protected void stopNow() throws Exception {
     stop();
   }
 
@@ -235,8 +226,7 @@ public class CompassPilot extends DifferentialPilot
    * Stops the robot soon after the method is executed. (It takes time for the motors
    * to slow to a halt)
    */
-  public void stop()
-  {
+  public void stop() throws Exception {
     super.stop();
     _traveling = false;
     while (isMoving())
@@ -265,46 +255,50 @@ public class CompassPilot extends DifferentialPilot
 
     public void run()
     {
-      while (true)
-      {
-        while (!_traveling)
+      try {
+        while (true)
         {
-          Thread.yield();
-        }
-        {  // travel started
-          float toGo =  _distance;  // reamining trave distance
-          float gain = -3f * _direction;
-          float error = 0;
-          float e0 = 0;
-          float incr0 = 0;
-         _estimatedHeading = _heading0;
-        do // travel in progress
+          while (!_traveling)
           {
-           // use weighted average of heading from tacho count and compass
-          // weights should be based on  variance of compass error and  tacho count error
-            float incr = getAngleIncrement();
-            _estimatedHeading += (incr - incr0); //change in heading from tacho counts
-            incr0 =  incr;           
-             _estimatedHeading = normalize( 0.5f *normalize(compass.getDegreesCartesian())  + 0.5f*_estimatedHeading);
-            error = normalize( _estimatedHeading - _heading);
-           toGo =(_distance - getMovementIncrement());                        
-            if(Math.abs(error - e0) > 2)  //only steer if large change in error > 2 deg
+            Thread.yield();
+          }
+          {  // travel started
+            float toGo =  _distance;  // reamining trave distance
+            float gain = -3f * _direction;
+            float error = 0;
+            float e0 = 0;
+            float incr0 = 0;
+            _estimatedHeading = _heading0;
+            do // travel in progress
             {
-              steerPrep(gain * error);
-              e0 = error;
-            }
-            Delay.msDelay(12);  // another arbitrary constant
-           Thread.yield();
-          } while (Math.abs(toGo) > 3 );
-         // travel completed (almost)
-          int delta = Math.round(toGo*_leftDegPerDistance);
-          _left.rotate(delta,true);
-          delta = Math.round(toGo*_rightDegPerDistance);
-          _outside.rotate(delta);
-          while(_left.isMoving())Thread.yield();
-          _traveling = false;
+              // use weighted average of heading from tacho count and compass
+              // weights should be based on  variance of compass error and  tacho count error
+              float incr = getAngleIncrement();
+              _estimatedHeading += (incr - incr0); //change in heading from tacho counts
+              incr0 =  incr;
+              _estimatedHeading = normalize( 0.5f *normalize(compass.getDegreesCartesian())  + 0.5f*_estimatedHeading);
+              error = normalize( _estimatedHeading - _heading);
+              toGo =(_distance - getMovementIncrement());
+              if(Math.abs(error - e0) > 2)  //only steer if large change in error > 2 deg
+              {
+                steerPrep(gain * error);
+                e0 = error;
+              }
+              Delay.msDelay(12);  // another arbitrary constant
+              Thread.yield();
+            } while (Math.abs(toGo) > 3 );
+            // travel completed (almost)
+            int delta = Math.round(toGo*_leftDegPerDistance);
+            _left.rotate(delta,true);
+            delta = Math.round(toGo*_rightDegPerDistance);
+            _outside.rotate(delta);
+            while(_left.isMoving().get().getValue())Thread.yield();
+            _traveling = false;
+          }
+
         }
-        
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
     }
   }

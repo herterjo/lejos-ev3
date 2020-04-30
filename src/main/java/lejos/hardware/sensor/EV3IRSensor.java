@@ -74,8 +74,7 @@ public class EV3IRSensor extends UARTSensor
         init();
     }
     
-    public EV3IRSensor(Port port)
-    {
+    public EV3IRSensor(Port port) throws Exception {
         super(port, IR_PROX);
         init();
     }

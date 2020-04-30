@@ -92,7 +92,7 @@ public class MindSensorsNumPad extends I2CSensor {
      *            the port number (SensorPort.S1 ... SensorPort.S4) to which the
      *            numeric pad is connected.
      */
-    public MindSensorsNumPad(Port port) {
+    public MindSensorsNumPad(Port port) throws Exception {
         super(port, NP_ADDRESS);
         init();
     }

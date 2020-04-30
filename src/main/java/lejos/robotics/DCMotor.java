@@ -11,11 +11,11 @@ public interface DCMotor extends BaseMotor{
      * Set the power level 0%-100% to be applied to the motor
      * @param power new motor power 0-100
      */
-    public void setPower(int power);
+    public void setPower(int power) throws Exception;
 
     /**
      * Returns the current motor power setting.
      * @return current power 0-100
      */
-    public int getPower();
+    public int getPower() throws Exception;
 }

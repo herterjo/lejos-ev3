@@ -90,7 +90,7 @@ public class HiTechnicAccelerometer extends I2CSensor {
    * @param address
    *          the I2C address of the sensor
    */
-  public HiTechnicAccelerometer(Port port, int address) {
+  public HiTechnicAccelerometer(Port port, int address) throws Exception {
     super(port, address, TYPE_LOWSPEED_9V);
     init();
   }
@@ -101,7 +101,7 @@ public class HiTechnicAccelerometer extends I2CSensor {
    * @param port
    *          the I2C port
    */
-  public HiTechnicAccelerometer(Port port) {
+  public HiTechnicAccelerometer(Port port) throws Exception {
     this(port, DEFAULT_I2C_ADDRESS);
     init();
   }

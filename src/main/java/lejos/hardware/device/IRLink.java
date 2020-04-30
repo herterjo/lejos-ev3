@@ -78,7 +78,7 @@ public class IRLink extends I2CSensor implements Opcode, IRTransmitter {
         super(port);
     }
     
-    public IRLink(Port port) {
+    public IRLink(Port port) throws Exception {
         super(port);
     }
     

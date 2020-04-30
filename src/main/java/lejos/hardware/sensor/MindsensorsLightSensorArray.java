@@ -89,7 +89,7 @@ public class MindsensorsLightSensorArray extends I2CSensor  {
      * @param port
      * @param address I2C address for the device
      */
-    public MindsensorsLightSensorArray(Port port, int address) {
+    public MindsensorsLightSensorArray(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED);
         init();
     }
@@ -99,7 +99,7 @@ public class MindsensorsLightSensorArray extends I2CSensor  {
      *
      * @param port
      */
-    public MindsensorsLightSensorArray(Port port) {
+    public MindsensorsLightSensorArray(Port port) throws Exception {
         this(port, FACTORY_DEFAULT);
         init();
     }

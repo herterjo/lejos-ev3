@@ -49,7 +49,7 @@ public class LMotor extends I2CSensor{
      * @param SPI_PORT the SPI port
      *  
      */
-    public LMotor(Port port, int location, String name, byte SPI_PORT){
+    public LMotor(Port port, int location, String name, byte SPI_PORT) throws Exception {
         super(port, NXTe.NXTE_ADDRESS);
         this.name = name;
         this.LSC_position = location;

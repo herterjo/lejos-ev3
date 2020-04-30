@@ -4,6 +4,7 @@ import lejos.hardware.port.BasicSensorPort;
 import lejos.hardware.port.IOPort;
 import lejos.hardware.sensor.EV3SensorConstants;
 import lejos.remote.nxt.RemoteNXTPort;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 
 import java.util.concurrent.Future;
@@ -60,7 +61,7 @@ public class RemoteRequestIOPort implements IOPort, BasicSensorPort, EV3SensorCo
 	}
 
 	@Override
-	public Future<ExceptionWrapper> close() {
+	public void close() {
         if (port == -1)
             throw new IllegalStateException("Port is not open");
         synchronized (openPorts)
@@ -68,6 +69,11 @@ public class RemoteRequestIOPort implements IOPort, BasicSensorPort, EV3SensorCo
             openPorts[typ][port] = null;
             port = -1;
         }	
+	}
+
+	@Override
+	public Future<ExceptionWrapper> closeRet() {
+		return AsyncExecutor.execute(this::close);
 	}
 
 	@Override

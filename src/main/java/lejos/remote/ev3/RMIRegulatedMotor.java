@@ -120,7 +120,7 @@ public interface RMIRegulatedMotor extends Remote {
 	   * returns true if motor is stalled
 	   * @return true if stalled
 	   */
-	   boolean isStalled() throws RemoteException;
+	   boolean isStalled() throws RemoteException, Exception;
 	   
 	   /**
 	    * Set the parameters for detecting a stalled motor. A motor will be recognized as 
@@ -146,9 +146,9 @@ public interface RMIRegulatedMotor extends Remote {
 	   
 	   void resetTachoCount() throws RemoteException;
 	   
-	   int getTachoCount() throws RemoteException;
+	   int getTachoCount() throws RemoteException, Exception;
 	   
-	   boolean isMoving() throws RemoteException;
+	   boolean isMoving() throws RemoteException, Exception;
 
 }
 

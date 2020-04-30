@@ -32,7 +32,7 @@ public class SensorMux extends I2CSensor {
      * Constructor
      * @param port the port
      */
-    public SensorMux(Port port) {
+    public SensorMux(Port port) throws Exception {
         super(port, 0x10, TYPE_LOWSPEED_9V);
     }
    

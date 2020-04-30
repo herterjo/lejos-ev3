@@ -64,7 +64,7 @@ public class EV3GyroSensor extends UARTSensor {
   private static final long SWITCHDELAY = 200;
   private short[] raw=new short[2];
 
-  public EV3GyroSensor(Port port) {
+  public EV3GyroSensor(Port port) throws Exception {
     super(port, 3);
     setModes(new SensorMode[] { new RateMode(), new AngleMode(), new RateAndAngleMode() });
 

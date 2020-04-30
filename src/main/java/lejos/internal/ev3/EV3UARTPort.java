@@ -13,6 +13,7 @@ import com.sun.jna.Structure;
 import lejos.hardware.DeviceException;
 import lejos.hardware.port.UARTPort;
 import lejos.internal.io.NativeDevice;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
@@ -425,23 +426,32 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
     @Override
     public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
-        if (!super.open(typ, port, ref))
-            return false;
-        // clear mode data cache
-        modeCnt = 0;
-        return true;
+        return AsyncExecutor.execute(() -> {
+            synchronized (this) {
+                if (!super.open(typ, port, ref).get().getValue())
+                    return false;
+                // clear mode data cache
+                modeCnt = 0;
+                return true;
+            }
+        });
     }
 
     /** {@inheritDoc}
      * @return
      */    
     @Override
-    public Future<ExceptionWrapper> close()
+    public void close()
     {
         disconnect();
         super.close();
     }
-    
+
+    @Override
+    public Future<ExceptionWrapper> closeRet() {
+        return AsyncExecutor.execute(this::close);
+    }
+
     /**
      * Set the current operating mode
      * @param mode new mode to set

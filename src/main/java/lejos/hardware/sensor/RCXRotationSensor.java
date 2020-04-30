@@ -33,8 +33,7 @@ public class RCXRotationSensor extends AnalogSensor implements Tachometer, Senso
      * Create an RCX rotation sensor object attached to the specified port.
      * @param p port, e.g. Port.S1
      */
-    public RCXRotationSensor(Port p)
-    {
+    public RCXRotationSensor(Port p) throws Exception {
         super(p);
         port.setTypeAndMode(TYPE_ANGLE, MODE_RAW);
         reader = new Reader();
@@ -130,7 +129,7 @@ public class RCXRotationSensor extends AnalogSensor implements Tachometer, Senso
 	   */
     public Future<ReturnWrapper<Integer>> getTachoCount()
     {
-        return (360 * count) / ONE_ROTATION;
+        return ReturnWrapper.getCompletedReturnNormal(360 * count / ONE_ROTATION);
     }
     
     /**
@@ -152,14 +151,16 @@ public class RCXRotationSensor extends AnalogSensor implements Tachometer, Senso
         {
             count = 0;
         }
+
+        return ExceptionWrapper.getCompletedException(null);
     }
 
     // TODO: Change to getTachoSpeed
-	public int getRotationSpeed() {
+	public Future<ReturnWrapper<Integer>> getRotationSpeed() {
 		// TODO: Ok, if it has been longer than last delay between pulses, then it should start to 
 		// calculate speed based on the time between pulses here in this method. In other words, the 
 		// speed value starts working its way towards zero. Might not actually get to 0, but could 
 		// choose some arbitrary value to round to zero.
-		return speed;
+		return ReturnWrapper.getCompletedReturnNormal(speed);
 	}
 }

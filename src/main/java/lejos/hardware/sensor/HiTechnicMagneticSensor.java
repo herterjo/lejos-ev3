@@ -64,7 +64,7 @@ import lejos.robotics.SampleProvider;
 	 * 
 	 * @param port the analog port
 	 */
-    public HiTechnicMagneticSensor(Port port) {
+    public HiTechnicMagneticSensor(Port port) throws Exception {
         super(port);
         init();
     }

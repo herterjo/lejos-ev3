@@ -1,6 +1,9 @@
 package lejos.hardware.device;
 
 import lejos.robotics.DCMotor;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Motor class for PFMate class
@@ -125,8 +128,8 @@ public class PFMateMotor implements DCMotor {
 		return false;
 	}
 	
-	public boolean isMoving() {
-		return moving;
+	public Future<ReturnWrapper<Boolean>> isMoving() {
+		return ReturnWrapper.getCompletedReturnNormal(moving);
 	}
 
     public void setPower(int power)

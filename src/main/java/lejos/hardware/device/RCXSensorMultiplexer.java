@@ -43,7 +43,7 @@ public class RCXSensorMultiplexer extends I2CSensor{
    *
    * @param port NXT Sensor port
    */
-  public RCXSensorMultiplexer(Port port){
+  public RCXSensorMultiplexer(Port port) throws Exception {
       this(port, DEFAULT_RCXSMUX_ADDRESS);
   }
 
@@ -52,7 +52,7 @@ public class RCXSensorMultiplexer extends I2CSensor{
    * @param port NXT Sensor port
    * @param address I2C address
    */
-  public RCXSensorMultiplexer(Port port, int address){
+  public RCXSensorMultiplexer(Port port, int address) throws Exception {
       super(port, address, TYPE_LOWSPEED);
   }
 

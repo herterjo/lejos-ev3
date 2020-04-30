@@ -136,7 +136,7 @@ public class LCP {
 	 * @param cmd the buffer containing the command
 	 * @param cmdLen the length of the command
 	 */
-	public static int emulateCommand(byte[] cmd, int cmdLen, byte[] reply)
+	public static int emulateCommand(byte[] cmd, int cmdLen, byte[] reply) throws Exception
 	{
 		final byte cmdId = cmd[1];
 		
@@ -213,17 +213,17 @@ public class LCP {
 		case GET_OUTPUT_STATE: {
 			byte port = cmd[2]; 
 			NXTRegulatedMotor m = Motor.A;
-			int tacho = m.getTachoCount();
+			int tacho = m.getTachoCount().get().getValue();
 			
 			reply[3] = port;
 			reply[4] = (byte)(m.getSpeed() * 100 / 900); // Power
 			// MODE CALCULATION:
 			byte mode = 0;
-			if (m.isMoving()) mode = 0x01; // 0x01 = MOTORON
+			if (m.isMoving().get().getValue()) mode = 0x01; // 0x01 = MOTORON
 			reply[5] = mode; // Only contains isMoving (MOTORON) at moment
 			// REGULATION_MODE CALCULATION:
 			byte regulation_mode = 0; // 0 = idle
-			if (m.isMoving()) mode = 0x01; // 0x01 = MOTOR_SPEED
+			if (m.isMoving().get().getValue()) mode = 0x01; // 0x01 = MOTOR_SPEED
 			// !! This returns same as run state (below). Whats the diff?
 			reply[6] = regulation_mode; // Regulation mode
 			// TURN RATIO CALC (ignored):
@@ -231,7 +231,7 @@ public class LCP {
 			reply[7] = turn_ratio; // Turn ratio
 			// RUN_STATE CALCULATION:
 			byte run_state = 0;
-			if (m.isMoving()) run_state = 0x20; // 0x20 = RUNNING
+			if (m.isMoving().get().getValue()) run_state = 0x20; // 0x20 = RUNNING
 			reply[8] = run_state; // Run state
 			int limit = m.getLimitAngle();
 			// Tacho Limit

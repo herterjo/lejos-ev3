@@ -1,6 +1,9 @@
 package lejos.hardware.device.tetrix;
 
 import lejos.robotics.DCMotor;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /** 
  * Tetrix basic DC motor abstraction without encoder support. The default power at instantiation is 100%.
@@ -12,35 +15,35 @@ public class TetrixMotor implements DCMotor{
     TetrixMotorController mc;
     int channel;
     
-    TetrixMotor(TetrixMotorController mc, int channel) {
+    TetrixMotor(TetrixMotorController mc, int channel) throws Exception {
         this.mc=mc;
         this.channel=channel;
         setPower(100);
     }
 
-    public void setPower(int power) {
+    public void setPower(int power) throws Exception {
         power=Math.abs(power);
         if (power>100) power=100;
         mc.doCommand(TetrixMotorController.CMD_SETPOWER, power, channel);
     }
 
-    public int getPower() {
+    public int getPower() throws Exception {
         return mc.doCommand(TetrixMotorController.CMD_GETPOWER, 0, channel);
     }
     
-    public void forward() {
+    public void forward() throws Exception {
         mc.doCommand(TetrixMotorController.CMD_FORWARD, 0, channel);
     }
 
-    public void backward() {
+    public void backward() throws Exception {
         mc.doCommand(TetrixMotorController.CMD_BACKWARD, 0, channel);
     }
 
-    public void stop() {
+    public void stop() throws Exception {
         mc.doCommand(TetrixMotorController.CMD_STOP, 0, channel);
     }
 
-    public void flt() {
+    public void flt() throws Exception {
         mc.doCommand(TetrixMotorController.CMD_FLT, 0, channel);
     }
     
@@ -51,8 +54,8 @@ public class TetrixMotor implements DCMotor{
      *
      * @return <code>true</code> if the motor is executing a movement command, <code>false</code> if stopped.
      */
-    public boolean isMoving() {
-        return TetrixMotorController.MOTPARAM_OP_TRUE==mc.doCommand(TetrixMotorController.CMD_ISMOVING, 0, channel);
+    public Future<ReturnWrapper<Boolean>> isMoving() throws Exception {
+        return ReturnWrapper.getCompletedReturnNormal(TetrixMotorController.MOTPARAM_OP_TRUE==mc.doCommand(TetrixMotorController.CMD_ISMOVING, 0, channel));
     }
 
     /** 
@@ -62,7 +65,7 @@ public class TetrixMotor implements DCMotor{
      * Changes to this setting take effect on the next motor command.
      * @param reverse <code>true</code> to reverse direction mapping for this motor
      */
-    public void setReverse(boolean reverse) {
+    public void setReverse(boolean reverse) throws Exception {
         int op=TetrixMotorController.MOTPARAM_OP_FALSE;
         if (reverse) op=TetrixMotorController.MOTPARAM_OP_TRUE;
         mc.doCommand(TetrixMotorController.CMD_SETREVERSE, op, channel);

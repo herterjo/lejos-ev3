@@ -32,8 +32,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * Create an instance of the device identifier for a particular port
      * @param port The port to operate with
      */
-    public DeviceIdentifier(Port port)
-    {
+    public DeviceIdentifier(Port port) throws Exception {
         this.port = port;
         openConfigPort();
     }
@@ -45,8 +44,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
         super.close();            
     }
 
-    protected void openConfigPort()
-    {
+    protected void openConfigPort() throws Exception {
         configPort = port.open(ConfigurationPort.class);
         openTime = System.currentTimeMillis();        
     }
@@ -54,8 +52,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
     /**
      * Wait until the identification data for this port is valid
      */
-    protected void waitValid()
-    {
+    protected void waitValid() throws Exception {
         if (configPort == null)
             openConfigPort();
         long minDelay = (openTime + MIN_TIME) - System.currentTimeMillis();
@@ -81,8 +78,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * @return The type of the port
      * 
      */
-    public int getPortType()
-    {
+    public int getPortType() throws Exception {
         waitValid();
         return configPort.getPortType();
     }
@@ -94,8 +90,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * sensor to allow it to be identified in further detail.
      * @return the sensor type
      */
-    public int getDeviceType()
-    {
+    public int getDeviceType() throws Exception {
         waitValid();
         return configPort.getDeviceType();
     }
@@ -104,8 +99,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * Returns the signature for a dumb NXT sensor
      * @return string identifying the device
      */
-    protected String getNXTDumbSignature()
-    {
+    protected String getNXTDumbSignature() throws Exception {
         switch(getDeviceType())
         {
         case TYPE_NXT_TOUCH:
@@ -123,8 +117,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * Returns the signature for a i2c sensor
      * @return string identifying the device
      */
-    protected String getI2CSignature(boolean full)
-    {
+    protected String getI2CSignature(boolean full) throws Exception {
         configPort.close();
         configPort = null;
         String product = "";
@@ -178,8 +171,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * Returns the signature for a dumb EV3 sensor
      * @return string identifying the device
      */
-    protected String getEV3DumbSignature()
-    {
+    protected String getEV3DumbSignature() throws Exception {
         // need to look at analog value on pin 1 to identify
         configPort.close();
         configPort = null;
@@ -219,8 +211,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * Returns the signature for a UART sensor
      * @return string identifying the device
      */
-    protected String getUARTSignature()
-    {
+    protected String getUARTSignature() throws Exception {
         configPort.close();
         configPort = null;
         String product = "";
@@ -250,8 +241,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * Returns the signature for a motor/output device
      * @return string identifying the device
      */
-    protected String getMotorSignature()
-    {
+    protected String getMotorSignature() throws Exception {
         switch(getDeviceType())
         {
         case TYPE_TACHO:
@@ -272,8 +262,7 @@ public class DeviceIdentifier extends Device implements EV3SensorConstants
      * @param full true to return all available information, false for basic information
      * @return a string signature
      */
-    public String getDeviceSignature(boolean full)
-    {
+    public String getDeviceSignature(boolean full) throws Exception {
         int portType = getPortType();
         switch(portType)
         {

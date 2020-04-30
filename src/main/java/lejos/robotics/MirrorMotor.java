@@ -1,5 +1,6 @@
 package lejos.robotics;
 
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
@@ -81,7 +82,7 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		return regMotor.getSpeed();
 	}
 
-	public boolean isStalled() {
+	public Future<ReturnWrapper<Boolean>> isStalled() {
 		return regMotor.isStalled();
 	}
 
@@ -89,8 +90,8 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		this.rotate(angle, false);
 	}
 
-	public void rotate(int angle, boolean immediateReturn) {
-		regMotor.rotate(-angle, immediateReturn);// REVERSED
+	public Future<ExceptionWrapper> rotate(int angle, boolean immediateReturn) {
+		return regMotor.rotate(-angle, immediateReturn);// REVERSED
 	}
 
 	public void rotateTo(int angle) {
@@ -117,8 +118,8 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		regMotor.stop(immediateReturn);
 	}
 
-	public void waitComplete() {
-		regMotor.waitComplete();
+	public Future<ExceptionWrapper> waitComplete() {
+		return regMotor.waitComplete();
 	}
 
 	public void backward() {
@@ -133,7 +134,7 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		regMotor.backward(); // REVERSED
 	}
 
-	public boolean isMoving() {
+	public Future<ReturnWrapper<Boolean>> isMoving() {
 		return regMotor.isMoving();
 	}
 
@@ -141,16 +142,16 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		regMotor.stop(false);
 	}
 
-	public int getRotationSpeed() {
+	public Future<ReturnWrapper<Integer>> getRotationSpeed() {
 		return regMotor.getRotationSpeed();
 	}
 
 	public Future<ReturnWrapper<Integer>> getTachoCount() {
-		return -regMotor.getTachoCount();// REVERSED
+		return AsyncExecutor.execute(() -> -regMotor.getTachoCount().get().getValue());// REVERSED
 	}
 
 	public Future<ExceptionWrapper> resetTachoCount() {
-		regMotor.resetTachoCount();
+		return regMotor.resetTachoCount();
 	}
 
 	public void rotationStarted(RegulatedMotor motor, int tachoCount,

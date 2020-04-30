@@ -7,6 +7,7 @@ import lejos.hardware.port.TachoMotorPort;
 //import lejos.internal.ev3.EV3MotorPort;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
@@ -88,8 +89,7 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      * @param port  to which this motor is connected
      */
     public BaseRegulatedMotor(Port port, MotorRegulator regulator, int typ, float moveP, float moveI,
-            float moveD, float holdP, float holdI, float holdD, int offset, int maxSpeed)
-    {
+            float moveD, float holdP, float holdI, float holdD, int offset, int maxSpeed) throws Exception {
         this(port.open(TachoMotorPort.class), regulator, typ, moveP, moveI, moveD, holdP, holdI, holdD, offset, maxSpeed);
         releaseOnClose(tachoPort);
     }
@@ -138,7 +138,7 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      * if regulation has been suspended calling this method will restart it.
      * @return the current position calculated by the regulator.
      */
-    public float getPosition()
+    public Future<ReturnWrapper<Float>> getPosition()
     {
         return reg.getPosition();
     }
@@ -213,7 +213,7 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      * be detected  by calling {@link #isStalled()};
      * @return true iff the motor is attempting to rotate.<br>
      */
-    public boolean isMoving()
+    public Future<ReturnWrapper<Boolean>> isMoving()
     {
         return reg.isMoving();
     }
@@ -221,10 +221,11 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
     /**
      * Wait until the current movement operation is complete (this can include
      * the motor stalling).
+     * @return
      */
-    public void waitComplete()
+    public Future<ExceptionWrapper> waitComplete()
     {
-        reg.waitComplete();
+        return reg.waitComplete();
     }
 
     public void rotateTo(int limitAngle, boolean immediateReturn)
@@ -293,7 +294,7 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      */
     public Future<ExceptionWrapper> resetTachoCount()
     {
-        reg.resetTachoCount();
+        return reg.resetTachoCount();
     }
 
     /**
@@ -314,10 +315,11 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      * Rotate by the request number of degrees.
      * @param angle number of degrees to rotate relative to the current position
      * @param immediateReturn if true do not wait for the move to complete
+     * @return
      */
-    public void rotate(int angle, boolean immediateReturn)
+    public Future<ExceptionWrapper> rotate(int angle, boolean immediateReturn)
     {
-        rotateTo(Math.round(reg.getPosition()) + angle, immediateReturn);
+        return AsyncExecutor.execute(()-> rotateTo(Math.round(reg.getPosition().get().getValue()) + angle, immediateReturn));
     }
 
     /**
@@ -363,7 +365,7 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      * Return true if the motor is currently stalled.
      * @return true if the motor is stalled, else false
      */
-    public boolean isStalled()
+    public Future<ReturnWrapper<Boolean>> isStalled()
     {
         return reg.isStalled();
     }
@@ -383,9 +385,9 @@ public abstract class BaseRegulatedMotor extends Device implements RegulatedMoto
      * Return the current velocity.
      * @return current velocity in degrees/s
      */
-    public int getRotationSpeed()
+    public Future<ReturnWrapper<Integer>> getRotationSpeed()
     {
-        return Math.round(reg.getCurrentVelocity());
+        return AsyncExecutor.execute(() -> Math.round(reg.getCurrentVelocity().get().getValue()));
     }
 
 

@@ -82,7 +82,7 @@ public class HiTechnicAngleSensor extends I2CSensor {
     init();
   }
 
-  public HiTechnicAngleSensor(Port port) {
+  public HiTechnicAngleSensor(Port port) throws Exception {
     super(port);
     init();
   }

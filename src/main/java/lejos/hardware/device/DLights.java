@@ -36,7 +36,7 @@ public class DLights {
             dLights[i] = new LED(port, address[i]);
     }
 
-    public DLights(Port port) {
+    public DLights(Port port) throws Exception {
         for (int i = 0; i < 5; i++)
             dLights[i] = new LED(port, address[i]);
     }
@@ -266,7 +266,7 @@ public class DLights {
             init();
         }
 
-        protected LED(Port port, int address) {
+        protected LED(Port port, int address) throws Exception {
             super(port, address);
             init();
         }

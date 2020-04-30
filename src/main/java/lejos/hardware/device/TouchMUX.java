@@ -70,8 +70,7 @@ public class TouchMUX extends AnalogSensor {
      * Create a object to provide access to a touch sensor multiplexer
      * @param port The NXT sensor port to which the multiplexer is attached
      */
-    public TouchMUX(Port port)
-    {
+    public TouchMUX(Port port) throws Exception {
         super(port);
         this.port.setTypeAndMode(SensorConstants.TYPE_CUSTOM, SensorConstants.MODE_RAW);
     }

@@ -22,13 +22,15 @@ public class RemoteI2CPort extends RemoteIOPort implements I2CPort {
 			rmi = rmiEV3.openI2CPort(getName());
 		} catch (RemoteException e) {
 			throw new PortException(e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		return res;
 	}
 	
 	
 	@Override
-	public Future<ExceptionWrapper> close() {
+	public void close() {
 		try {
 			super.close();
 			rmi.close();

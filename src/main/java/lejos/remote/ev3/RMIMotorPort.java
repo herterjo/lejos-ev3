@@ -23,12 +23,12 @@ public interface RMIMotorPort extends Remote {
     /**
      * returns tachometer count
      */
-    public  int getTachoCount() throws RemoteException;
+    public  int getTachoCount() throws RemoteException, Exception;
     
     /**
      *resets the tachometer count to 0;
      */ 
-    public void resetTachoCount() throws RemoteException;
+    public void resetTachoCount() throws Exception;
     
     public void setPWMMode(int mode) throws RemoteException;
     

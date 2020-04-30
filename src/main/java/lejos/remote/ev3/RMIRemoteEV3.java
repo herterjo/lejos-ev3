@@ -27,12 +27,12 @@ public class RMIRemoteEV3 extends UnicastRemoteObject implements RMIEV3 {
 	}
 
 	@Override
-	public RMIAnalogPort openAnalogPort(String portName) throws RemoteException {
+	public RMIAnalogPort openAnalogPort(String portName) throws Exception {
 		return new RMIRemoteAnalogPort(portName);
 	}
 
 	@Override
-	public RMII2CPort openI2CPort(String portName) throws RemoteException {
+	public RMII2CPort openI2CPort(String portName) throws Exception {
 		return new RMIRemoteI2CPort(portName);
 	}
 
@@ -42,7 +42,7 @@ public class RMIRemoteEV3 extends UnicastRemoteObject implements RMIEV3 {
 	}
 
 	@Override
-	public RMIMotorPort openMotorPort(String portName) throws RemoteException {
+	public RMIMotorPort openMotorPort(String portName) throws Exception {
 		return new RMIRemoteMotorPort(portName);
 	}
 

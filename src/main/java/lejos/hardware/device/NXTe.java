@@ -49,7 +49,7 @@ public class NXTe  extends I2CSensor{
         init(this.port);
     }
     
-    public NXTe(Port port){
+    public NXTe(Port port) throws Exception {
         super(port, NXTE_ADDRESS, TYPE_LOWSPEED_9V);
         init(this.port);
     }

@@ -115,7 +115,7 @@ public class NXTUltrasonicSensor extends I2CSensor  {
 		init();
 	}
 	
-	public NXTUltrasonicSensor(Port port) {
+	public NXTUltrasonicSensor(Port port) throws Exception {
 		super(port, DEFAULT_I2C_ADDRESS, TYPE_LOWSPEED_9V);
 		init();
 	}

@@ -93,7 +93,7 @@ public abstract class EV3IOPort implements IOPort, BasicSensorPort, EV3SensorCon
                 if (!setPinMode(CMD_CONNECTED))
                 {
                     this.port = -1;
-                    return false;
+                    return ReturnWrapper.getCompletedReturnNormal(false);
                 }
                 openPorts[typ][port] = this;
                 this.ref = ref;
@@ -102,9 +102,9 @@ public abstract class EV3IOPort implements IOPort, BasicSensorPort, EV3SensorCon
                     // set sane pin states, automatic detection may have changed them. 
                     setPinMode(CMD_FLOAT);
                 }
-                return true;
+                return ReturnWrapper.getCompletedReturnNormal(true);
             }
-            return false;
+            return ReturnWrapper.getCompletedReturnNormal(false);
         }
     }
    

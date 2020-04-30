@@ -95,7 +95,7 @@ public class LightScanner
     * @return the set of range readings, containing the light intensity and angle of each beacon
     */
    public RangeReadings scanLight(float startAngle, float endAngle, int direction,
-           int numReadings)
+           int numReadings) throws Exception
    {
       _numReadings = numReadings;
       // working arrays to hold data
@@ -122,7 +122,7 @@ public class LightScanner
       head.setSpeed(lightSpeed);
       head.rotate(arc, true);
       int k = 0;
-      while (_scanning && head.isMoving())
+      while (_scanning && head.isMoving().get().getValue())
       {
          light = (int) ( eye.getNormalizedLightValue()*100);
          if (!beacon && light > _lightMin)//seeing beacon
@@ -135,7 +135,7 @@ public class LightScanner
             if (light > intensity[indx]) 
             {
                intensity[indx] = light;
-               bearing[indx] = head.getTachoCount();
+               bearing[indx] = head.getTachoCount().get().getValue();
             }
             if (light < _background) // past the beacon          
             {
@@ -165,7 +165,7 @@ public class LightScanner
 
                }// light < backaground
             }// end past beacon
-            if (!head.isMoving() && _scanning)
+            if (!head.isMoving().get().getValue() && _scanning)
             {
                _readings.set(0, new RangeReading(-1, -1)); //incomplete readings
             }

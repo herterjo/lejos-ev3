@@ -26,7 +26,7 @@ public class RemoteUARTPort extends RemoteIOPort implements UARTPort {
 	}
 	
 	@Override
-	public Future<ExceptionWrapper> close() {
+	public void close() {
 		super.close();
 		try {
 			rmi.close();

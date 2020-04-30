@@ -56,7 +56,7 @@ public class NXTSoundSensor extends AnalogSensor implements SensorConstants {
    * @param port
    *          the sensor port to use
    */
-  public NXTSoundSensor(Port port) {
+  public NXTSoundSensor(Port port) throws Exception {
     super(port);
     init();
   }

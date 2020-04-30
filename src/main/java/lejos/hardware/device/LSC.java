@@ -56,7 +56,7 @@ public class LSC extends I2CSensor {
      * @param SPI_PORT
      * 
      */
-    public LSC(Port port,byte SPI_PORT){
+    public LSC(Port port,byte SPI_PORT) throws Exception {
         super(port, NXTe.NXTE_ADDRESS);
         this.portConnected = this.port;
         this.SPI_PORT = SPI_PORT;

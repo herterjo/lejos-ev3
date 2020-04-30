@@ -2,6 +2,7 @@ package lejos.remote.rcx;
       
 import lejos.hardware.device.RCXLink;
 import lejos.hardware.port.BasicMotorPort;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
 import lejos.utility.ExceptionWrapper;
 
@@ -59,12 +60,18 @@ public class RCXRemoteMotorPort implements BasicMotorPort {
 	public void setPWMMode(int mode) {
 	}
     @Override
-    public Future<ExceptionWrapper> close()
+    public void close()
     {
         // TODO Auto-generated method stub
         
     }
-    @Override
+
+	@Override
+	public Future<ExceptionWrapper> closeRet() {
+		return AsyncExecutor.execute(this::close);
+	}
+
+	@Override
     public String getName()
     {
         // TODO Auto-generated method stub

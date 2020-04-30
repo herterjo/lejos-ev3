@@ -2,14 +2,12 @@ package lejos.robotics.chassis;
 
 
 import lejos.robotics.RegulatedMotor;
-import lejos.robotics.chassis.Chassis;
-import lejos.robotics.chassis.Wheel;
 import lejos.robotics.localization.DynamicPoseProvider;
-import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.Pose;
-import lejos.utility.Delay;
-import lejos.utility.Matrix;
+import lejos.utility.*;
+
+import java.util.concurrent.Future;
 
 
 /** Represents the chassis of a wheeled robot. 
@@ -74,7 +72,7 @@ public class WheeledChassis implements Chassis {
 
 
   
-  public WheeledChassis(Wheel[] wheels, int dim) {
+  public WheeledChassis(Wheel[] wheels, int dim) throws Exception {
     nWheels = wheels.length;
     if (nWheels < dim ) throw new  IllegalArgumentException(String.format("The chassis must have at least %d motorized wheels", dim));
     if (dim == TYPE_DIFFERENTIAL) dummyWheels =1;
@@ -114,13 +112,13 @@ public class WheeledChassis implements Chassis {
     reverseAbs = this.copyAbsolute(reverse);
 
     // Give speed and acceleration some default values
-    double s = this.getMaxLinearSpeed();
-    double a = this.getMaxAngularSpeed();
+    double s = this.getMaxLinearSpeed().get().getValue();
+    double a = this.getMaxAngularSpeed().get().getValue();
     setSpeed(s/2, a/2);
     setAcceleration(s/2, a/2);
     
     // store position of tacho's
-    tachoAtMoveStart = getAttribute(TACHOCOUNT);
+    tachoAtMoveStart = getAttribute(TACHOCOUNT).get().getValue();
 
   }
   
@@ -201,13 +199,15 @@ public class WheeledChassis implements Chassis {
   // State
   
   @Override
-  public boolean isMoving() {
-    for (RegulatedMotor wheel : motor) {
-      if (wheel.isMoving()) {
-        return true;
+  public Future<ReturnWrapper<Boolean>> isMoving() {
+    return AsyncExecutor.execute(() -> {
+      for (RegulatedMotor wheel : motor) {
+        if (wheel.isMoving().get().getValue()) {
+          return true;
+        }
       }
-    }
-    return false;
+      return false;
+    });
   }
 
 
@@ -218,12 +218,15 @@ public class WheeledChassis implements Chassis {
   }
 
   @Override
-  public boolean isStalled() {
-    for (RegulatedMotor wheel : motor) {
-      if (wheel.isStalled())
-        return true;
-    }
-    return false;
+  public Future<ReturnWrapper<Boolean>> isStalled() {
+    return AsyncExecutor.execute(() -> {
+      for (RegulatedMotor wheel : motor) {
+        if (wheel.isStalled().get().getValue()) {
+          return true;
+        }
+      }
+      return false;
+    });
   }
 
   @Override
@@ -245,41 +248,44 @@ public class WheeledChassis implements Chassis {
     setVelocity(Math.sqrt(xSpeed * xSpeed + ySpeed * ySpeed), Math.atan2(ySpeed, xSpeed), angularSpeed);
   }
 
-  public synchronized void setVelocity(double linearSpeed, double direction, double angularSpeed) {
-    if (dummyWheels ==1 && (direction % 180 != 0) ) throw new RuntimeException("Invalid direction for differential a robot."); 
-    if (Double.isNaN(linearSpeed)) throw new RuntimeException("Linear speed is not a number");
-    if (Double.isNaN(direction)) throw new RuntimeException("Direction is not a number"); 
-    if (Double.isNaN(angularSpeed)) throw new RuntimeException("Angular speed is not a number");
-    // create matrices with speed and acceleration components using direction;
-    Matrix targetSpeed = toCartesianMatrix(linearSpeed, Math.toRadians(direction), angularSpeed);
-    Matrix targetMotorSpeed = forward.times(targetSpeed);
-    Matrix currentMotorSpeed = getAttribute(ROTATIONSPEED);
-    Matrix currentSpeed = reverse.times(currentMotorSpeed);
+  public synchronized Future<ExceptionWrapper> setVelocity(double linearSpeed, double direction, double angularSpeed) {
+    return AsyncExecutor.execute(() -> {
+      synchronized (this) {
+        if (dummyWheels ==1 && (direction % 180 != 0) ) throw new RuntimeException("Invalid direction for differential a robot.");
+        if (Double.isNaN(linearSpeed)) throw new RuntimeException("Linear speed is not a number");
+        if (Double.isNaN(direction)) throw new RuntimeException("Direction is not a number");
+        if (Double.isNaN(angularSpeed)) throw new RuntimeException("Angular speed is not a number");
+        // create matrices with speed and acceleration components using direction;
+        Matrix targetSpeed = toCartesianMatrix(linearSpeed, Math.toRadians(direction), angularSpeed);
+        Matrix targetMotorSpeed = forward.times(targetSpeed);
+        Matrix currentMotorSpeed = getAttribute(ROTATIONSPEED).get().getValue();
+        Matrix currentSpeed = reverse.times(currentMotorSpeed);
 
-    // calculate acceleration time
-    double duration = getDuration(currentSpeed, targetSpeed);
-    master.startSynchronization();
-    
-    // Calculate and apply acceleration
-    if (duration != 0) {
-      for (int i = 0; i < nWheels; i++) {
-        int accel = (int) (Math.abs((targetMotorSpeed.get(i,0) - currentMotorSpeed.get(i,0))/duration));
-        if (accel != 0)
-          motor[i].setAcceleration(accel);
-      }
-    }
-      // apply speed
-    for (int i = 0; i < nWheels; i++) {
-      double speed = (targetMotorSpeed.get(i, 0));
-        motor[i].setSpeed((int)Math.abs(speed));
-        switch((int)Math.signum(speed)) {
-        case -1: motor[i].backward(); break;
-        case 0: motor[i].stop(); break;
-        case 1: motor[i].forward(); break;
-      }
-    }
-    master.endSynchronization();
+        // calculate acceleration time
+        double duration = getDuration(currentSpeed, targetSpeed);
+        master.startSynchronization();
 
+        // Calculate and apply acceleration
+        if (duration != 0) {
+          for (int i = 0; i < nWheels; i++) {
+            int accel = (int) (Math.abs((targetMotorSpeed.get(i,0) - currentMotorSpeed.get(i,0))/duration));
+            if (accel != 0)
+              motor[i].setAcceleration(accel);
+          }
+        }
+        // apply speed
+        for (int i = 0; i < nWheels; i++) {
+          double speed = (targetMotorSpeed.get(i, 0));
+          motor[i].setSpeed((int)Math.abs(speed));
+          switch((int)Math.signum(speed)) {
+            case -1: motor[i].backward(); break;
+            case 0: motor[i].stop(); break;
+            case 1: motor[i].forward(); break;
+          }
+        }
+        master.endSynchronization();
+      }
+    });
   }
   
   private double getDuration(Matrix current, Matrix target) {
@@ -387,66 +393,80 @@ public class WheeledChassis implements Chassis {
 
   // Dynamics
   @Override
-  public double getMaxLinearSpeed() {
-    Matrix motorSpeed = getAttribute(MAXSPEED);
-    
-    Matrix wheelSpeed = reverseAbs.times(motorSpeed);
-    return Math.sqrt(wheelSpeed.get(0, 0) * wheelSpeed.get(0, 0) + wheelSpeed.get(1, 0) * wheelSpeed.get(1, 0));
+  public Future<ReturnWrapper<Double>> getMaxLinearSpeed() {
+    return AsyncExecutor.execute(() -> {
+      Matrix motorSpeed = getAttribute(MAXSPEED).get().getValue();
+
+      Matrix wheelSpeed = reverseAbs.times(motorSpeed);
+      return Math.sqrt(wheelSpeed.get(0, 0) * wheelSpeed.get(0, 0) + wheelSpeed.get(1, 0) * wheelSpeed.get(1, 0));
+    });
   }
 
   @Override
-  public double getMaxAngularSpeed() {
-    Matrix motorSpeed = getAttribute(MAXSPEED);
-    Matrix wheelSpeed = reverseAbs.times(motorSpeed);
-    return wheelSpeed.get(2, 0);
+  public Future<ReturnWrapper<Double>> getMaxAngularSpeed() {
+    return AsyncExecutor.execute(() -> {
+      Matrix motorSpeed = getAttribute(MAXSPEED).get().getValue();
+      Matrix wheelSpeed = reverseAbs.times(motorSpeed);
+      return wheelSpeed.get(2, 0);
+    });
   }
   
   @Override
-  public Matrix getCurrentSpeed() {
-    Matrix motorSpeed = getAttribute(ROTATIONSPEED);
-    Matrix wheelSpeed = reverse.times(motorSpeed);
-    return toPolar(wheelSpeed.get(0, 0),  wheelSpeed.get(1, 0),  wheelSpeed.get(2, 0));
+  public Future<ReturnWrapper<Matrix>> getCurrentSpeed() {
+    return AsyncExecutor.execute(() -> {
+      Matrix motorSpeed = getAttribute(ROTATIONSPEED).get().getValue();
+      Matrix wheelSpeed = reverse.times(motorSpeed);
+      return toPolar(wheelSpeed.get(0, 0),  wheelSpeed.get(1, 0),  wheelSpeed.get(2, 0));
+    });
   }
   
   @Override
-  public double getLinearVelocity() {
-    return getCurrentSpeed().get(0,0);
+  public Future<ReturnWrapper<Double>> getLinearVelocity() {
+    return AsyncExecutor.execute(() -> getCurrentSpeed().get().getValue().get(0,0));
   }
 
   @Override
-  public double getLinearDirection() {
-    return getCurrentSpeed().get(1,0);
+  public Future<ReturnWrapper<Double>> getLinearDirection() {
+    return AsyncExecutor.execute(() -> getCurrentSpeed().get().getValue().get(1,0));
   }
   
   @Override
-  public double getAngularVelocity() {
-    return getCurrentSpeed().get(2,0);
+  public Future<ReturnWrapper<Double>> getAngularVelocity() {
+    return AsyncExecutor.execute(() -> getCurrentSpeed().get().getValue().get(2,0));
   }
 
 
 
   // Support for move reconstruction for move based pilots
   
-  public void moveStart() {
-    tachoAtMoveStart = getAttribute(TACHOCOUNT);
+  public Future<ExceptionWrapper> moveStart() {
+    return AsyncExecutor.execute(() -> {
+      synchronized (this) {
+        tachoAtMoveStart = getAttribute(TACHOCOUNT).get().getValue();
+      }
+    });
   }
   
   @Override
-  public Move getDisplacement(Move move) {
-    Matrix currentTacho = getAttribute(TACHOCOUNT);
-    Matrix delta = currentTacho.minus(tachoAtMoveStart);
+  public Future<ReturnWrapper<Move>> getDisplacement(Move move) {
+    return AsyncExecutor.execute(() -> {
+      synchronized (this) {
+        Matrix currentTacho = getAttribute(TACHOCOUNT).get().getValue();
+        Matrix delta = currentTacho.minus(tachoAtMoveStart);
 
-    delta = reverse.times(delta);
-    double distance = Math.sqrt(delta.get(0, 0) * delta.get(0, 0) + delta.get(1, 0) * delta.get(1, 0));
-    double rotation = delta.get(2, 0);
-    if (distance == 0 && rotation == 0  )
-      move.setValues(Move.MoveType.STOP, (float) distance, (float) rotation, isMoving());
-    else if (Math.abs(rotation) < 1 )
-      move.setValues(Move.MoveType.TRAVEL, (float) distance, (float) rotation, isMoving());
-    else if (Math.abs(distance) < 1)
-      move.setValues(Move.MoveType.ROTATE, (float) distance, (float) rotation, isMoving());
-    else move.setValues(Move.MoveType.ARC, (float) distance, (float) rotation, isMoving());
-    return move;
+        delta = reverse.times(delta);
+        double distance = Math.sqrt(delta.get(0, 0) * delta.get(0, 0) + delta.get(1, 0) * delta.get(1, 0));
+        double rotation = delta.get(2, 0);
+        if (distance == 0 && rotation == 0  )
+          move.setValues(Move.MoveType.STOP, (float) distance, (float) rotation, isMoving().get().getValue());
+        else if (Math.abs(rotation) < 1 )
+          move.setValues(Move.MoveType.TRAVEL, (float) distance, (float) rotation, isMoving().get().getValue());
+        else if (Math.abs(distance) < 1)
+          move.setValues(Move.MoveType.ROTATE, (float) distance, (float) rotation, isMoving().get().getValue());
+        else move.setValues(Move.MoveType.ARC, (float) distance, (float) rotation, isMoving().get().getValue());
+        return move;
+      }
+    });
   }
   
  
@@ -659,7 +679,7 @@ public class WheeledChassis implements Chassis {
   
   
   @Override
-  public DynamicPoseProvider getPoseProvider() {
+  public DynamicPoseProvider getPoseProvider() throws Exception {
     if (odometer == null) odometer = new Odometer();
     return  odometer;
   }
@@ -676,8 +696,8 @@ public class WheeledChassis implements Chassis {
 
     int    interval = 64;
 
-    private Odometer() {
-      lastTacho = getAttribute(TACHOCOUNT);
+    private Odometer() throws Exception {
+      lastTacho = getAttribute(TACHOCOUNT).get().getValue();
       lastTime = System.currentTimeMillis();
       PoseTracker tracker = new PoseTracker();
       tracker.setDaemon(true);
@@ -696,9 +716,9 @@ public class WheeledChassis implements Chassis {
       aPose = pose.getHeading();
     }
 
-    private synchronized void updatePose() {
+    private synchronized void updatePose() throws Exception {
       long thisTime;
-      Matrix currentTacho = getAttribute(TACHOCOUNT);
+      Matrix currentTacho = getAttribute(TACHOCOUNT).get().getValue();
       thisTime = System.currentTimeMillis();
       Matrix delta = currentTacho.minus(lastTacho);
 
@@ -737,7 +757,11 @@ public class WheeledChassis implements Chassis {
     private class PoseTracker extends Thread {
       public void run() {
         while (true) {
-          updatePose();
+          try {
+            updatePose();
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
           Delay.msDelay(interval);
         }
       }
@@ -843,25 +867,29 @@ protected Matrix toPolar(double x, double y, double angular) {
  * @param attribute
  * @return the mmatrix
  */
-protected synchronized Matrix getAttribute(int attribute) {
-  Matrix x = new Matrix(nWheels+dummyWheels, 1);
-  master.startSynchronization();
-  for (int i = 0; i < nWheels; i++) {
-    switch (attribute) {
-    case TACHOCOUNT:
-      x.set(i, 0, motor[i].getTachoCount());
-      break;
-    case MAXSPEED:
-      x.set(i, 0, motor[i].getMaxSpeed());
-      break;
-    case ROTATIONSPEED:
-      x.set(i, 0, motor[i].getRotationSpeed());
-      break;
+protected synchronized Future<ReturnWrapper<Matrix>> getAttribute(int attribute) {
+  return AsyncExecutor.execute(() -> {
+    synchronized (this) {
+      Matrix x = new Matrix(nWheels + dummyWheels, 1);
+      master.startSynchronization();
+      for (int i = 0; i < nWheels; i++) {
+        switch (attribute) {
+          case TACHOCOUNT:
+            x.set(i, 0, motor[i].getTachoCount().get().getValue());
+            break;
+          case MAXSPEED:
+            x.set(i, 0, motor[i].getMaxSpeed());
+            break;
+          case ROTATIONSPEED:
+            x.set(i, 0, motor[i].getRotationSpeed().get().getValue());
+            break;
+        }
+      }
+      if (dummyWheels == 1) x.set(nWheels, 0, 0);
+      master.endSynchronization();
+      return x;
     }
-  }
-  if (dummyWheels==1) x.set(nWheels, 0, 0);
-  master.endSynchronization();
-  return x;
+  });
 }
 
 /**

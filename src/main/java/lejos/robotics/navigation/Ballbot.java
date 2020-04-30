@@ -153,9 +153,8 @@ public class Ballbot extends Thread { // TODO: Thread should be a private inner 
 	 *  
 	 *  <li>NXT 1.0 wheels = 5.6 cm
 	 *  <li>NXT 2.0 wheels = 4.32 cm
-	 *  
-	 * @param left The left motor. An unregulated motor.
-	 * @param right The right motor. An unregulated motor.
+	 *
+	 * @param motor Motor
 	 * @param gyro A HiTechnic gyro sensor
 	 * @param wheelDiameter diameter of wheel, preferably use cm (printed on side of LEGO tires in mm)
 	 */
@@ -259,11 +258,11 @@ public class Ballbot extends Thread { // TODO: Thread should be a private inner 
 	/**
 	 * Keeps track of wheel position with both motors.
 	 */
-	private void updateMotorData() {
+	private void updateMotorData() throws Exception {
 		long mrcLeft, mrcDelta;
 
 		// Keep track of motor position and speed
-		mrcLeft = my_motor.getTachoCount();
+		mrcLeft = my_motor.getTachoCount().get().getValue();
 		//mrcRight = right_motor.getTachoCount();
 
 		// Maintain previous mrcSum so that delta can be calculated and get
@@ -403,7 +402,11 @@ public class Ballbot extends Thread { // TODO: Thread should be a private inner 
 
 			updateGyroData();
 
-			updateMotorData();
+			try {
+				updateMotorData();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 
 			// Apply the drive control value to the motor position to get robot to move.
 			motorPos -= motorControlDrive * tInterval;

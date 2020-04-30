@@ -3,6 +3,8 @@ package lejos.robotics.navigation;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
 
+import java.util.concurrent.ExecutionException;
+
 /*
  * DEV NOTES: Should add an optional method to auto-calibrate the steering. With low power, rotate steering all 
  * the way to the left and record tacho limit, then all the way to the right and record tacho limit. Assumes
@@ -106,7 +108,7 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 	 * to set the reverse parameter to true for proper calibration. NOTE: The next time you run the calibrate
 	 * method it will still turn left first, but...  </p>
 	 */
-	public void calibrateSteering() {
+	public void calibrateSteering() throws Exception {
 		
 		// TODO: Not really necessary to check for stall. Could just rotate for about 2 seconds and take a tacho reading. 
 		// This would help with RemoteMotor and remote SteeringPilot, which doesn't implement isStalled().
@@ -115,8 +117,8 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		steeringMotor.setStallThreshold(10, 100);
 				
 		steeringMotor.forward();
-		while(!steeringMotor.isStalled()) Thread.yield();
-		int r = steeringMotor.getTachoCount();
+		while(!steeringMotor.isStalled().get().getValue()) Thread.yield();
+		int r = steeringMotor.getTachoCount().get().getValue();
 		
 		steeringMotor.backward();
 		try {
@@ -124,8 +126,8 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		while(!steeringMotor.isStalled()) Thread.yield();
-		int l = steeringMotor.getTachoCount();
+		while(!steeringMotor.isStalled().get().getValue()) Thread.yield();
+		int l = steeringMotor.getTachoCount().get().getValue();
 					
 		int center = (l + r) / 2; // TODO: Maybe reset tacho to zero? Seems like there is no center variable.
 		

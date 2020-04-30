@@ -1,5 +1,6 @@
 package lejos.robotics;
 
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
@@ -33,7 +34,7 @@ class ReversedEncoderMotor implements EncoderMotor {
 		encoderMotor.backward();
 	}
 
-	public boolean isMoving() {
+	public Future<ReturnWrapper<Boolean>> isMoving() {
 		return encoderMotor.isMoving();
 	}
 
@@ -42,10 +43,10 @@ class ReversedEncoderMotor implements EncoderMotor {
 	}
 
 	public Future<ReturnWrapper<Integer>> getTachoCount() {
-		return -encoderMotor.getTachoCount();
+		return AsyncExecutor.execute(() -> -encoderMotor.getTachoCount().get().getValue());
 	}
 
 	public Future<ExceptionWrapper> resetTachoCount() {
-		encoderMotor.resetTachoCount();
+		return encoderMotor.resetTachoCount();
 	}
 }

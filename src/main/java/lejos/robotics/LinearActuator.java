@@ -22,7 +22,7 @@ public interface LinearActuator extends Encoder {
      * Set the power level 0%-100% to be applied to the actuator motor where 0% is no movement and 100% is full speed.
      * @param power new motor power 0-100%
      */
-    public void setPower(int power);
+    public void setPower(int power) throws Exception;
 
     /**
      * Returns the current actuator motor power setting.

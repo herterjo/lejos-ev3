@@ -90,7 +90,7 @@ import lejos.hardware.port.Port;
      * @param port
      *            port, e.g. Port.S1
      */
-    public DexterLaserSensor(Port port) {
+    public DexterLaserSensor(Port port) throws Exception {
         super(port);
         init();
     }

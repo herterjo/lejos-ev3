@@ -67,7 +67,7 @@ public class HiTechnicIRSeekerV2 extends I2CSensor
        init();
     } 
 
-    public HiTechnicIRSeekerV2(Port port)  { 
+    public HiTechnicIRSeekerV2(Port port) throws Exception {
        super(port, address);
        init();
     } 

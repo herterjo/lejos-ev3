@@ -87,7 +87,7 @@ public class HiTechnicColorSensor extends I2CSensor implements ColorIdentifier {
     init();
   }
 
-  public HiTechnicColorSensor(Port port) {
+  public HiTechnicColorSensor(Port port) throws Exception {
     super(port);
     init();
   }

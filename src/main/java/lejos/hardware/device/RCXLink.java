@@ -68,7 +68,7 @@ public class RCXLink extends I2CSensor implements Opcode, IRTransmitter {
         super(port);
     }
 
-    public RCXLink(Port port) {
+    public RCXLink(Port port) throws Exception {
         super(port);
     }
 

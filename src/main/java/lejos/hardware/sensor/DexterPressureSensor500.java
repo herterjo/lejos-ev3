@@ -70,7 +70,7 @@ import lejos.robotics.SampleProvider;
         init();
     }
     
-    public DexterPressureSensor500(Port port) {
+    public DexterPressureSensor500(Port port) throws Exception {
         super(port);
         init();
     }

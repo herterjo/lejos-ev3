@@ -22,8 +22,7 @@ public class UnregulatedMotor extends BasicMotor implements EncoderMotor {
      * @param port The motor port that the motor will be attached to.
      * @param PWMMode see {@link lejos.hardware.port.BasicMotorPort#PWM_FLOAT} and see {@link lejos.hardware.port.BasicMotorPort#PWM_BRAKE}
      */
-    public UnregulatedMotor(Port port, int PWMMode)
-    {
+    public UnregulatedMotor(Port port, int PWMMode) throws Exception {
         this(port.open(TachoMotorPort.class), PWMMode);
         releaseOnClose(this.port);
     }
@@ -33,8 +32,7 @@ public class UnregulatedMotor extends BasicMotor implements EncoderMotor {
      * PWM operating mode will be PWM_BREAK {@link lejos.hardware.port.BasicMotorPort#PWM_BRAKE}
      * @param port The motor port that the motor will be attached to.
      */
-    public UnregulatedMotor(Port port)
-    {
+    public UnregulatedMotor(Port port) throws Exception {
         this(port, TachoMotorPort.PWM_BRAKE);
     }
     
@@ -62,13 +60,11 @@ public class UnregulatedMotor extends BasicMotor implements EncoderMotor {
         this(port, TachoMotorPort.PWM_BRAKE);
     }
     
-    public Future<ReturnWrapper<Integer>> getTachoCount()
-    {
+    public Future<ReturnWrapper<Integer>> getTachoCount() throws Exception {
         return encoderPort.getTachoCount();
     }
 
-    public Future<ExceptionWrapper> resetTachoCount()
-    {
-        encoderPort.resetTachoCount();
+    public Future<ExceptionWrapper> resetTachoCount() throws Exception {
+        return encoderPort.resetTachoCount();
     }
 }

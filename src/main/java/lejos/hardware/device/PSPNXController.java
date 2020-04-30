@@ -58,11 +58,11 @@ public class PSPNXController extends I2CSensor {
         init();
     }
 
-    public PSPNXController(Port port) {
+    public PSPNXController(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS);
     }
 
-    public PSPNXController(Port port, int address)    {
+    public PSPNXController(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED);
         init();
     }

@@ -1,5 +1,6 @@
 package lejos.robotics.navigation;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.chassis.Chassis;
@@ -87,7 +88,7 @@ public class MovePilot implements ArcRotateMoveController {
    */
   @Deprecated
   public MovePilot(final double wheelDiameter, final double trackWidth, final RegulatedMotor leftMotor,
-      final RegulatedMotor rightMotor) {
+      final RegulatedMotor rightMotor) throws Exception {
     this(wheelDiameter, trackWidth, leftMotor, rightMotor, false);
   }
 
@@ -111,7 +112,7 @@ public class MovePilot implements ArcRotateMoveController {
    */
   @Deprecated
   public MovePilot(final double wheelDiameter, final double trackWidth, final RegulatedMotor leftMotor,
-      final RegulatedMotor rightMotor, final boolean reverse) {
+      final RegulatedMotor rightMotor, final boolean reverse) throws Exception {
     this(wheelDiameter, wheelDiameter, trackWidth, leftMotor, rightMotor, reverse);
   }
 
@@ -149,7 +150,7 @@ public class MovePilot implements ArcRotateMoveController {
    */
   @Deprecated 
   public MovePilot(final double leftWheelDiameter, final double rightWheelDiameter, final double trackWidth,
-      final RegulatedMotor leftMotor, final RegulatedMotor rightMotor, final boolean reverse) {
+      final RegulatedMotor leftMotor, final RegulatedMotor rightMotor, final boolean reverse) throws Exception {
     this(new WheeledChassis(new Wheel[] { 
         WheeledChassis.modelWheel(leftMotor, leftWheelDiameter).offset(trackWidth / 2).invert(reverse),
         WheeledChassis.modelWheel(rightMotor, rightWheelDiameter).offset(-trackWidth / 2).invert(reverse) }, WheeledChassis.TYPE_DIFFERENTIAL));
@@ -161,10 +162,10 @@ public class MovePilot implements ArcRotateMoveController {
    * @param chassis
    *          A Chassis object describing the physical parameters of the robot.
    */
-  public MovePilot(Chassis chassis) {
+  public MovePilot(Chassis chassis) throws Exception {
     this.chassis = chassis;
-    linearSpeed = chassis.getMaxLinearSpeed() * 0.8;
-    angularSpeed = chassis.getMaxAngularSpeed() * 0.8;
+    linearSpeed = chassis.getMaxLinearSpeed().get().getValue() * 0.8;
+    angularSpeed = chassis.getMaxAngularSpeed().get().getValue() * 0.8;
     chassis.setSpeed(linearSpeed, this.angularSpeed);
     linearAcceleration = getLinearSpeed() * 4;
     angularAcceleration = getAngularSpeed() * 4;
@@ -211,8 +212,8 @@ public class MovePilot implements ArcRotateMoveController {
   }
 
   @Override
-  public double getMaxLinearSpeed() {
-    return chassis.getMaxLinearSpeed();
+  public double getMaxLinearSpeed() throws Exception {
+    return chassis.getMaxLinearSpeed().get().getValue();
   }
 
   @Override
@@ -227,8 +228,8 @@ public class MovePilot implements ArcRotateMoveController {
   }
 
   @Override
-  public double getMaxAngularSpeed() {
-    return chassis.getMaxAngularSpeed();
+  public double getMaxAngularSpeed() throws Exception {
+    return chassis.getMaxAngularSpeed().get().getValue();
   }
 
   @Override
@@ -244,27 +245,27 @@ public class MovePilot implements ArcRotateMoveController {
   // Moves of the travel family
 
   @Override
-  public void forward() {
+  public void forward() throws Exception {
     travel(Double.POSITIVE_INFINITY, true);
 
   }
 
   @Override
-  public void backward() {
+  public void backward() throws Exception {
     travel(Double.NEGATIVE_INFINITY, true);
   }
 
   @Override
-  public void travel(double distance) {
+  public void travel(double distance) throws Exception {
     travel(distance, false);
 
   }
 
   @Override
-  public void travel(double distance, boolean immediateReturn) {
-    if (chassis.isMoving())
+  public void travel(double distance, boolean immediateReturn) throws Exception {
+    if (chassis.isMoving().get().getValue())
       stop();
-    move = new Move(Move.MoveType.TRAVEL, (float) distance, 0, (float) linearSpeed, (float) angularSpeed, chassis.isMoving());
+    move = new Move(Move.MoveType.TRAVEL, (float) distance, 0, (float) linearSpeed, (float) angularSpeed, chassis.isMoving().get().getValue());
     chassis.moveStart();
     chassis.travel(distance);
     movementStart(immediateReturn);
@@ -273,51 +274,51 @@ public class MovePilot implements ArcRotateMoveController {
   // Moves of the Arc family
 
   @Override
-  public void arcForward(double radius) {
+  public void arcForward(double radius) throws Exception {
     arc(radius, Double.POSITIVE_INFINITY, true);
   }
 
   @Override
-  public void arcBackward(double radius) {
+  public void arcBackward(double radius) throws Exception {
     arc(radius, Double.NEGATIVE_INFINITY, true);
   }
 
   @Override
-  public void arc(double radius, double angle) {
+  public void arc(double radius, double angle) throws Exception {
     arc(radius, angle, false);
   }
 
   @Override
-  public void travelArc(double radius, double distance) {
+  public void travelArc(double radius, double distance) throws Exception {
     travelArc(radius, distance, false);
   }
 
   @Override
-  public void travelArc(double radius, double distance, boolean immediateReturn) {
+  public void travelArc(double radius, double distance, boolean immediateReturn) throws Exception {
     arc(radius,  distance / (2 * Math.PI), immediateReturn);
   }
 
   @Override
-  public void rotate(double angle) {
+  public void rotate(double angle) throws Exception {
     rotate(angle, false);
   }
 
   @Override
-  public void rotate(double angle, boolean immediateReturn) {
+  public void rotate(double angle, boolean immediateReturn) throws Exception {
     arc(0, angle, immediateReturn);
   }
 
-  public void rotateLeft() {
+  public void rotateLeft() throws Exception {
     rotate(Double.POSITIVE_INFINITY, true);
   }
 
-  public void rotateRight() {
+  public void rotateRight() throws Exception {
     rotate(Double.NEGATIVE_INFINITY, true);
   }
 
 
   @Override
-  public void arc(double radius, double angle, boolean immediateReturn) {
+  public void arc(double radius, double angle, boolean immediateReturn) throws Exception {
     if (Math.abs(radius) < minRadius) {
       throw new RuntimeException("Turn radius too small.");
     }
@@ -325,10 +326,10 @@ public class MovePilot implements ArcRotateMoveController {
       stop();
     }
     if (radius == 0) {
-      move = new Move(Move.MoveType.ROTATE, 0, (float) angle, (float) linearSpeed, (float) angularSpeed, chassis.isMoving());
+      move = new Move(Move.MoveType.ROTATE, 0, (float) angle, (float) linearSpeed, (float) angularSpeed, chassis.isMoving().get().getValue());
     } else {
       move = new Move(Move.MoveType.ARC, (float) (Math.toRadians(angle) * radius), (float) angle, (float) linearSpeed, (float) angularSpeed,
-          chassis.isMoving());
+          chassis.isMoving().get().getValue());
     }
     chassis.moveStart();
     chassis.arc(radius, angle);
@@ -346,8 +347,8 @@ public class MovePilot implements ArcRotateMoveController {
   
   // State
   @Override
-  public boolean isMoving() {
-    return chassis.isMoving();
+  public boolean isMoving() throws Exception {
+    return chassis.isMoving().get().getValue();
   }
 
 
@@ -374,9 +375,9 @@ public class MovePilot implements ArcRotateMoveController {
   }
 
   @Override
-  public Move getMovement() {
+  public Move getMovement() throws Exception {
     if (_moveActive) {
-    return chassis.getDisplacement(move);
+    return chassis.getDisplacement(move).get().getValue();
     }
     else {
       return new Move(Move.MoveType.STOP, 0, 0, false);
@@ -404,12 +405,16 @@ public class MovePilot implements ArcRotateMoveController {
     public synchronized void run() {
       while (more) {
         if (_moveActive) {
-          if (chassis.isStalled())
-            MovePilot.this.stop();
-          if (!chassis.isMoving() || _replaceMove) {
-            movementStop();
-            _moveActive = false;
-            _replaceMove = false;
+          try {
+            if (chassis.isStalled().get().getValue())
+              MovePilot.this.stop();
+            if (!chassis.isMoving().get().getValue() || _replaceMove) {
+              movementStop();
+              _moveActive = false;
+              _replaceMove = false;
+            }
+          } catch (Exception e) {
+            throw new RuntimeException(e);
           }
         }
         // wait for an event

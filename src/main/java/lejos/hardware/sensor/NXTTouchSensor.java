@@ -58,8 +58,7 @@ public class NXTTouchSensor extends AnalogSensor implements SensorConstants
 	 * Create an NXT touch sensor object attached to the specified port.
 	 * @param port the port that has the sensor attached
 	 */
-	public NXTTouchSensor(Port port)
-	{
+	public NXTTouchSensor(Port port) throws Exception {
 	    super(port);
 	    this.port.setTypeAndMode(TYPE_SWITCH, MODE_RAW);	 
 	    init();

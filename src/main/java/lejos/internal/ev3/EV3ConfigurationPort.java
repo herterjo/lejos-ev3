@@ -5,6 +5,8 @@ import java.util.concurrent.Future;
 
 import lejos.hardware.port.ConfigurationPort;
 import lejos.internal.io.NativeDevice;
+import lejos.utility.AsyncExecutor;
+import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
 public class EV3ConfigurationPort extends EV3IOPort  implements ConfigurationPort
@@ -23,11 +25,13 @@ public class EV3ConfigurationPort extends EV3IOPort  implements ConfigurationPor
     @Override
     public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
-        if (!super.open(typ, port, ref))
-            return false;
-        // enable automatic detection on this port
-        setPinMode(CMD_AUTOMATIC);
-        return true;
+        return AsyncExecutor.execute(() -> {
+            if (!super.open(typ, port, ref).get().getValue())
+                return false;
+            // enable automatic detection on this port
+            setPinMode(CMD_AUTOMATIC);
+            return true;
+        });
     }
 
 
@@ -83,5 +87,10 @@ public class EV3ConfigurationPort extends EV3IOPort  implements ConfigurationPor
         {
             throw new UnsupportedOperationException("Unable to access EV3 hardware. Is this an EV3?", e);
         }
+    }
+
+    @Override
+    public Future<ExceptionWrapper> closeRet() {
+        return AsyncExecutor.execute(this::close);
     }
 }

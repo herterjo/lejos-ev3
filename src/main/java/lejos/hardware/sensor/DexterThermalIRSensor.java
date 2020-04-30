@@ -95,7 +95,7 @@ import lejos.utility.EndianTools;
         init();
     }
     
-    public DexterThermalIRSensor(Port port) {
+    public DexterThermalIRSensor(Port port) throws Exception {
         super(port, I2C_ADDRESS);
         init();
     }

@@ -6,6 +6,7 @@ import java.util.concurrent.Future;
 
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
@@ -55,24 +56,24 @@ public class RemoteRequestRegulatedMotor implements RegulatedMotor {
 	}
 
 	@Override
-	public boolean isMoving() {
+	public Future<ReturnWrapper<Boolean>> isMoving() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_IS_MOVING;
-		return sendRequest(req, true).result;
+		return AsyncExecutor.execute(() -> sendRequest(req, true).result);
 	}
 
 	@Override
-	public int getRotationSpeed() {
+	public Future<ReturnWrapper<Integer>> getRotationSpeed() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_GET_ROTATION_SPEED;
-		return sendRequest(req, true).reply;
+		return AsyncExecutor.execute(() -> sendRequest(req, true).reply);
 	}
 
 	@Override
 	public Future<ReturnWrapper<Integer>> getTachoCount() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_GET_TACHO_COUNT;
-		return sendRequest(req, true).reply;
+		return AsyncExecutor.execute(() -> sendRequest(req, true).reply);
 	}
 
 	@Override
@@ -80,6 +81,7 @@ public class RemoteRequestRegulatedMotor implements RegulatedMotor {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_RESET_TACHO_COUNT;;
 		sendRequest(req, false);
+		return ExceptionWrapper.getCompletedException(null);
 	}
 
 	@Override
@@ -110,19 +112,21 @@ public class RemoteRequestRegulatedMotor implements RegulatedMotor {
 	}
 
 	@Override
-	public void waitComplete() {
+	public Future<ExceptionWrapper> waitComplete() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_WAIT_COMPLETE;
 		sendRequest(req, true);
+		return ExceptionWrapper.getCompletedException(null);
 	}
 
 	@Override
-	public void rotate(int angle, boolean immediateReturn) {
+	public Future<ExceptionWrapper> rotate(int angle, boolean immediateReturn) {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_ROTATE_IMMEDIATE;
 		req.intValue2 = angle;
 		req.flag = immediateReturn;
-		sendRequest(req, !immediateReturn);	
+		sendRequest(req, !immediateReturn);
+		return ExceptionWrapper.getCompletedException(null);
 	}
 
 	@Override
@@ -180,10 +184,10 @@ public class RemoteRequestRegulatedMotor implements RegulatedMotor {
 	}
 
 	@Override
-	public boolean isStalled() {
+	public Future<ReturnWrapper<Boolean>> isStalled() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.MOTOR_IS_STALLED;
-		return sendRequest(req, true).result;
+		return AsyncExecutor.execute(() -> sendRequest(req, true).result);
 	}
 
 	@Override

@@ -72,7 +72,7 @@ public class DexterIMUSensor extends BaseSensor implements SensorModes {
         setModes(new SensorMode[] { gyro.getMode(0), new DexterIMUAccelerationSensor(port, Accel_I2C_address), gyro.getMode(1) });
     }
 
-    public DexterIMUSensor(Port port) {
+    public DexterIMUSensor(Port port) throws Exception {
         DexterIMUGyroSensor gyro = new DexterIMUGyroSensor(port, Gyro_I2C_address);
         setModes(new SensorMode[] { gyro.getMode(0), new DexterIMUAccelerationSensor(gyro.port, Accel_I2C_address), gyro.getMode(1) });
         releaseOnClose(gyro);
@@ -187,7 +187,7 @@ public class DexterIMUSensor extends BaseSensor implements SensorModes {
             init();
         }
 
-        public DexterIMUGyroSensor(Port port, int address) {
+        public DexterIMUGyroSensor(Port port, int address) throws Exception {
             super(port, address, TYPE_LOWSPEED_9V);
             init();
         }

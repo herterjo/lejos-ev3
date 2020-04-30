@@ -78,8 +78,7 @@ public class RFIDSensor extends I2CSensor
      * initialization.
      * @param port The sensor port to use for this device.
      */
-    public RFIDSensor(Port port)
-    {
+    public RFIDSensor(Port port) throws Exception {
         super(port, DEFAULT_ADDRESS, TYPE_LOWSPEED_9V);
         init();
     }

@@ -96,8 +96,7 @@ public class UART implements Closeable
      * Create a UART device attached to the specified port.
      * @param port
      */
-    public UART(Port port)
-    {
+    public UART(Port port) throws Exception {
         this.port = port.open(UARTPort.class);
         this.port.setMode(UARTPort.UART_RAW_MODE);        
     }

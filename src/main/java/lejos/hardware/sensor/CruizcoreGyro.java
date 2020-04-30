@@ -118,7 +118,7 @@ public class CruizcoreGyro extends I2CSensor {
         init();
     }
 
-    public CruizcoreGyro(Port port) {
+    public CruizcoreGyro(Port port) throws Exception {
         super(port, GYRO_ADDRESS);
         init();
     }

@@ -95,7 +95,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
         init();
     }
 
-    public DexterCompassSensor(Port port) {
+    public DexterCompassSensor(Port port) throws Exception {
         super(port, I2C_ADDRESS, TYPE_LOWSPEED);
         init();
     }

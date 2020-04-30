@@ -271,7 +271,7 @@ public class NXTMMX extends I2CSensor {
      * Constructor for the NXTMMX
      * @param port - the port its plugged in to
      */
-    public NXTMMX(Port port) {
+    public NXTMMX(Port port) throws Exception {
         this(port, DEFAULT_MMX_ADDRESS);
     }
 
@@ -305,7 +305,7 @@ public class NXTMMX extends I2CSensor {
      * @param port - the sensor port its plugged in to
      * @param address The I2C address for the device
      */
-    public NXTMMX(Port port, int address) {
+    public NXTMMX(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED);
         init();
     }

@@ -6,9 +6,11 @@ import java.util.concurrent.Future;
 
 import lejos.hardware.port.AnalogPort;
 import lejos.internal.io.NativeDevice;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
 
 import com.sun.jna.Pointer;
+import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
 /**
@@ -67,9 +69,11 @@ public class EV3AnalogPort extends EV3IOPort implements AnalogPort
     @Override
     public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
-        if (!super.open(typ, port, ref))
-            return false;
-        return true;
+        return AsyncExecutor.execute(() -> {
+            if (!super.open(typ, port, ref).get().getValue())
+                return false;
+            return true;
+        });
     }
 
         
@@ -412,5 +416,10 @@ public class EV3AnalogPort extends EV3IOPort implements AnalogPort
         outDcm = pAnalog.getByteBuffer(ANALOG_OUTDCM_OFF, PORTS);
         outConn = pAnalog.getByteBuffer(ANALOG_OUTCONN_OFF, PORTS);
         shortVals = pAnalog.getByteBuffer(0, ANALOG_SIZE);
+    }
+
+    @Override
+    public Future<ExceptionWrapper> closeRet() {
+        return AsyncExecutor.execute(this::close);
     }
 }
