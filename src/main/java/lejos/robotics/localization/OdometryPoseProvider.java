@@ -37,8 +37,7 @@ public class OdometryPoseProvider implements PoseProvider, MoveListener, SampleP
    * data from its MoveProvider
    * @return pose
    */
-  public synchronized Pose getPose()
-  {
+  public synchronized Pose getPose() throws Exception {
     if (!current )
     {
       updatePose(mp.getMovement());
@@ -136,7 +135,7 @@ public class OdometryPoseProvider implements PoseProvider, MoveListener, SampleP
 	}
 	
 	@Override
-	public void fetchSample(float[] sample, int offset) {
+	public void fetchSample(float[] sample, int offset) throws Exception {
 	    if (!current )
 	    {
 	      updatePose(mp.getMovement());

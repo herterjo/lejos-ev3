@@ -23,10 +23,10 @@ import lejos.hardware.port.PortException;
 import lejos.hardware.video.Video;
 
 public class RemoteEV3 implements EV3 {
-	private String host;
-	private  RMIEV3 rmiEV3;
-	private ArrayList<RemotePort> ports = new ArrayList<RemotePort>();
-	private RemoteKeys keys;
+	private final String host;
+	private final RMIEV3 rmiEV3;
+	private final ArrayList<RemotePort> ports = new ArrayList<RemotePort>();
+	private final RemoteKeys keys;
 	
 	public RemoteEV3(String host) throws RemoteException, MalformedURLException, NotBoundException {
 		this.host = host;
@@ -82,6 +82,8 @@ public class RemoteEV3 implements EV3 {
 			return rmiEV3.createRegulatedMotor(portName, motorType);
 		} catch (RemoteException e) {
 			throw new PortException(e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 	

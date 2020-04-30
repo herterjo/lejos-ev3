@@ -77,7 +77,7 @@ public class TetrixMotorController extends I2CSensor {
     private static final int MODEBIT_SEL_RST_ENCODER = 0x03;
     
     // motor parameters
-    private int[][] motorParams = new int[4][CHANNELS]; 
+    private final int[][] motorParams = new int[4][CHANNELS];
     private static final int MOTPARAM_POWER = 0; // current power value
     private static final int MOTPARAM_REGULATED = 1; // 0=false=power control, 1=speed control
     private static final int MOTPARAM_REVERSED = 2; // 1=reversed, 0= normal
@@ -98,9 +98,9 @@ public class TetrixMotorController extends I2CSensor {
     byte[] motorType = {MOTTYPE_EMPTY,MOTTYPE_EMPTY};
     
     // I2C buffer
-    private byte[] buf = new byte[12];
+    private final byte[] buf = new byte[12];
     
-    private int[] limitangle = {0,0};
+    private final int[] limitangle = {0,0};
 
     /**
      * Instantiate a HiTechnic TETRIX Motor Controller connected to the given <code>port</code> and daisy chain position.
@@ -151,7 +151,7 @@ public class TetrixMotorController extends I2CSensor {
         }
         @Override
 		public void run(){
-            byte buf1[] = {(byte)MODEBIT_BUSY};
+            byte[] buf1 = {(byte)MODEBIT_BUSY};
             while ((buf1[0] & MODEBIT_BUSY) == MODEBIT_BUSY) {
                 Delay.msDelay(100);
                 //System.out.println("bsy");
@@ -178,13 +178,13 @@ public class TetrixMotorController extends I2CSensor {
     private class TachoMonitor extends Thread{
         private static final int POLL_DELAY_MS = 100;
         
-        private boolean threadDie = false;
-        private int[] TachoCount = new int[CHANNELS];
-        private byte[] buffer = new byte[8];
-        private volatile float[] degpersec = new float[CHANNELS];
-        private float[][] samples = new float[CHANNELS][3];
+        private final boolean threadDie = false;
+        private final int[] TachoCount = new int[CHANNELS];
+        private final byte[] buffer = new byte[8];
+        private final float[] degpersec = new float[CHANNELS];
+        private final float[][] samples = new float[CHANNELS][3];
         private int sampleIndex=0;
-        private boolean[] ismoving = new boolean[CHANNELS];
+        private final boolean[] ismoving = new boolean[CHANNELS];
         
         TachoMonitor(){
             this.setDaemon(true);

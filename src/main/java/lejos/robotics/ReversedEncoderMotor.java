@@ -14,31 +14,31 @@ class ReversedEncoderMotor implements EncoderMotor {
 		this.encoderMotor = motor;
 	}
 	
-	public int getPower() {
+	public int getPower() throws Exception {
 		return encoderMotor.getPower();
 	}
 
-	public void setPower(int power) {
+	public void setPower(int power) throws Exception {
 		encoderMotor.setPower(power);
 	}
 
-	public void backward() {
+	public void backward() throws Exception {
 		encoderMotor.forward();
 	}
 
-	public void flt() {
+	public void flt() throws Exception {
 		encoderMotor.flt();
 	}
 
-	public void forward() {
+	public void forward() throws Exception {
 		encoderMotor.backward();
 	}
 
-	public Future<ReturnWrapper<Boolean>> isMoving() {
+	public Future<ReturnWrapper<Boolean>> isMoving() throws Exception {
 		return encoderMotor.isMoving();
 	}
 
-	public void stop() {
+	public void stop() throws Exception {
 		encoderMotor.stop();
 	}
 
@@ -46,7 +46,7 @@ class ReversedEncoderMotor implements EncoderMotor {
 		return AsyncExecutor.execute(() -> -encoderMotor.getTachoCount().get().getValue());
 	}
 
-	public Future<ExceptionWrapper> resetTachoCount() {
+	public Future<ExceptionWrapper> resetTachoCount() throws Exception {
 		return encoderMotor.resetTachoCount();
 	}
 }

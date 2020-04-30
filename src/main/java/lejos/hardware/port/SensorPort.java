@@ -8,9 +8,9 @@ import lejos.hardware.BrickFinder;
  *
  */
 public interface SensorPort {
-    public static final Port S1 = BrickFinder.getDefault().getPort("S1");
-    public static final Port S2 = BrickFinder.getDefault().getPort("S2");
-    public static final Port S3 = BrickFinder.getDefault().getPort("S3");
-    public static final Port S4 = BrickFinder.getDefault().getPort("S4");
+    Port S1 = BrickFinder.getDefault().getPort("S1");
+    Port S2 = BrickFinder.getDefault().getPort("S2");
+    Port S3 = BrickFinder.getDefault().getPort("S3");
+    Port S4 = BrickFinder.getDefault().getPort("S4");
 
 }

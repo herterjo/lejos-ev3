@@ -53,7 +53,7 @@ import lejos.hardware.port.Port;
  * 
  */
 public class MindsensorsLineLeader extends I2CSensor {
-	private byte[] buf = new byte[8];
+	private final byte[] buf = new byte[8];
 	private final static byte COMMAND = 0x41;
 
     /**

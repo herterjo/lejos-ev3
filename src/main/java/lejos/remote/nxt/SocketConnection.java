@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 public class SocketConnection extends NXTConnection {
-	private Socket socket;
+	private final Socket socket;
 	private InputStream is;
 	private OutputStream os;
 	

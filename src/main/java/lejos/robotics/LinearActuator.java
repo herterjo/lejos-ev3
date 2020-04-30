@@ -22,13 +22,13 @@ public interface LinearActuator extends Encoder {
      * Set the power level 0%-100% to be applied to the actuator motor where 0% is no movement and 100% is full speed.
      * @param power new motor power 0-100%
      */
-    public void setPower(int power) throws Exception;
+    void setPower(int power) throws Exception;
 
     /**
      * Returns the current actuator motor power setting.
      * @return current power 0-100%
      */
-    public int getPower();
+    int getPower();
 
     /** The actuator should retract (negative <code>distance</code> value) or extend (positive <code>distance</code> value)
      * in encoder ticks <code>distance</code>. The <tt>distance</tt> is specified to be relative to the actuator shaft position
@@ -42,7 +42,7 @@ public interface LinearActuator extends Encoder {
      * @param distance The distance to move the actuator shaft
      * @param immediateReturn <code>true</code> returns immediately, <code>false</code> waits for the action to complete (or a stall)
      */
-    public void move(int distance, boolean immediateReturn);
+    void move(int distance, boolean immediateReturn);
     
     /** The actuator should move to absolute <code>position</code> in encoder ticks. The <code>position</code> of the actuator
      * shaft on startup should be zero. The <code>position</code> of the actuator shaft should be set to zero when 
@@ -50,12 +50,12 @@ public interface LinearActuator extends Encoder {
      * @param position The absolute shaft position in encoder ticks.
      * @param immediateReturn <code>true</code> returns immediately, <code>false</code> waits for the action to complete (or a stall)
      */
-    public void moveTo(int position, boolean immediateReturn);
+    void moveTo(int position, boolean immediateReturn);
     
     /**Return <code>true</code> if the actuator is in motion due to a <code>move()</code> or <code>moveTo()</code> order.
      * @return <code>true</code> if the actuator is in motion. <code>false</code> otherwise.
      */
-    public boolean isMoving();
+    boolean isMoving();
     
     /**
      * Returns true if a <code>move()</code> or <code>moveTo()</code> order ended due to a stalled motor. This should 
@@ -64,23 +64,23 @@ public interface LinearActuator extends Encoder {
      * @return <code>true</code> if actuator motor stalled during an <code>move()</code> or <code>moveTo()</code> order. 
      * <code>false</code> otherwise.
      */
-    public boolean isStalled();
+    boolean isStalled();
     
     /**
      * Cause the actuator to stop immediately and resist any further motion. Cancel any <code>move()</code> or 
      * <code>moveTo()</code>orders in progress.
      */
-    public void stop();
+    void stop();
     
     /**Returns the absolute tachometer (encoder) position of the actuator shaft. The zero position of the actuator shaft is where 
      * <code>resetTachoCount()</code> was last called or the position of the shaft when instantiated. 
      * 
      * @return tachometer count in encoder ticks.
      */
-    public Future<ReturnWrapper<Integer>> getTachoCount();
+    Future<ReturnWrapper<Integer>> getTachoCount();
     
     /**Reset the tachometer (encoder) count to zero at the current actuator position.
      * @return
      */
-    public Future<ExceptionWrapper> resetTachoCount();
+    Future<ExceptionWrapper> resetTachoCount();
 }

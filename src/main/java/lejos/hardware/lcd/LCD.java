@@ -259,7 +259,7 @@ public class LCD
      * @param h height of the area to copy
      * @param rop raster operation.
      */
-    public static void bitBlt(byte[] src, int sw, int sh, int sx, int sy, byte dst[], int dw, int dh, int dx, int dy, int w, int h, int rop)
+    public static void bitBlt(byte[] src, int sw, int sh, int sx, int sy, byte[] dst, int dw, int dh, int dx, int dy, int w, int h, int rop)
     {
     	g.bitBlt(src, sw, sh, sx, sy, dst, dw, dh, dx, dy, w, h, rop);
     }     

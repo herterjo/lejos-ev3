@@ -7,7 +7,7 @@ import lejos.hardware.Audio;
 import lejos.hardware.port.PortException;
 
 public class RemoteAudio implements Audio {
-	private RMIAudio audio;
+	private final RMIAudio audio;
 	
 	public RemoteAudio(RMIAudio audio) {
 		this.audio=audio;

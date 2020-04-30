@@ -6,7 +6,7 @@ import org.freedesktop.dbus.Path;
 @DBusInterfaceName("org.bluez.Manager")
 public interface Manager extends DBusInterface {
 	
-	public Path DefaultAdapter();
+	Path DefaultAdapter();
 	
 	Path[] ListAdapters();
 

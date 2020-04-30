@@ -8,8 +8,8 @@ import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.MoveListener;
 
 public class RemoteRequestPilot implements ArcRotateMoveController {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 
 	public RemoteRequestPilot(ObjectInputStream is, ObjectOutputStream os, String leftMotor, String rightMotor, double wheelDiameter, double trackWidth) {
 		this.is = is;

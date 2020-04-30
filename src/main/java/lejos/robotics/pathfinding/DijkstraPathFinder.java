@@ -438,7 +438,7 @@ protected  Path getRoute(Node destination)
   protected float _sourceDistance;
   protected Node _predecessor;
   public ArrayList<Node> _blocked = new ArrayList<Node>();
-  private float BIG = 100000;
+  private final float BIG = 100000;
  }
 // ****************   end Node class ****************************
 

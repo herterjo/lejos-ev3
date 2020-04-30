@@ -1,11 +1,13 @@
 package lejos.robotics.mapping;
 
 public class OccupancyGridMap {
-	private int width, height;
-	private double freeThreshold, occupiedThreshold;
-	private double resolution; // cells per meter
+	private final int width;
+    private final int height;
+	private final double freeThreshold;
+    private final double occupiedThreshold;
+	private final double resolution; // cells per meter
 
-	private byte[][] cells;
+	private final byte[][] cells;
 	
 	public OccupancyGridMap(int width, int height, 
 			double freeThreshold, double occupiedThreshold, 

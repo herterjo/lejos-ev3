@@ -13,8 +13,8 @@ import java.util.concurrent.Future;
  *
  */
 public class RCXPlexedMotorPort implements BasicMotorPort {
-	private RCXMotorMultiplexer plex;
-	private int id;
+	private final RCXMotorMultiplexer plex;
+	private final int id;
 	
 	public RCXPlexedMotorPort(RCXMotorMultiplexer plex, int id) {
 		this.plex = plex;

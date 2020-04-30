@@ -91,7 +91,7 @@ public class RemoteNXTI2CPort extends RemoteNXTIOPort implements I2CPort
 			try {
 				byte[] ret = nxtCommand.LSGetStatus((byte) port);
 				if (ret == null || ret.length < 1) throw new I2CException("Remote NXT I2C LSGetStatus error");
-				status = (int) ret[0];
+				status = ret[0];
 			} catch (IOException e) {
 				throw new PortException(e);
 			}

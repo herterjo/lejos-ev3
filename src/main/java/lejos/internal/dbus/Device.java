@@ -9,7 +9,7 @@ import org.freedesktop.dbus.UInt32;
 @DBusInterfaceName("org.bluez.Device")
 public interface Device extends DBusInterface, DBusProperties.PropertiesAccess {
 
-    public static enum Properties implements DBusProperties.PropertyEnum {
+    enum Properties implements DBusProperties.PropertyEnum {
         /**
          * The Bluetooth device address of the remote device.
          */

@@ -2,45 +2,45 @@ package lejos.remote.ev3;
 
 public interface Menu {
 	
-	public void runProgram(String programName);
+	void runProgram(String programName);
 	
-	public void runSample(String programName);
+	void runSample(String programName);
 	
-	public void debugProgram(String programName);
+	void debugProgram(String programName);
 	
-	public boolean deleteFile(String fileName);
+	boolean deleteFile(String fileName);
 	
-	public void stopProgram();
+	void stopProgram();
 	
-	public long getFileSize(String filename);
+	long getFileSize(String filename);
 	
-	public String[] getProgramNames();
+	String[] getProgramNames();
 	
-	public String[] getSampleNames();
+	String[] getSampleNames();
 
-	public boolean uploadFile(String fileName, byte[] contents);
+	boolean uploadFile(String fileName, byte[] contents);
 	
-	public byte[] fetchFile(String fileName);
+	byte[] fetchFile(String fileName);
 	
-	public String getSetting(String setting);
+	String getSetting(String setting);
 	
-	public void setSetting(String setting, String value);
+	void setSetting(String setting, String value);
 	
-	public void deleteAllPrograms();
+	void deleteAllPrograms();
 	
-	public String getVersion();
+	String getVersion();
 	
-	public String getMenuVersion();
+	String getMenuVersion();
 	
-	public String getName();
+	String getName();
 	
-	public void setName(String name);
+	void setName(String name);
 	
-	public String getExecutingProgramName();
+	String getExecutingProgramName();
 	
-	public void shutdown();
+	void shutdown();
 	
-	public void suspend();
+	void suspend();
 	
-	public void resume();
+	void resume();
 }

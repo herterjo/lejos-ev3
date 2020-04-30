@@ -11,9 +11,9 @@ import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
 public class RemoteRequestRegulatedMotor implements RegulatedMotor {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
-	private int portNum;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
+	private final int portNum;
 
 	public RemoteRequestRegulatedMotor(ObjectInputStream is,
 			ObjectOutputStream os, String portName, char motorType) {
@@ -79,8 +79,8 @@ public class RemoteRequestRegulatedMotor implements RegulatedMotor {
 	@Override
 	public Future<ExceptionWrapper> resetTachoCount() {
 		EV3Request req = new EV3Request();
-		req.request = EV3Request.Request.MOTOR_RESET_TACHO_COUNT;;
-		sendRequest(req, false);
+		req.request = EV3Request.Request.MOTOR_RESET_TACHO_COUNT;
+        sendRequest(req, false);
 		return ExceptionWrapper.getCompletedException(null);
 	}
 

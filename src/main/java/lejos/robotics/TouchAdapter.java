@@ -12,7 +12,7 @@ public class TouchAdapter implements Touch{
 	}
 
 	@Override
-	public boolean isPressed() {
+	public boolean isPressed() throws Exception {
 		source.fetchSample(buf,0);
 		return (buf[0] > 0);
 	}

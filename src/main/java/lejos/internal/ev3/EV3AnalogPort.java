@@ -70,9 +70,7 @@ public class EV3AnalogPort extends EV3IOPort implements AnalogPort
     public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
         return AsyncExecutor.execute(() -> {
-            if (!super.open(typ, port, ref).get().getValue())
-                return false;
-            return true;
+            return super.open(typ, port, ref).get().getValue();
         });
     }
 

@@ -17,7 +17,7 @@ import java.util.concurrent.Future;
  */
 public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 	
-	private RegulatedMotor regMotor;
+	private final RegulatedMotor regMotor;
 	private RegulatedMotorListener regListener;
 	
 	/**
@@ -66,11 +66,11 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		return old;
 	}
 
-	public void flt(boolean immediateReturn) {
+	public void flt(boolean immediateReturn) throws Exception {
 		regMotor.flt(immediateReturn);
 	}
 
-	public int getLimitAngle() { 
+	public int getLimitAngle() throws Exception {
 		return -regMotor.getLimitAngle();// REVERSED
 	}
 
@@ -78,7 +78,7 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		return regMotor.getMaxSpeed();
 	}
 
-	public int getSpeed() {
+	public int getSpeed() throws Exception {
 		return regMotor.getSpeed();
 	}
 
@@ -86,19 +86,19 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		return regMotor.isStalled();
 	}
 
-	public void rotate(int angle) {
+	public void rotate(int angle) throws Exception {
 		this.rotate(angle, false);
 	}
 
-	public Future<ExceptionWrapper> rotate(int angle, boolean immediateReturn) {
+	public Future<ExceptionWrapper> rotate(int angle, boolean immediateReturn) throws Exception {
 		return regMotor.rotate(-angle, immediateReturn);// REVERSED
 	}
 
-	public void rotateTo(int angle) {
+	public void rotateTo(int angle) throws Exception {
 		this.rotateTo(angle, false);
 	}
 
-	public void rotateTo(int angle, boolean immediateReturn) {
+	public void rotateTo(int angle, boolean immediateReturn) throws Exception {
 		regMotor.rotateTo(-angle, immediateReturn);// REVERSED
 	}
 
@@ -106,7 +106,7 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		regMotor.setAcceleration(acceleration);
 	}
 
-	public void setSpeed(int speed) {
+	public void setSpeed(int speed) throws Exception {
 		regMotor.setSpeed(speed);
 	}
 
@@ -114,7 +114,7 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		regMotor.setStallThreshold(error, time);
 	}
 
-	public void stop(boolean immediateReturn) {
+	public void stop(boolean immediateReturn) throws Exception {
 		regMotor.stop(immediateReturn);
 	}
 
@@ -122,27 +122,27 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		return regMotor.waitComplete();
 	}
 
-	public void backward() {
+	public void backward() throws Exception {
 		regMotor.forward();// REVERSED
 	}
 
-	public void flt() {
+	public void flt() throws Exception {
 		this.flt(false);
 	}
 
-	public void forward() {
+	public void forward() throws Exception {
 		regMotor.backward(); // REVERSED
 	}
 
-	public Future<ReturnWrapper<Boolean>> isMoving() {
+	public Future<ReturnWrapper<Boolean>> isMoving() throws Exception {
 		return regMotor.isMoving();
 	}
 
-	public void stop() {
+	public void stop() throws Exception {
 		regMotor.stop(false);
 	}
 
-	public Future<ReturnWrapper<Integer>> getRotationSpeed() {
+	public Future<ReturnWrapper<Integer>> getRotationSpeed() throws Exception {
 		return regMotor.getRotationSpeed();
 	}
 
@@ -150,7 +150,7 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 		return AsyncExecutor.execute(() -> -regMotor.getTachoCount().get().getValue());// REVERSED
 	}
 
-	public Future<ExceptionWrapper> resetTachoCount() {
+	public Future<ExceptionWrapper> resetTachoCount() throws Exception {
 		return regMotor.resetTachoCount();
 	}
 
@@ -161,7 +161,7 @@ public class MirrorMotor implements RegulatedMotor, RegulatedMotorListener {
 	}
 
 	public void rotationStopped(RegulatedMotor motor, int tachoCount,
-			boolean stalled, long timeStamp) {
+			boolean stalled, long timeStamp) throws Exception {
 		if(regListener!=null)
 				regListener.rotationStopped(this, -tachoCount, stalled, timeStamp);
 	}

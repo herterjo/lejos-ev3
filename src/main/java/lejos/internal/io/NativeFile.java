@@ -228,8 +228,6 @@ public class NativeFile {
      */
     public synchronized Pointer mmap(long len, int prot, int flags, long off) {
         Pointer p = clib.mmap(new Pointer(0), new NativeLong(len), prot, flags, fd, new NativeLong(off));
-        if (p == null)
-            return null;
         return p;
     }
 

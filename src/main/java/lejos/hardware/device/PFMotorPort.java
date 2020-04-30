@@ -13,8 +13,9 @@ import java.util.concurrent.Future;
  *
  */
 public class PFMotorPort implements BasicMotorPort {
-	private int channel, slot;
-	private IRLink link;
+	private final int channel;
+    private final int slot;
+	private final IRLink link;
 	private static final int[] modeTranslation = {1,2,3,0};
 	
 	public PFMotorPort(IRLink link, int channel, int slot) {

@@ -2,31 +2,31 @@ package lejos.hardware;
 
 public interface Key {
 	
-	public static final int UP = 0;
-	public static final int ENTER = 1;
-	public static final int DOWN = 2;
-	public static final int RIGHT = 3;
-	public static final int LEFT = 4;
-	public static final int ESCAPE = 5;
+	int UP = 0;
+	int ENTER = 1;
+	int DOWN = 2;
+	int RIGHT = 3;
+	int LEFT = 4;
+	int ESCAPE = 5;
 	
-	public static int KEY_RELEASED = 0;
-	public static int KEY_PRESSED = 1;
-	public static int KEY_PRESSED_AND_RELEASED = 2;
+	int KEY_RELEASED = 0;
+	int KEY_PRESSED = 1;
+	int KEY_PRESSED_AND_RELEASED = 2;
 	
-	public int getId();
+	int getId();
 	
-	public boolean isDown();
+	boolean isDown();
 	
-	public boolean isUp();
+	boolean isUp();
 	
-	public void waitForPress();
+	void waitForPress();
 	
-	public void waitForPressAndRelease();
+	void waitForPressAndRelease();
 	
-	public void addKeyListener (KeyListener listener);
+	void addKeyListener(KeyListener listener);
 	
-	public void simulateEvent(int event);
+	void simulateEvent(int event);
 	
-	public String getName();
+	String getName();
 
-};
+}

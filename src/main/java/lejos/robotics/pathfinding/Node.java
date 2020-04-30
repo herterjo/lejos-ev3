@@ -49,7 +49,7 @@ public class Node  {
 	/**
 	 * List of neighbors to this node.
 	 */
-	private ArrayList <Node> neighbors = new ArrayList<Node>();
+	private final ArrayList <Node> neighbors = new ArrayList<Node>();
 	
 	/**
 	 * Creates a new instance of a node.

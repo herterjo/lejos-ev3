@@ -7,7 +7,7 @@ import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.port.PortException;
 
 public class RemoteTextLCD implements TextLCD {
-	private RMITextLCD lcd;
+	private final RMITextLCD lcd;
 	
 	public RemoteTextLCD(RMITextLCD lcd) {
 		this.lcd = lcd;

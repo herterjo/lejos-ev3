@@ -9,7 +9,7 @@ import lejos.robotics.SampleProvider;
  *
  */
 public class ZeroFilter extends AbstractFilter {
-	private float[] zeroValue;
+	private final float[] zeroValue;
 	float[] sample;
 	
 	public ZeroFilter(SampleProvider source, float[] zeroValue) {
@@ -17,7 +17,7 @@ public class ZeroFilter extends AbstractFilter {
 		this.zeroValue = zeroValue;
 	}
 
-	public void fetchSample(float sample[], int offset) {
+	public void fetchSample(float[] sample, int offset) throws Exception {
 		super.fetchSample(sample, offset);
 		for(int i=0;i<sampleSize();i++) {
 			sample[offset+i] -= zeroValue[i];

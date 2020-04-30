@@ -4,7 +4,8 @@ package lejos.robotics;
  * Represent a single range reading
  */
 public class RangeReading {
-	private float range, angle;
+	private final float range;
+    private final float angle;
 	
 	/**
 	 * Create the reading

@@ -15,8 +15,8 @@ import java.util.concurrent.Future;
  *
  */
 public class RCXRemoteMotorPort implements BasicMotorPort {
-	private RCXLink link;
-	private int id;
+	private final RCXLink link;
+	private final int id;
 	private boolean started = false;
 	private int oldPower = -1;
 	
@@ -51,6 +51,8 @@ public class RCXRemoteMotorPort implements BasicMotorPort {
 		else if (mode == 4) link.fltMotor(id);
 		
 		oldPower = power;
+
+		return ExceptionWrapper.getCompletedException(null);
 	}
 	
 	private void sleep() {

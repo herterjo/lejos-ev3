@@ -31,8 +31,8 @@ public class EV3Keys implements Keys {
 	// not protected by any monitor
 	private int curButtonsE;
 
-	private NativeDevice dev;
-	private ByteBuffer buttonState;
+	private final NativeDevice dev;
+	private final ByteBuffer buttonState;
 
 	public EV3Keys() {
 		clickVol = SystemSettings.getIntSetting(VOL_SETTING, 20);
@@ -208,8 +208,8 @@ public class EV3Keys implements Keys {
 				
 				int mask  = 1;
 				for (int i=0;i<NUM_KEYS;i++) {
-					if ((state & (mask << PRESS_EVENT_SHIFT))  != 0 || (state & (mask << RELEASE_EVENT_SHIFT)) != 0) {;
-						EV3Key key = listeners.get(mask);
+					if ((state & (mask << PRESS_EVENT_SHIFT))  != 0 || (state & (mask << RELEASE_EVENT_SHIFT)) != 0) {
+                        EV3Key key = listeners.get(mask);
 						if (key != null) key.callListeners();
 					}
 					mask <<= 1;

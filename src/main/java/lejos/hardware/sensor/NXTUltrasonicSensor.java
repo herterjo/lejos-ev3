@@ -68,7 +68,7 @@ public class NXTUltrasonicSensor extends I2CSensor  {
 	private static final float TOSI=0.01f; 
 
 	private byte currentMode=0;
-	private byte[] byteBuff = new byte[8];
+	private final byte[] byteBuff = new byte[8];
 	private long nextCmdTime = 0;
 	private long dataAvailableTime;
 
@@ -161,7 +161,7 @@ public class NXTUltrasonicSensor extends I2CSensor  {
 	}
 	
 	public boolean isEnabled() {
-		return (currentMode==MODE_OFF) ? false : true;
+		return currentMode != MODE_OFF;
 	}
 	
 	/** Sets the sensor to CONTINUOUS, PING or OFF

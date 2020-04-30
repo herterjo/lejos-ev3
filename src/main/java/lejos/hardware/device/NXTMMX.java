@@ -105,7 +105,7 @@ public class NXTMMX extends I2CSensor {
     private static final int CMDBIT_GO = 0x80;
     
     // motor parameters
-    private int[][] motorParams = new int[5][CHANNELS]; 
+    private final int[][] motorParams = new int[5][CHANNELS];
     private static final int MOTPARAM_POWER = 0; // current power value
     private static final int MOTPARAM_RAMPING = 1; // 0=false=none, 1=ramped
     private static final int MOTPARAM_ENCODER_BRAKING = 2; // 1=brake, 0= float
@@ -126,9 +126,9 @@ public class NXTMMX extends I2CSensor {
     byte[] motorType = {MOTTYPE_EMPTY,MOTTYPE_EMPTY};
     
     // I2C buffer
-    private byte[] buf = new byte[12];
+    private final byte[] buf = new byte[12];
     
-    private int limitangle[] = {0,0};
+    private final int[] limitangle = {0,0};
 	
     // When a rotate is issued, an instance monitors the status bits and sets STATE_STOPPED when the command completes.
     // Also does any required RegulatedMotorListener STOP and notifies any wait() in waitRotateComplete().
@@ -140,7 +140,7 @@ public class NXTMMX extends I2CSensor {
         }
         @Override
 		public void run(){
-        	byte buf1[] = {1};
+        	byte[] buf1 = {1};
         	while ((buf1[0] & 0x0F) != 0) {
                 Delay.msDelay(50);
                 //System.out.println("bsy " + buf1[0] + " ");
@@ -166,13 +166,13 @@ public class NXTMMX extends I2CSensor {
     private class TachoMonitor extends Thread{
         private static final int POLL_DELAY_MS = 75;
         
-        private boolean threadDie = false;
-        private int[] TachoCount = new int[CHANNELS];
-        private byte[] buffer = new byte[8];
-        private volatile float[] degpersec = new float[CHANNELS];
-        private float[][] samples = new float[CHANNELS][3];
+        private final boolean threadDie = false;
+        private final int[] TachoCount = new int[CHANNELS];
+        private final byte[] buffer = new byte[8];
+        private final float[] degpersec = new float[CHANNELS];
+        private final float[][] samples = new float[CHANNELS][3];
         private int sampleIndex=0;
-        private boolean[] ismoving = new boolean[CHANNELS];
+        private final boolean[] ismoving = new boolean[CHANNELS];
         
         TachoMonitor(){
             this.setDaemon(true);

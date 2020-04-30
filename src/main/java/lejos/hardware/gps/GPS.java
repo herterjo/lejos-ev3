@@ -24,13 +24,13 @@ import java.util.Date;
 public class GPS extends SimpleGPS {
 	
 	//Classes which manages GGA, RMC, VTG, GSV, GSA Sentences
-	private RMCSentence rmcSentence;
+	private final RMCSentence rmcSentence;
 	//TODO device sends a sequence of complementary gsv sentences
 	// this class only remembers the last one
-	private GSVSentence gsvSentence;
+	private final GSVSentence gsvSentence;
 
 	//Date Object with use GGA & RMC Sentence
-	private Date date;
+	private final Date date;
 	
 	/**
 	 * The constructor. It needs an InputStream

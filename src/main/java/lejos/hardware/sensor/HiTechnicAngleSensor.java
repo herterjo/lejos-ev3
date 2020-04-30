@@ -75,7 +75,7 @@ public class HiTechnicAngleSensor extends I2CSensor {
   protected static final int HTANGLE_MODE_CALIBRATE = 0x43;
   protected static final int HTANGLE_MODE_RESET     = 0x52;
 
-  private byte               buf[]                  = new byte[4];
+  private final byte[] buf = new byte[4];
 
   public HiTechnicAngleSensor(I2CPort port) {
     super(port, DEFAULT_I2C_ADDRESS);

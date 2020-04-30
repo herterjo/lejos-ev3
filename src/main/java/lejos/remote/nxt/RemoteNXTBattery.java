@@ -10,7 +10,7 @@ import lejos.hardware.port.PortException;
  */
 public class RemoteNXTBattery implements Power, NXTProtocol {
 	
-	private NXTCommand nxtCommand;
+	private final NXTCommand nxtCommand;
 	
 	public RemoteNXTBattery(NXTCommand nxtCommand) {
 		this.nxtCommand = nxtCommand;

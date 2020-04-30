@@ -152,8 +152,8 @@ public SensorMode getAmbientMode() {
 
     private class Laser implements SensorMode {
 
-        private boolean state;
-        private String  name;
+        private final boolean state;
+        private final String  name;
 
         private Laser(boolean state, String name) {
             this.state = state;

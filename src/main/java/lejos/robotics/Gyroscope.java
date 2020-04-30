@@ -8,14 +8,14 @@ public interface Gyroscope {
     /** Implementor must calculate and return the angular velocity in degrees per second.
      * @return Angular velocity in degrees/second
      */
-    public float getAngularVelocity();
+    float getAngularVelocity() throws Exception;
 
     /** Implementor must calculate and set the offset/bias value for use in <code>getAngularVelocity()</code>.
      */
-    public void recalibrateOffset();
+    void recalibrateOffset();
     
-    public int getAngle();
+    int getAngle() throws Exception;
     
-    public void reset();
+    void reset();
 
  }

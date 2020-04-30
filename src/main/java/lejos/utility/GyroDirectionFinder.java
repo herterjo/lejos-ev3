@@ -18,8 +18,8 @@ public class GyroDirectionFinder implements DirectionFinder
     private float heading = 0;
     private float acceleration;
     private boolean calibrating = false;
-    private Regulator reg = new Regulator();
-    private Gyroscope gyro;
+    private final Regulator reg = new Regulator();
+    private final Gyroscope gyro;
 
     /** Creates and initializes a new <code>GyroDirectionFinder</code> using passed <code>GyroSensor</code> 
      * @param gyro a gyro sensor instance
@@ -64,7 +64,7 @@ public class GyroDirectionFinder implements DirectionFinder
      * Returns the current rate-of-turn in degrees/second, as read by the <code>GyroSensor</code> instance passed in the constructor.
      * @return Angular velocity in degrees.
      */
-    public float getAngularVelocity() {
+    public float getAngularVelocity() throws Exception {
         return gyro.getAngularVelocity();
     }
 
@@ -133,8 +133,12 @@ public class GyroDirectionFinder implements DirectionFinder
                 Delay.msDelay(5);
                 lastUpdate = now;
                 now = System.currentTimeMillis();
-                
-                degreesPerSecond=gyro.getAngularVelocity();
+
+                try {
+                    degreesPerSecond=gyro.getAngularVelocity();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
                 // Calibration flagged...
                 if (calibrating) {

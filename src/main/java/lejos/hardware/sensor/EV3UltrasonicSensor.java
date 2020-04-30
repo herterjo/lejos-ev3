@@ -137,7 +137,7 @@ public class EV3UltrasonicSensor extends UARTSensor {
    *         False, when the sensor is disabled.
    */
   public boolean isEnabled() {
-    return (currentMode == DISABLED) ? false : true;
+    return currentMode != DISABLED;
   }
 
 

@@ -18,25 +18,25 @@ public interface IOPort extends Closeable   {
      * Close the port async, the port can not be used after this call.
      * @return
      */
-    public void close();
+    void close();
 
     /**
      * Close the port async, the port can not be used after this call.
      * @return
      */
-    public Future<ExceptionWrapper> closeRet();
+    Future<ExceptionWrapper> closeRet();
     
     /**
      * Return the string representing this port
      * @return the port name
      */
-    public String getName();
+    String getName();
     
    /**
      * Set the port pins up ready for use.
      * @param mode The EV3 pin mode
      * @return true if the operation succeeds false if it fails
      */
-    public boolean setPinMode(int mode);
+   boolean setPinMode(int mode);
     
 }

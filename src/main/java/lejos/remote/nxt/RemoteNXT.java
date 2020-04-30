@@ -23,7 +23,7 @@ public class RemoteNXT implements NXT {
 	private NXTCommand nxtCommand;
 	private NXTComm nxtComm;
 	private Power battery;
-	private String name;
+	private final String name;
 	private Audio audio;
 	
     protected ArrayList<RemoteNXTPort> ports = new ArrayList<RemoteNXTPort>();
@@ -56,8 +56,8 @@ public class RemoteNXT implements NXT {
         System.out.println("Connecting to " + name);
 		boolean open = nxtComm.open(name, NXTConnection.LCP);
 		if (!open) throw new IOException("Failed to connect to " + name);
-		System.out.println("Connected");;
-		nxtCommand = new NXTCommand(nxtComm);
+		System.out.println("Connected");
+        nxtCommand = new NXTCommand(nxtComm);
 		System.out.println("Creating remote battery");
 		battery = new RemoteNXTBattery(nxtCommand);
 		audio = new RemoteNXTAudio(nxtCommand);

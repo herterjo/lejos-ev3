@@ -71,7 +71,7 @@ public class IRLink extends I2CSensor implements Opcode, IRTransmitter {
 	
 	private byte toggle = 0;
 	
-	private BitSet bits = new BitSet(MAX_BITS);
+	private final BitSet bits = new BitSet(MAX_BITS);
 	private int nextBit = 0;
 
     public IRLink(I2CPort port) {

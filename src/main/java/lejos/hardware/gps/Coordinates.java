@@ -407,10 +407,8 @@ UNTESTED as of April 7, 2009 - BB
 	 * @return
 	 */
 	private static boolean convertIsValidChar(char element) {
-		if ((element == '-') || (element == ':') || (element == '.')
-				|| Character.isDigit(element))
-			return true;
-		return false;
+		return (element == '-') || (element == ':') || (element == '.')
+				|| Character.isDigit(element);
 	}
 
 	/**

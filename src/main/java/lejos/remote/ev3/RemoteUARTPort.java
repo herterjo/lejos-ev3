@@ -21,6 +21,8 @@ public class RemoteUARTPort extends RemoteIOPort implements UARTPort {
 			rmi = rmiEV3.openUARTPort(getName());
 		} catch (RemoteException e) {
 			throw new PortException(e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		return res;
 	}

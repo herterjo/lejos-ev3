@@ -191,7 +191,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	/*
 	 * public int getRightActualSpeed() { return _right.getRotationSpeed(); }
 	 */
-	private void setSpeed(final int leftSpeed, final int rightSpeed) {
+	private void setSpeed(final int leftSpeed, final int rightSpeed) throws Exception {
 	    _left.startSynchronization();
 		_left.setSpeed(leftSpeed);
 		_right.setSpeed(rightSpeed);
@@ -212,8 +212,8 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 		} else {
 			float speedRatio = (float) travelSpeed / _robotTravelSpeed;
 			_left.startSynchronization();
-			_left.setSpeed((int) Math.round(_left.getSpeed() * speedRatio));
-			_right.setSpeed((int) Math.round(_right.getSpeed() * speedRatio));
+			_left.setSpeed(Math.round(_left.getSpeed() * speedRatio));
+			_right.setSpeed(Math.round(_right.getSpeed() * speedRatio));
 			_left.endSynchronization();
 			_robotTravelSpeed = (float) travelSpeed;
 		}
@@ -257,7 +257,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	 * 
 	 * @param rotateSpeed
 	 */
-	public void setAngularSpeed(double rotateSpeed) {
+	public void setAngularSpeed(double rotateSpeed) throws Exception {
 		_robotRotateSpeed = (float) rotateSpeed;
 		setSpeed((int) Math.round(rotateSpeed * _leftTurnRatio),
 				(int) Math.round(rotateSpeed * _rightTurnRatio));
@@ -321,7 +321,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	 * Motors backward. This is called by forward() and backward(), depending on
 	 * parity.
 	 */
-	private void bak() {
+	private void bak() throws Exception {
 	    _left.startSynchronization();
 		_left.backward();
 		_right.backward();
@@ -333,7 +333,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	 * Motors forward. This is called by forward() and backward() depending on
 	 * parity.
 	 */
-	private void fwd() {
+	private void fwd() throws Exception {
 	    _left.startSynchronization();
 		_left.forward();
 		_right.forward();
@@ -1176,7 +1176,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	/**
 	 * Motor rotation forward makes robot move forward if parity == 1.
 	 */
-	private byte _parity;
+	private final byte _parity;
 	/**
 	 * Distance between wheels. Used in steer() and rotate().
 	 */
@@ -1191,7 +1191,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	private final float _rightWheelDiameter;
 	private int _leftTC; // left tacho count
 	private int _rightTC; // right tacho count
-	private ArrayList<MoveListener> _listeners = new ArrayList<MoveListener>();
+	private final ArrayList<MoveListener> _listeners = new ArrayList<MoveListener>();
 	/**
    */
 	protected Move.MoveType _type;
@@ -1207,7 +1207,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	 * used by travel and rotate methods, and stop()
 	 */
 	private int _acceleration;
-	private int _quickAcceleration = 9999; // used for quick stop.
+	private final int _quickAcceleration = 9999; // used for quick stop.
 	/**
 	 * direction of rotation of left motor +1 or -1
 	 */
@@ -1220,7 +1220,7 @@ public class DifferentialPilot implements  LineFollowingMoveController {
 	/**
 	 * The monitor thread
 	 */
-	private Monitor _monitor;
+	private final Monitor _monitor;
 	/**
 	 * set by rotatsionStopped() used by Monitor thread to call
 	 * movementStopped()

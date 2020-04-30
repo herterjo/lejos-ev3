@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
  **/
 public interface MotorRegulator
 {
-    public static final int NO_LIMIT = 0x7fffffff;
+    int NO_LIMIT = 0x7fffffff;
 
 
     /**
@@ -29,12 +29,12 @@ public interface MotorRegulator
      * @param offset Motor PWM offset value range 0-10000.
      * @return
      */
-    public Future<ExceptionWrapper> setControlParamaters(int typ, float moveP, float moveI, float moveD, float holdP, float holdI, float holdD, int offset);
+    Future<ExceptionWrapper> setControlParamaters(int typ, float moveP, float moveI, float moveD, float holdP, float holdI, float holdD, int offset);
     /**
      * Get the current hardware tachometer reading for the motor,
      * @return hardware reading
      */
-    public Future<ReturnWrapper<Integer>> getTachoCount();
+    Future<ReturnWrapper<Integer>> getTachoCount();
     
     /**
      * Reset the tachometer base value, after this call the tachometer will return
@@ -42,13 +42,13 @@ public interface MotorRegulator
      * aborted.
      * @return
      */
-    public Future<ExceptionWrapper> resetTachoCount();
+    Future<ExceptionWrapper> resetTachoCount();
 
     /**
      * Return true if the motor is currently active
      * @return True if the motor is moving.
      */
-    public Future<ReturnWrapper<Boolean>> isMoving();
+    Future<ReturnWrapper<Boolean>> isMoving();
     
     /**
      * Return the current velocity (in degrees/second) that the motor is currently
@@ -57,7 +57,7 @@ public interface MotorRegulator
      * is functioning correctly this will closely match the actual velocity
      * @return velocity
      */
-    public Future<ReturnWrapper<Float>> getCurrentVelocity();
+    Future<ReturnWrapper<Float>> getCurrentVelocity();
     
     /**
      * Set the stall detection parameters. The motor will be declared as
@@ -66,13 +66,13 @@ public interface MotorRegulator
      * @param error
      * @param time
      */
-    public void setStallThreshold(int error, int time);
+    void setStallThreshold(int error, int time);
 
     /**
      * return the regulations models current position. 
      * @return the models current position
      */
-    public Future<ReturnWrapper<Float>> getPosition();
+    Future<ReturnWrapper<Float>> getPosition();
 
     /**
      * Initiate a new move and optionally wait for it to complete.
@@ -85,7 +85,7 @@ public interface MotorRegulator
      * @param waitComplete
      * @return
      */
-    public Future<ExceptionWrapper> newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete);
+    Future<ExceptionWrapper> newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete);
 
     /**
      * The target speed has been changed. Reflect this change in the
@@ -93,55 +93,55 @@ public interface MotorRegulator
      * @param newSpeed new target speed.
      * @return
      */
-    public Future<ExceptionWrapper> adjustSpeed(float newSpeed);
+    Future<ExceptionWrapper> adjustSpeed(float newSpeed);
 
     /**
      * The target acceleration has been changed. Updated the regulator.
      * @param newAcc
      * @return
      */
-    public Future<ExceptionWrapper> adjustAcceleration(int newAcc);
+    Future<ExceptionWrapper> adjustAcceleration(int newAcc);
     
     /**
      * Wait until the current movement operation is complete (this can include
      * the motor stalling).
      * @return
      */
-    public Future<ExceptionWrapper> waitComplete();
+    Future<ExceptionWrapper> waitComplete();
     
     /**
      * Add a motor listener. Move operations will be reported to this object.
      * @param motor
      * @param listener
      */
-    public void addListener(RegulatedMotor motor, RegulatedMotorListener listener);
+    void addListener(RegulatedMotor motor, RegulatedMotorListener listener);
     
-    public RegulatedMotorListener removeListener();
+    RegulatedMotorListener removeListener();
 
 
     /**
      * Return the angle that this Motor is rotating to.
      * @return angle in degrees
      */
-    public int getLimitAngle();
+    int getLimitAngle();
     
     /**
      * Return true if the motor is currently stalled.
      * @return true if the motor is stalled, else false
      */
-    public Future<ReturnWrapper<Boolean>> isStalled();
+    Future<ReturnWrapper<Boolean>> isStalled();
     
     /**
      * Begin a set of synchronized motor operations
      * @return
      */
-    public Future<ExceptionWrapper> startSynchronization();
+    Future<ExceptionWrapper> startSynchronization();
     
     /**
      * Complete a set of synchronized motor operations.
      * @return
      */
-    public Future<ExceptionWrapper> endSynchronization(boolean b);
+    Future<ExceptionWrapper> endSynchronization(boolean b);
     
     /**
      * Specify a set of motors that should be kept in synchronization with this one.
@@ -152,7 +152,7 @@ public interface MotorRegulator
      * that reads of the motor state will also be consistent.
      * @param rl an array of motors to synchronize with.
      */
-    public void synchronizeWith(MotorRegulator[] rl);
+    void synchronizeWith(MotorRegulator[] rl);
 
 
 }

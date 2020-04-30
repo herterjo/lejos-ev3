@@ -22,9 +22,9 @@ public class NativeSocket {
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"family",
-            "bd_addr",
-            "channel"});
+            return Arrays.asList("family",
+                    "bd_addr",
+                    "channel");
         }       
 	}
 	

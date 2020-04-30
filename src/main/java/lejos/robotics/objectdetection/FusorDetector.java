@@ -62,7 +62,7 @@ public class FusorDetector implements FeatureDetector, FeatureListener {
 	 * This method scans all the sensors added to this object and returns the amalgamated results.
 	 * NOTE: This method is not called by the thread code.		
 	 */
-	public Feature scan() {
+	public Feature scan() throws Exception {
 		RangeReadings rr = new RangeReadings(0);
 		for(FeatureDetector d : detectors) {
 			Feature df = d.scan();
@@ -128,8 +128,13 @@ public class FusorDetector implements FeatureDetector, FeatureListener {
 					}
 					
 					// 3. Check if anything exists. If so, notify all listeners.
-					if(rrs.size() > 0)
-						notifyListeners(new RangeFeature(rrs));
+					if(rrs.size() > 0) {
+						try {
+							notifyListeners(new RangeFeature(rrs));
+						} catch (Exception e) {
+							throw new RuntimeException(e);
+						}
+					}
 					
 					// 4. Now clear out the detectors so they aren't resent next loop.
 					readings.clear();
@@ -149,7 +154,7 @@ public class FusorDetector implements FeatureDetector, FeatureListener {
 		}
 	}
 
-	private void notifyListeners(Feature feature) {
+	private void notifyListeners(Feature feature) throws Exception {
 		if(listeners != null) { 
 			for(FeatureListener l : listeners) {
 				l.featureDetected(feature, this);

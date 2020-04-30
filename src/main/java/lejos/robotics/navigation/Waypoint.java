@@ -86,9 +86,8 @@ public class Waypoint extends Point implements Transmittable {
 	public boolean checkValidity(Pose p) {
 		if (maxPositionError >= 0 && 
 		    p.distanceTo(this) > maxPositionError) return false;
-		if (headingRequired && maxHeadingError >= 0 && 
-			    Math.abs(p.getHeading() - heading) > maxHeadingError) return false;
-		return true;
+		return !headingRequired || !(maxHeadingError >= 0) ||
+				!(Math.abs(p.getHeading() - heading) > maxHeadingError);
 	}
 
 	public void dumpObject(DataOutputStream dos) throws IOException {

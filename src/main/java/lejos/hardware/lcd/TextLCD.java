@@ -8,7 +8,7 @@ public interface TextLCD extends CommonLCD {
      * @param x X location
      * @param y Y location
      */
-    public void drawChar(char c, int x, int y);
+    void drawChar(char c, int x, int y);
     
     /**
      * Display an optionally inverted string on the LCD at specified x,y co-ordinate.
@@ -18,7 +18,7 @@ public interface TextLCD extends CommonLCD {
      * @param y The y character co-ordinate to display at.
      * @param inverted if true the string is displayed inverted.
      */
-    public void drawString(String str, int x, int y, boolean inverted);
+    void drawString(String str, int x, int y, boolean inverted);
     
     /**
      * Display a string on the LCD at specified x,y co-ordinate.
@@ -27,7 +27,7 @@ public interface TextLCD extends CommonLCD {
      * @param x The x character co-ordinate to display at.
      * @param y The y character co-ordinate to display at.
      */
-    public void drawString(String str, int x, int y);
+    void drawString(String str, int x, int y);
     
     /**
      * Display an int on the LCD at specified x,y co-ordinate.
@@ -36,7 +36,7 @@ public interface TextLCD extends CommonLCD {
      * @param x The x character co-ordinate to display at.
      * @param y The y character co-ordinate to display at.
      */
-    public void drawInt(int i, int x, int y);
+    void drawInt(int i, int x, int y);
     
     /**
      * Display an in on the LCD at x,y with leading spaces to occupy at least the number
@@ -47,7 +47,7 @@ public interface TextLCD extends CommonLCD {
      * @param x The x character co-ordinate to display at.
      * @param y The y character co-ordinate to display at.
      */
-    public void drawInt(int i, int places, int x, int y);
+    void drawInt(int i, int places, int x, int y);
     
     /**
      * Clear a contiguous set of characters
@@ -55,32 +55,32 @@ public interface TextLCD extends CommonLCD {
      * @param y the y character coordinate
      * @param n the number of characters
      */
-    public void clear(int x, int y, int n);
+    void clear(int x, int y, int n);
     
     /**
      * Clear an LCD display row
      * @param y the row to clear
      */
-    public void clear(int y);
+    void clear(int y);
     
     /**
      * Scrolls the screen up one text line
      */
-    public void scroll();
+    void scroll();
     
     /**
      * Get the current font
      */
-    public Font getFont();
+    Font getFont();
     
     /**
      * Get the width of the screen in characters
      */
-    public int getTextWidth();
+    int getTextWidth();
     
     /**
      * Get the height of the screen in characters
      */
-    public int getTextHeight();
+    int getTextHeight();
 
 }

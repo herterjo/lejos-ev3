@@ -28,11 +28,11 @@ import lejos.robotics.navigation.ArcRotateMoveController;
 
 public class RemoteRequestEV3 implements EV3, Serializable {
 	private static final long serialVersionUID = -7784568187751439269L;
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
-	private Socket socket;
-	private ArrayList<RemoteRequestPort> ports = new ArrayList<RemoteRequestPort>();
-	private RemoteRequestKeys keys;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
+	private final Socket socket;
+	private final ArrayList<RemoteRequestPort> ports = new ArrayList<RemoteRequestPort>();
+	private final RemoteRequestKeys keys;
 	
 	private static final int PORT = 8002;
 	

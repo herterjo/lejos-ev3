@@ -9,7 +9,7 @@ import lejos.robotics.navigation.Pose;
  */
 public interface PoseProvider {
 	
-	public Pose getPose();
+	Pose getPose() throws Exception;
     
-	public void setPose(Pose aPose);		
+	void setPose(Pose aPose);
 }

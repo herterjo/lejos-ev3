@@ -7,56 +7,56 @@ public interface DynamicPoseProvider extends PoseProvider {
   /** Gives the X component of the robots position
    * @return
    */
-  public double getX();
+  double getX();
   
   /** Gives the Y component of the robots position
    * @return
    */
-  public double getY();
+  double getY();
   
   /** Gives the heading of the robot in degrees
    * @return
    */
-  public double getHeading();
+  double getHeading();
   
   /** Gives the linear speed of the robot
    * @return
    */
-  public double getLinearSpeed();
+  double getLinearSpeed();
   
   /** Gives the direction the robot is going to
    * @return
    */
-  public double getDirectionOfLinearSpeed();
+  double getDirectionOfLinearSpeed();
   
   /** Gives the angular speed of the robot in degrees/second
    * @return
    */
-  public double getAngularSpeed();
+  double getAngularSpeed();
   
   /** Gives a Matrix holding the robots speed components 
    * @return A 3 x 1 matrix (X speed, Y speed, angular speed)
    */
-  public Matrix getSpeed();
+  Matrix getSpeed();
   
   /** Gives the linear acceleration of the robot
    * @return
    */
-  public double getLinearAcceleration();
+  double getLinearAcceleration();
   
   /** Gives the direction the robot is going to
    * @return
    */
-  public double getDirectionOfLinearAcceleration();
+  double getDirectionOfLinearAcceleration();
 
   /** Gives the angular acceleration of the robot
    * @return
    */
-  public double getAngularAcceleration();
+  double getAngularAcceleration();
   
   /**Gives a Matrix holding the robots acceleration components 
    * @return A 3 x 1 matrix (X acceleration, Y acceleration, angular acceleration)
    */
-  public Matrix getAcceleration();
+  Matrix getAcceleration();
 
 }

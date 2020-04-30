@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class Settings {
 	
-	private static Properties props = new Properties();
+	private static final Properties props = new Properties();
 	private static final String PROPS_FILE = "/home/root/lejos/settings.properties";
 	
 	static {

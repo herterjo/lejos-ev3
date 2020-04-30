@@ -24,16 +24,16 @@ import java.util.concurrent.Future;
 public class LnrActrFirgelliNXT implements LinearActuator{
 //    private static final int MIN_POWER = 30;
     
-    private EncoderMotor encoderMotor;
+    private final EncoderMotor encoderMotor;
     private volatile int motorPower =0;
     private volatile int tick_wait; // this is calculated in setPower() to fit the power setting. Variable because lower powers move it slower.
     private volatile boolean isMoveCommand = false;
     private volatile boolean isStalled=false;
-    private Thread actuator;
+    private final Thread actuator;
     private volatile boolean dirExtend = true;
     private volatile int distanceTicks;
     private volatile boolean killCurrentAction=false;
-    private Object synchObj1 = new Object();
+    private final Object synchObj1 = new Object();
     private volatile int tachoCount=0;
     
     /**Create a <code>LnrActrFirgelliNXT</code> instance.
@@ -189,7 +189,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
                     try {
                         this.synchObj1.wait();
                     } catch (InterruptedException e) {
-                        ; //ignore
+                        //ignore
                     }
                 }
             }
@@ -211,7 +211,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
                     try {
                         this.synchObj1.wait();
                     } catch (InterruptedException e) {
-                        ; // ignore
+                        // ignore
                     }
                 }
             }
@@ -232,7 +232,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
                             LnrActrFirgelliNXT.this.actuator.wait();
                             if (LnrActrFirgelliNXT.this.isMoveCommand) break;
                         } catch (InterruptedException e) {
-                            ; // do nothing and continue
+                            // do nothing and continue
                         }
                     }
                 }
@@ -330,7 +330,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
-            ; // do nothing
+            // do nothing
         }
     }
 

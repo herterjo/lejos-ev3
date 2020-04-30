@@ -42,20 +42,20 @@ public class NativeHCI {
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"dev_id",
-            "name",
-            "bdaddr",
-            "flags",
-            "type",
-            "features",
-            "pkt_type",
-            "link_policy",
-            "link_mode",
-            "acl_mtu",
-            "acl_pkts",
-            "sco_mtu",
-            "sco_pkts",
-            "stat"});
+            return Arrays.asList("dev_id",
+					"name",
+					"bdaddr",
+					"flags",
+					"type",
+					"features",
+					"pkt_type",
+					"link_policy",
+					"link_mode",
+					"acl_mtu",
+					"acl_pkts",
+					"sco_mtu",
+					"sco_pkts",
+					"stat");
         }
     }
     
@@ -69,12 +69,11 @@ public class NativeHCI {
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {
-            "manufacturer",
-            "hci_ver",
-            "hci_rev",
-            "lmp_ver",
-            "lmp_subver"});
+            return Arrays.asList("manufacturer",
+					"hci_ver",
+					"hci_rev",
+					"lmp_ver",
+					"lmp_subver");
         }
         
     }
@@ -127,15 +126,15 @@ public class NativeHCI {
 	
 	public static final int MAX_RSP = 32;
 	
-	private int deviceId;
-	private int socket;
+	private final int deviceId;
+	private final int socket;
 
-	private Pointer inquiryResults = new Memory(MAX_RSP*INQUIRY_INFO_SIZE);
+	private final Pointer inquiryResults = new Memory(MAX_RSP*INQUIRY_INFO_SIZE);
 	
-	private ArrayList<RemoteBTDevice> remoteDevices = new ArrayList<RemoteBTDevice>();
+	private final ArrayList<RemoteBTDevice> remoteDevices = new ArrayList<RemoteBTDevice>();
 	
-	private DeviceInfo deviceInfo = new DeviceInfo();
-	private LocalVersion localVersion = new LocalVersion();
+	private final DeviceInfo deviceInfo = new DeviceInfo();
+	private final LocalVersion localVersion = new LocalVersion();
 	
 	public NativeHCI() {
 		deviceId =  blue.hci_get_route(null);

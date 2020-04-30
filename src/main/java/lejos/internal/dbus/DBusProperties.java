@@ -46,7 +46,7 @@ public abstract class DBusProperties {
         
         READWRITE,
         
-        READONLY;
+        READONLY
     }
 
     @Target({ElementType.FIELD}) @Retention(RetentionPolicy.RUNTIME)
@@ -73,7 +73,7 @@ public abstract class DBusProperties {
          * 
          * @return
          */
-        public Map<String, Variant<?>> GetProperties();
+        Map<String, Variant<?>> GetProperties();
 
         /**
          * Changes the value of the specified property. Only properties that are listed a read-write are changeable.
@@ -81,7 +81,7 @@ public abstract class DBusProperties {
          * @param name
          * @param value
          */
-        public void SetProperty(String name, Variant<?> value);
+        void SetProperty(String name, Variant<?> value);
     }
 
     public static String getStringValue(PropertiesAccess dBusInterface, PropertyEnum propertyEnum) {

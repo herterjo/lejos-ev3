@@ -60,12 +60,12 @@ import lejos.robotics.navigation.MoveListener;
 public class MovePilot implements ArcRotateMoveController {
   private double                  minRadius   = 0;      
   final private Chassis           chassis;
-  private ArrayList<MoveListener> _listeners  = new ArrayList<MoveListener>();
+  private final ArrayList<MoveListener> _listeners  = new ArrayList<MoveListener>();
   private double                  linearSpeed;
   private double                  linearAcceleration;
   private double                  angularAcceleration;
   private double                  angularSpeed;
-  private Monitor                 _monitor;
+  private final Monitor                 _monitor;
   private boolean                 _moveActive = false;
   private Move                    move = null;
   private boolean                 _replaceMove = false;

@@ -13,5 +13,5 @@ public interface PressureDetector {
      * 
      * @return the pressure in kPa
      */
-	public float getPressure();
+    float getPressure();
 }

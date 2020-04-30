@@ -107,8 +107,8 @@ public class LinearCalibrationFilter extends AbstractCalibrationFilter {
   public final static int OFFSET_CALIBRATION           = 0;
   public final static int OFFSET_AND_SCALE_CALIBRATION = 1;
 
-  private float[]         lowerBound;
-  private float[]         upperBound;
+  private final float[]         lowerBound;
+  private final float[]         upperBound;
   private float[]         offset;
   private float[]         scale;
   private int             calibrationType;
@@ -282,7 +282,7 @@ public class LinearCalibrationFilter extends AbstractCalibrationFilter {
    * Fetches a sample from the sensor and updates calibration parameters when
    * the calibration process is running.
    */
-  public void fetchSample(float[] dst, int off) {
+  public void fetchSample(float[] dst, int off) throws Exception {
     super.fetchSample(dst, off);
     for (int i = 0; i < sampleSize; i++) {
       if (calibrating) {

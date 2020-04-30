@@ -9,33 +9,33 @@ import java.io.IOException;
  *
  */
 public interface Clock {
-	public int getYear() throws IOException;
+	int getYear() throws IOException;
 	
-	public int getMonth() throws IOException;
+	int getMonth() throws IOException;
 	
-	public int getDay()throws IOException;
+	int getDay()throws IOException;
 	
-	public int getHour() throws IOException;
+	int getHour() throws IOException;
 	
-	public int getMinute() throws IOException;
+	int getMinute() throws IOException;
 	
-	public int getSecond() throws IOException;
+	int getSecond() throws IOException;
 	
-	public int getDayOfWeek() throws IOException;
+	int getDayOfWeek() throws IOException;
 	
-	public void setHourMode(boolean mode) throws IOException;
+	void setHourMode(boolean mode) throws IOException;
 	
-	public String getDateString() throws IOException;
+	String getDateString() throws IOException;
 	
-	public String getTimeString() throws IOException;
+	String getTimeString() throws IOException;
 	
-	public String getAMPM() throws IOException;
+	String getAMPM() throws IOException;
 	
-	public byte getByte(int loc) throws IndexOutOfBoundsException,IOException;
+	byte getByte(int loc) throws IndexOutOfBoundsException,IOException;
 	
-	public void setByte(int loc,byte b) throws IndexOutOfBoundsException,IOException;
+	void setByte(int loc, byte b) throws IndexOutOfBoundsException,IOException;
 	
-	public void setDate(int m,int d,int y) throws IllegalArgumentException,IOException ;
+	void setDate(int m, int d, int y) throws IllegalArgumentException,IOException ;
 	
-	public void setTime(int h,int m,int s) throws IllegalArgumentException,IOException;
+	void setTime(int h, int m, int s) throws IllegalArgumentException,IOException;
 }

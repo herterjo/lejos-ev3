@@ -58,8 +58,8 @@ public class NativeWifi {
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"family",
-            "bd_addr"});
+            return Arrays.asList("family",
+                    "bd_addr");
         }
 	}
 	
@@ -71,9 +71,9 @@ public class NativeWifi {
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"p",
-            "length",
-            "flags"});
+            return Arrays.asList("p",
+                    "length",
+                    "flags");
         }
 	}
 	
@@ -84,8 +84,8 @@ public class NativeWifi {
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"ifname",
-            "sockaddr"});
+            return Arrays.asList("ifname",
+                    "sockaddr");
         }       
 	}
 	
@@ -97,9 +97,9 @@ public class NativeWifi {
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"ifname",
-            "point",  
-            "padding"});
+            return Arrays.asList("ifname",
+                    "point",
+                    "padding");
         }
 	}
 	

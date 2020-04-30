@@ -44,7 +44,7 @@ import lejos.utility.Matrix;
 @Deprecated
 public class OmniPilot implements ArcRotateMoveController, RegulatedMotorListener {
     
-    private Pose pose = new Pose(); // TODO: Technically this variable should be removed. Navigator handles Pose.
+    private final Pose pose = new Pose(); // TODO: Technically this variable should be removed. Navigator handles Pose.
 	private float wheelBase = 7.0f; // units
 	private float wheelDiameter = 4.6f; // units
 	private double[][] ikPars;
@@ -61,12 +61,12 @@ public class OmniPilot implements ArcRotateMoveController, RegulatedMotorListene
 	private int motor1Speed = 0; //deg/s
 	private int motor2Speed = 0; //deg/s
 	private int motor3Speed = 0; //deg/s
-	private Odometer odo = new Odometer();
+	private final Odometer odo = new Odometer();
 	private boolean spinningMode = false; 
 	private float spinLinSpeed = 0; // units/s
 	private float spinAngSpeed = 0; // deg/s
 	private float spinTravelDirection = 0; // deg
-	private Power battery;
+	private final Power battery;
 	
 	private double minTurnRadius = 0; // This vehicle can turn withgout moving therefore minimum turn radius = 0
 	
@@ -77,7 +77,7 @@ public class OmniPilot implements ArcRotateMoveController, RegulatedMotorListene
 	/**
 	 * MoveListeners to notify when a move is started or stopped.
 	 */
-	private ArrayList<MoveListener> listeners= new ArrayList<MoveListener>();
+	private final ArrayList<MoveListener> listeners= new ArrayList<MoveListener>();
   private int acceleration;
 	
 	/**
@@ -228,7 +228,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param dir the dir
 	 * @param angSpeed the ang speed
 	 */
-	private void setSpeed(double linSpeed, double dir, double angSpeed) {
+	private void setSpeed(double linSpeed, double dir, double angSpeed) throws Exception {
 		double ang = Math.toRadians(dir);
 		double angspd = Math.toRadians(angSpeed);
 		double[] spd = {linSpeed*Math.cos(ang), linSpeed*Math.sin(ang), angspd};
@@ -269,7 +269,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	/**
 	 * Start motors.
 	 */
-	private synchronized void  startMotors() {
+	private synchronized void  startMotors() throws Exception {
 		if (motor1Speed>0) 
 			motor1.forward(); 
 		else 
@@ -285,20 +285,20 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	/**
 	 * Coast. TODO: Probably delete this method?
 	 */
-	private synchronized void coast() {
+	private synchronized void coast() throws Exception {
 		motor1.flt();
 		motor2.flt();
 		motor3.flt();
 		spinningMode = false;
 	}
 	
-	public synchronized void forward() {
+	public synchronized void forward() throws Exception {
 		spinningMode = false;
 		setSpeed(linearSpeed, 0, angularSpeed);
 		startMotors();
 	}
 
-	public synchronized void backward() {
+	public synchronized void backward() throws Exception {
 		spinningMode = false;
 		setSpeed(linearSpeed, 180, angularSpeed);
 		startMotors();
@@ -310,7 +310,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param linSpeed the lin speed
 	 * @param direction the direction relative to the current direction the robot is facing
 	 */
-	public synchronized void moveStraight(float linSpeed, int direction) {
+	public synchronized void moveStraight(float linSpeed, int direction) throws Exception {
 //		float dir = linSpeed>0? direction : direction+180;
 		spinningMode = false;
 		setSpeed(linSpeed, direction, 0);
@@ -334,7 +334,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 //		startMotors();
 	}
 	
-	public synchronized void stop() {
+	public synchronized void stop() throws Exception {
 		motor1.stop();
 		motor2.stop();
 		motor3.stop();
@@ -539,7 +539,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 *
 	 * @param turnRate the turn rate
 	 */
-	public void steer(float turnRate) {
+	public void steer(float turnRate) throws Exception {
 		float angSpeed = (float)(turnRate*getMaxAngularSpeed()/200);
 		float dir = reverse? speedVectorDirection : speedVectorDirection+180;
 		spinningMode = false;
@@ -553,7 +553,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param linSpeed the lin speed
 	 * @param angSpeed the ang speed
 	 */
-	public void steer(float linSpeed, float angSpeed) {
+	public void steer(float linSpeed, float angSpeed) throws Exception {
 //		float dir = linSpeed>0? speedVectorDirection : speedVectorDirection+180;
 		spinningMode = false;
 		setSpeed(linSpeed, speedVectorDirection, angSpeed);
@@ -666,7 +666,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	/**
 	 * Reset all tacho counts. TODO: Delete this method? Unused by any other method or class.
 	 */
-	public void reset() {
+	public void reset() throws Exception {
 		motor1.resetTachoCount();
 		motor2.resetTachoCount();
 		motor3.resetTachoCount();
@@ -695,7 +695,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 		
 		private boolean keepRunning = true;
 		
-		private int period = 10; //ms
+		private final int period = 10; //ms
 		
 		//private boolean displayPose = false;
 		
@@ -720,11 +720,19 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 					   throw new RuntimeException(e);
 				   }
 				   if (gyroEnabled) {
-                	  pose.setHeading(gyro.getAngle()/100.0f);
-                  }
+					   try {
+						   pose.setHeading(gyro.getAngle()/100.0f);
+					   } catch (Exception e) {
+						   throw new RuntimeException(e);
+					   }
+				   }
                   if (spinningMode) {
-                	  setSpeed(spinLinSpeed, spinTravelDirection-pose.getHeading(), spinAngSpeed);
-                	  startMotors();
+					  try {
+						  setSpeed(spinLinSpeed, spinTravelDirection-pose.getHeading(), spinAngSpeed);
+						  startMotors();
+					  } catch (Exception e) {
+						  throw new RuntimeException(e);
+					  }
                 	  //LCD.drawString("t:"+tick, 0, 0);
                   } 
                } else {

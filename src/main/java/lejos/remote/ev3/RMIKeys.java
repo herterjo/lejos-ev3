@@ -5,30 +5,30 @@ import java.rmi.RemoteException;
 
 public interface RMIKeys extends Remote {
 	
-	public void discardEvents() throws RemoteException;
+	void discardEvents() throws RemoteException;
 	
-	public int waitForAnyEvent() throws RemoteException;
+	int waitForAnyEvent() throws RemoteException;
 	
-	public int waitForAnyEvent(int timeout) throws RemoteException;
+	int waitForAnyEvent(int timeout) throws RemoteException;
 	
-	public int waitForAnyPress(int timeout) throws RemoteException;
+	int waitForAnyPress(int timeout) throws RemoteException;
 	
-	public int waitForAnyPress() throws RemoteException;
+	int waitForAnyPress() throws RemoteException;
 	
-	public int getButtons() throws RemoteException;
+	int getButtons() throws RemoteException;
 	
-	public int readButtons() throws RemoteException;
+	int readButtons() throws RemoteException;
 	
-	public void setKeyClickVolume(int vol) throws RemoteException;
+	void setKeyClickVolume(int vol) throws RemoteException;
 	
-	public int getKeyClickVolume() throws RemoteException;
+	int getKeyClickVolume() throws RemoteException;
 	
-	public void setKeyClickLength(int len) throws RemoteException;
+	void setKeyClickLength(int len) throws RemoteException;
 	
-	public int getKeyClickLength() throws RemoteException;
+	int getKeyClickLength() throws RemoteException;
 	
-	public void setKeyClickTone(int key, int freq) throws RemoteException;
+	void setKeyClickTone(int key, int freq) throws RemoteException;
 	
-	public int getKeyClickTone(int key) throws RemoteException;
+	int getKeyClickTone(int key) throws RemoteException;
 
 }

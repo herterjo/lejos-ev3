@@ -180,7 +180,7 @@ public class EV3LCD implements CommonLCD
      * @param h height of the area to copy
      * @param rop raster operation.
      */
-    public void bitBlt(byte[] src, int sw, int sh, int sx, int sy, byte dst[], int dw, int dh, int dx, int dy, int w, int h, int rop)
+    public void bitBlt(byte[] src, int sw, int sh, int sx, int sy, byte[] dst, int dw, int dh, int dx, int dy, int w, int h, int rop)
     {
         /* This is a partial implementation of the BitBlt algorithm. It provides a
          * complete set of raster operations and handles partial and fully aligned

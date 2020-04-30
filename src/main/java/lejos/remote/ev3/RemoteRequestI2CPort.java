@@ -8,8 +8,8 @@ import lejos.hardware.port.I2CPort;
 import lejos.utility.ExceptionWrapper;
 
 public class RemoteRequestI2CPort extends RemoteRequestIOPort implements I2CPort {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	private int portNum;
 	
 	public RemoteRequestI2CPort(ObjectInputStream is, ObjectOutputStream os) {

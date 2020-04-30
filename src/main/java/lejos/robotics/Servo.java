@@ -13,7 +13,7 @@ public interface Servo {
      * @see #getAngle
      * @see #setRange
      */
-    public void setAngle(float angle);
+    void setAngle(float angle);
     
     /**
      * Gets the rotational position (angle) of a ranged servo. 
@@ -21,7 +21,7 @@ public interface Servo {
      * @return the angle in degrees
      * @see #setAngle
      */
-    public float getAngle();
+    float getAngle();
     
     /**
      * Set the PWM pulse width for the servo. This must be in the range defined for the servo. This method allows manipulation
@@ -32,14 +32,14 @@ public interface Servo {
      * 
      * @param microSeconds The pulse width time in microseconds
      */
-    public void setpulseWidth(int microSeconds);
+    void setpulseWidth(int microSeconds);
     
     /**
      * Get the current PWM pulse width for the servo. 
      * 
      * @return The pulse width time in microseconds
      */
-    public int getpulseWidth();
+    int getpulseWidth();
     
     /**Set the allowable pulse width operating range of this servo in microseconds and the total travel range to allow
      * the use of angle-based parameters to control the servo.
@@ -57,5 +57,5 @@ public interface Servo {
      * @param travelRange The total mechanical travel range of the servo in degrees
      * @see #setAngle
      */
-    public void setRange (int microsecLOW, int microsecHIGH, int travelRange);
+    void setRange(int microsecLOW, int microsecHIGH, int travelRange);
 }

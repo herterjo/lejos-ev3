@@ -11,8 +11,8 @@ import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
 public class RemoteRequestMotorPort extends RemoteRequestIOPort implements TachoMotorPort {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	private int portNum;
 
 	public RemoteRequestMotorPort(ObjectInputStream is, ObjectOutputStream os) {

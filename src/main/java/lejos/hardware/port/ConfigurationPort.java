@@ -9,7 +9,7 @@ public interface ConfigurationPort extends IOPort, EV3SensorConstants
      * this will identify the connection type (UART/IIC/Dumb/Output etc.)
      * @return The type of the port. 
      */
-    public int getPortType();
+    int getPortType();
     
     /**
      * This function returns information on the sensor/motor that is attached to the
@@ -18,5 +18,5 @@ public interface ConfigurationPort extends IOPort, EV3SensorConstants
      * sensor to allow it to be identified in further detail.
      * @return the sensor type
      */
-    public int getDeviceType();
+    int getDeviceType();
 }

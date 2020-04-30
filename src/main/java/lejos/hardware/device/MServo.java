@@ -20,8 +20,8 @@ public class MServo extends I2CSensor{
 	private int pulse = 0;
 	private int minAngle = 0;//Degree
 	private int maxAngle = 180;//Degrees
-	private int minPulse = 650;//500;//Ms
-	private int maxPulse = 2350;//2500;//Ms
+	private final int minPulse = 650;//500;//Ms
+	private final int maxPulse = 2350;//2500;//Ms
 
 	/**
 	 *

@@ -2,14 +2,14 @@ package lejos.hardware.lcd;
 
 public interface GraphicsLCD extends CommonLCD {
 	
-    public static final int TRANS_MIRROR = 2;
-    public static final int TRANS_MIRROR_ROT180 = 1;
-    public static final int TRANS_MIRROR_ROT270 = 4;
-    public static final int TRANS_MIRROR_ROT90 = 7;
-    public static final int TRANS_NONE = 0;
-    public static final int TRANS_ROT180 = 3;
-    public static final int TRANS_ROT270 = 6;
-    public static final int TRANS_ROT90 = 5;
+    int TRANS_MIRROR = 2;
+    int TRANS_MIRROR_ROT180 = 1;
+    int TRANS_MIRROR_ROT270 = 4;
+    int TRANS_MIRROR_ROT90 = 7;
+    int TRANS_NONE = 0;
+    int TRANS_ROT180 = 3;
+    int TRANS_ROT270 = 6;
+    int TRANS_ROT90 = 5;
 	
     /**
      * Centering text and images horizontally
@@ -17,64 +17,64 @@ public interface GraphicsLCD extends CommonLCD {
      *
      * <P>Value <code>1</code> is assigned to <code>HCENTER</code>.</P>
      */
-    public static final int HCENTER = 1;
+    int HCENTER = 1;
     /**
      * Centering images vertically
      * around the anchor point.
      *
      * <P>Value <code>2</code> is assigned to <code>VCENTER</code>.</P>
      */
-    public static final int VCENTER = 2;
+    int VCENTER = 2;
     /**
      * Position the anchor point of text and images
      * to the left of the text or image.
      *
      * <P>Value <code>4</code> is assigned to <code>LEFT</code>.</P>
      */
-    public static final int LEFT = 4;
+    int LEFT = 4;
     /**
      * Position the anchor point of text and images
      * to the right of the text or image.
      *
      * <P>Value <code>8</code> is assigned to <code>RIGHT</code>.</P>
      */
-    public static final int RIGHT = 8;
+    int RIGHT = 8;
     /**
      * Position the anchor point of text and images
      * above the text or image.
      *
      * <P>Value <code>16</code> is assigned to <code>TOP</code>.</P>
      */
-    public static final int TOP = 16;
+    int TOP = 16;
     /**
      * Position the anchor point of text and images
      * below the text or image.
      *
      * <P>Value <code>32</code> is assigned to <code>BOTTOM</code>.</P>
      */
-    public static final int BOTTOM = 32;
+    int BOTTOM = 32;
     /**
      * Position the anchor point at the baseline of text.
      *
      * <P>Value <code>64</code> is assigned to <code>BASELINE</code>.</P>
      */
-    public static final int BASELINE = 64;
+    int BASELINE = 64;
     /**
      * Constant for the <code>SOLID</code> stroke style.
      *
      * <P>Value <code>0</code> is assigned to <code>SOLID</code>.</P>
      */
-    public static final int SOLID = 0;
+    int SOLID = 0;
     /**
      * Constant for the <code>DOTTED</code> stroke style.
      *
      * <P>Value <code>1</code> is assigned to <code>DOTTED</code>.</P>
      */
-    public static final int DOTTED = 1;
+    int DOTTED = 1;
     
     /* Public color definitions NOT Standard*/
-    public static final int BLACK = 0;
-    public static final int WHITE = 0xffffff;
+    int BLACK = 0;
+    int WHITE = 0xffffff;
     
     /**
      * Method to set a pixel on the screen.
@@ -82,7 +82,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param y the y coordinate
      * @param color the pixel color (0 = white, 1 = black)
      */
-    public void setPixel(int x, int y, int color);
+    void setPixel(int x, int y, int color);
     
     /**
      * Method to get a pixel from the screen.
@@ -90,7 +90,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param y the y coordinate
      * @return the pixel color (0 = white, 1 = black)
      */
-    public int getPixel(int x, int y);
+    int getPixel(int x, int y);
     
     /**
      * Draws the specified String using the current font and color. x and y
@@ -105,7 +105,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param anchor the anchor point for positioning the text
      * @param inverted true to invert the text display.
      */
-    public void drawString(String str, int x, int y, int anchor, boolean inverted);
+    void drawString(String str, int x, int y, int anchor, boolean inverted);
     
     /**
      * Draws the specified String using the current font and color. x and y
@@ -115,7 +115,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param y the y coordinate of the anchor point
      * @param anchor the anchor point for positioning the text
      */
-    public void drawString(String str, int x, int y, int anchor);
+    void drawString(String str, int x, int y, int anchor);
     
     /**
      * Draw a substring to the graphics surface using the current color.
@@ -126,8 +126,8 @@ public interface GraphicsLCD extends CommonLCD {
      * @param y the x coordinate of the anchor point
      * @param anchor the anchor point used to position the text.
      */
-    public void drawSubstring(String str, int offset, int len,
-            int x, int y, int anchor);
+    void drawSubstring(String str, int offset, int len,
+                       int x, int y, int anchor);
     
     /**
      * Draw a single character to the graphics surface using the current color.
@@ -136,7 +136,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param y the x coordinate of the anchor point
      * @param anchor the anchor point used to position the text.
      */
-    public void drawChar(char character, int x, int y, int anchor);
+    void drawChar(char character, int x, int y, int anchor);
     
     /**
      * Draw a series of characters to the graphics surface using the current color.
@@ -147,20 +147,20 @@ public interface GraphicsLCD extends CommonLCD {
      * @param y the x coordinate of the anchor point
      * @param anchor the anchor point used to position the text.
      */
-    public void drawChars(char[] data, int offset, int length,
-            int x, int y, int anchor);
+    void drawChars(char[] data, int offset, int length,
+                   int x, int y, int anchor);
     
     /**
      * Return the current stroke style.
      * @return current style.
      */
-    public int getStrokeStyle();
+    int getStrokeStyle();
 
     /**
      * Set the stroke style to be used for drawing operations.
      * @param style new style.
      */
-    public void setStrokeStyle(int style);
+    void setStrokeStyle(int style);
     
     /**
      * Draw the specified image to the graphics surface, using the supplied rop.
@@ -178,7 +178,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param rop drawing operation.
      * @see Image
      */
-    public void drawRegionRop(Image src, int sx, int sy, int w, int h, int x, int y, int anchor, int rop);
+    void drawRegionRop(Image src, int sx, int sy, int w, int h, int x, int y, int anchor, int rop);
     
     /**
      * Draw the specified region of the source image to the graphics surface
@@ -196,7 +196,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param anchor type of anchor
      * @param rop raster operation used to draw the output.
      */
-    public void drawRegionRop(Image src, int sx, int sy, int w, int h, int transform, int x, int y, int anchor, int rop);
+    void drawRegionRop(Image src, int sx, int sy, int w, int h, int transform, int x, int y, int anchor, int rop);
     
     /**
      * Draw the specified region of the supplied image to the graphics surface.
@@ -212,12 +212,12 @@ public interface GraphicsLCD extends CommonLCD {
      * @param anchor location of the anchor point
      * @see Image
      */
-    public void drawRegion(Image src,
-            int sx, int sy,
-            int w, int h,
-            int transform,
-            int x, int y,
-            int anchor);
+    void drawRegion(Image src,
+                    int sx, int sy,
+                    int w, int h,
+                    int transform,
+                    int x, int y,
+                    int anchor);
     
     /**
      * Draw the specified image to the graphics surface, using the supplied rop.
@@ -227,7 +227,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param anchor location of the anchor point
      * @see Image
      */
-    public void drawImage(Image src, int x, int y, int anchor);
+    void drawImage(Image src, int x, int y, int anchor);
     
     /**
      * Draw a line between the specified points, using the current color and style.
@@ -236,7 +236,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param x1 x end point
      * @param y1 y end point
      */
-    public void drawLine(int x0, int y0, int x1, int y1);
+    void drawLine(int x0, int y0, int x1, int y1);
     
     /**
      * Draw an arc, using the current color and style.
@@ -247,7 +247,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param startAngle
      * @param arcAngle
      */
-    public void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle);
+    void drawArc(int x, int y, int width, int height, int startAngle, int arcAngle);
     
     /**
      * Draw a filled arc, using the current color.
@@ -258,7 +258,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param startAngle
      * @param arcAngle
      */
-    public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle);
+    void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle);
     
     /**
      * Draw a rounded rectangle.
@@ -269,7 +269,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param arcWidth
      * @param arcHeight
      */
-    public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight);
+    void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight);
     
     /**
      * Draw a rectangle using the current color and style.
@@ -278,7 +278,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param width
      * @param height
      */
-    public void drawRect(int x, int y, int width, int height);
+    void drawRect(int x, int y, int width, int height);
     
     /**
      * Draw a filled rectangle using the current color.
@@ -287,7 +287,7 @@ public interface GraphicsLCD extends CommonLCD {
      * @param w
      * @param h
      */
-    public void fillRect(int x, int y, int w, int h);
+    void fillRect(int x, int y, int w, int h);
     
     /**
      * Copy one rectangular area of the drawing surface to another.
@@ -299,21 +299,21 @@ public interface GraphicsLCD extends CommonLCD {
      * @param y Destination y
      * @param anchor location of the anchor point of the destination.
      */
-    public void copyArea(int sx, int sy,
-            int w, int h,
-            int x, int y, int anchor);
+    void copyArea(int sx, int sy,
+                  int w, int h,
+                  int x, int y, int anchor);
     
     /**
      * Return the currently selected font object.
      * @return Current font.
      */
-    public Font getFont();
+    Font getFont();
 
     /**
      * Set the current font
      * @param f the font
      */
-    public void setFont(Font f);
+    void setFont(Font f);
     
     /**
      * Translates the origin of the graphics context to the point
@@ -324,19 +324,19 @@ public interface GraphicsLCD extends CommonLCD {
      * @see #getTranslateX()
      * @see #getTranslateY()
      */
-    public void translate(int x, int y);
+    void translate(int x, int y);
     
     /**
      * Gets the X coordinate of the translated origin of this graphics context.
      * @return X of current origin
      */
-    public int getTranslateX();
+    int getTranslateX();
     
     /**
      * Gets the Y coordinate of the translated origin of this graphics context.
      * @return Y of current origin
      */
-    public int getTranslateY();
+    int getTranslateY();
     
     /**
      * Set the current drawing color. The value is in the format 0x00RRGGBB.
@@ -344,7 +344,7 @@ public interface GraphicsLCD extends CommonLCD {
      * is treated as white!
      * @param rgb new color.
      */
-    public void setColor(int rgb);
+    void setColor(int rgb);
     
     /**
      * Sets the current color to the specified RGB values.
@@ -354,6 +354,6 @@ public interface GraphicsLCD extends CommonLCD {
      * @throws IllegalArgumentException if any of the color components
      * are outside of range <code>0-255</code>
      */
-    public void setColor(int red, int green, int blue);
+    void setColor(int red, int green, int blue);
 
 }

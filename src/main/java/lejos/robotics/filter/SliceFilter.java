@@ -9,7 +9,8 @@ import lejos.robotics.SampleProvider;
  *
  */
 public class SliceFilter extends AbstractFilter {
-	private int firstIndex, lastIndex;
+	private final int firstIndex;
+	private final int lastIndex;
 
 	public SliceFilter(SampleProvider source, int firstIndex, int lastIndex) {
 		super(source);
@@ -23,7 +24,7 @@ public class SliceFilter extends AbstractFilter {
 	}
 	
 	@Override
-	public void fetchSample(float sample[], int offset) {
+	public void fetchSample(float[] sample, int offset) throws Exception {
 		float[] buffer = new float[sampleSize];
 		super.fetchSample(buffer, 0);
 		for(int i=0;i<sampleSize();i++) {

@@ -90,7 +90,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
      * 
      * @param port
      */
-    public DexterCompassSensor(I2CPort port) {
+    public DexterCompassSensor(I2CPort port) throws Exception {
         super(port, I2C_ADDRESS);
         init();
     }
@@ -126,7 +126,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
         return getMode(0);
     }
 
-    protected void init() {
+    protected void init() throws Exception {
         setModes(new SensorMode[] { new MagneticMode() });
         configureSensor();
     }
@@ -135,7 +135,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
      * Sets the configuration registers of the sensor according to the current
      * settings
      */
-    private void configureSensor() {
+    private void configureSensor() throws Exception {
 
         buf[0] = (byte) ((3 << 5) | (rate << 2) | measurementMode);
         buf[1] = (byte) (range << 5);
@@ -203,7 +203,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
      * @param measurementMode
      *            Sets the measurement mode of the sensor.
      */
-    protected void setMeasurementMode(int measurementMode) {
+    protected void setMeasurementMode(int measurementMode) throws Exception {
         this.measurementMode = measurementMode;
         configureSensor();
     }
@@ -219,7 +219,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
      *            <p>
      *            Idle is to stop the sensor and conserve energy
      */
-    protected void setOperatingMode(int operatingMode) {
+    protected void setOperatingMode(int operatingMode) throws Exception {
         this.operatingMode = operatingMode;
         configureSensor();
     }
@@ -229,7 +229,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
      * 
      * @param range
      */
-    public void setRange(int range) {
+    public void setRange(int range) throws Exception {
         this.range = (byte) range;
         configureSensor();
     }
@@ -240,7 +240,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
      * @return An array of boolean values. A true indicates the sensor axis is
      *         working properly.
      */
-    public boolean[] test() {
+    public boolean[] test() throws Exception {
         boolean[] ret = new boolean[3];
 
         // store current settings;
@@ -262,10 +262,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
 
         // test for limits;
         for (int axis = 0; axis < 3; axis++)
-            if (dummy[axis] > 243 && dummy[axis] < 575)
-                ret[axis] = true;
-            else
-                ret[axis] = false;
+            ret[axis] = dummy[axis] > 243 && dummy[axis] < 575;
 
         // restore settings;
         measurementMode = currentMode;
@@ -276,7 +273,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
         return ret;
     }
 
-    public void setSampleRate(float rate) {
+    public void setSampleRate(float rate) throws Exception {
         for (int i = 0; i < RATES.length; i++)
             if (RATES[i] == rate)
                 rate = i;
@@ -287,11 +284,11 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
         return RATES;
     }
 
-    public void start() {
+    public void start() throws Exception {
         this.setOperatingMode(CONTINUOUS);
     }
 
-    public void stop() {
+    public void stop() throws Exception {
         this.setOperatingMode(IDLE);
     }
 
@@ -299,7 +296,7 @@ public class DexterCompassSensor extends I2CSensor implements SensorModes{
         return RATES[rate];
     }
 
-    public void setRange(float range) {
+    public void setRange(float range) throws Exception {
         for (int i = 0; i < RANGES.length; i++)
             if (RANGES[i] == range)
                 range = i;

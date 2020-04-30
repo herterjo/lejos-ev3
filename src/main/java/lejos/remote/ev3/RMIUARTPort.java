@@ -9,7 +9,7 @@ public interface RMIUARTPort extends Remote {
      * read a single byte from the device
      * @return the byte value
      */
-    public byte getByte() throws RemoteException;
+    byte getByte() throws RemoteException;
 
     /**
      * read a number of bytes from the device
@@ -17,13 +17,13 @@ public interface RMIUARTPort extends Remote {
      * @param offset offset at which to store the data
      * @param len number of bytes to read
      */
-    public void getBytes(byte [] vals, int offset, int len) throws RemoteException;
+    void getBytes(byte[] vals, int offset, int len) throws RemoteException;
 
     /**
      * read a single short from the device.
      * @return the short value
      */
-    public int getShort() throws RemoteException;
+    int getShort() throws RemoteException;
    
     /**
      * read a number of shorts from the device
@@ -31,7 +31,7 @@ public interface RMIUARTPort extends Remote {
      * @param offset offset at which to store the data
      * @param len number of shorts to read
      */
-    public void getShorts(short [] vals, int offset, int len) throws RemoteException;
+    void getShorts(short[] vals, int offset, int len) throws RemoteException;
 
     /**
      * Get the string name of the specified mode.<p><p>
@@ -39,12 +39,12 @@ public interface RMIUARTPort extends Remote {
      * @param mode mode to lookup
      * @return String version of the mode name
      */
-    public String getModeName(int mode) throws RemoteException;
+    String getModeName(int mode) throws RemoteException;
 
     /**
      * Return the current sensor reading to a string. 
      */
-    public String toStringValue() throws RemoteException;
+    String toStringValue() throws RemoteException;
 
     /**
      * Initialise the attached sensor and set it to the required operating mode.<br>
@@ -79,7 +79,7 @@ public interface RMIUARTPort extends Remote {
      * @param len The maximum number of bytes to read
      * @return The actual number of bytes read
      */
-    public int rawRead(byte[] buffer, int offset, int len) throws RemoteException;
+    int rawRead(byte[] buffer, int offset, int len) throws RemoteException;
 
     /**
      * Attempt to write a series of bytes to the uart port. This call
@@ -92,13 +92,13 @@ public interface RMIUARTPort extends Remote {
      * @param len The number of bytes to attempt to write
      * @return The actual number of bytes written
      */
-    public int rawWrite(byte[] buffer, int offset, int len) throws RemoteException;
+    int rawWrite(byte[] buffer, int offset, int len) throws RemoteException;
     
     /**
      * Set the bit rate of the port when operating in RAW mode.
      * @param bitRate The new bit rate
      */
-    public void setBitRate(int bitRate) throws RemoteException;
+    void setBitRate(int bitRate) throws RemoteException;
     
 
     void close() throws RemoteException;

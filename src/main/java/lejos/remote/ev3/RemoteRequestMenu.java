@@ -8,9 +8,9 @@ import java.net.Socket;
 
 public class RemoteRequestMenu implements Menu, Serializable {
 	private static final long serialVersionUID = -2002269631228847368L;
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
-	private Socket socket;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
+	private final Socket socket;
 	
 	private static final int PORT = 8002;
 	

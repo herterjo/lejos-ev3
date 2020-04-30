@@ -28,17 +28,17 @@ public class Arbitrator
 {
 
   private final int NONE = -1;
-  private Behavior[] _behavior;
+  private final Behavior[] _behavior;
   // highest priority behavior that wants control ; set by start() used by monitor
   private int _highestPriority = NONE;
   private int _active = NONE; //  active behavior; set by monitor, used by start();
-  private boolean _returnWhenInactive;
+  private final boolean _returnWhenInactive;
   public boolean keepRunning = true;
   /**
    * Monitor is an inner class.  It polls the behavior array to find the behavior of hightst
    * priority.  If higher than the active behavior, it calls active.suppress()
    */
-  private Monitor monitor;
+  private final Monitor monitor;
 
   /**
    * Allocates an Arbitrator object and initializes it with an array of

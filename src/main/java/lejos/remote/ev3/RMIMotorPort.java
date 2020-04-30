@@ -17,21 +17,21 @@ public interface RMIMotorPort extends Remote {
      * @see BasicMotorPort#FLOAT
      * @see BasicMotorPort#STOP
      */
-    public void controlMotor(int power, int mode) throws RemoteException;
+    void controlMotor(int power, int mode) throws RemoteException;
 
 
     /**
      * returns tachometer count
      */
-    public  int getTachoCount() throws RemoteException, Exception;
+    int getTachoCount() throws Exception;
     
     /**
      *resets the tachometer count to 0;
-     */ 
-    public void resetTachoCount() throws Exception;
+     */
+    void resetTachoCount() throws Exception;
     
-    public void setPWMMode(int mode) throws RemoteException;
+    void setPWMMode(int mode) throws RemoteException;
     
-    public void close() throws RemoteException;
+    void close() throws RemoteException;
     
 }

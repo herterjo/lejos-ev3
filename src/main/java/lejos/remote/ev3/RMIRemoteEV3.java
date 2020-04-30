@@ -37,7 +37,7 @@ public class RMIRemoteEV3 extends UnicastRemoteObject implements RMIEV3 {
 	}
 
 	@Override
-	public RMIUARTPort openUARTPort(String portName) throws RemoteException {
+	public RMIUARTPort openUARTPort(String portName) throws Exception {
 		return new RMIRemoteUARTPort(portName);
 	}
 
@@ -54,7 +54,7 @@ public class RMIRemoteEV3 extends UnicastRemoteObject implements RMIEV3 {
 
 	@Override
 	public RMIRegulatedMotor createRegulatedMotor(String portName, char motorType)
-			throws RemoteException {
+			throws Exception {
 		return new RMIRemoteRegulatedMotor(portName, motorType);
 	}
 

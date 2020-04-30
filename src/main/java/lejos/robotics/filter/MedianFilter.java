@@ -16,7 +16,7 @@ public class MedianFilter extends SampleBuffer {
   }
 
   @Override
-  public void fetchSample(float[] sample, int off) {
+  public void fetchSample(float[] sample, int off) throws Exception {
     float current, smallest, value;
     int n, halfWay;
     super.fetchSample(sample, off);

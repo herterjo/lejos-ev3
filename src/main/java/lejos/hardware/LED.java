@@ -6,6 +6,6 @@ import java.util.concurrent.Future;
 
 public interface LED {
 	
-	public Future<ExceptionWrapper> setPattern(int pattern);
+	Future<ExceptionWrapper> setPattern(int pattern);
 
 }

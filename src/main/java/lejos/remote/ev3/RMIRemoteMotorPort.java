@@ -11,7 +11,7 @@ import lejos.utility.AsyncExecutor;
 public class RMIRemoteMotorPort extends UnicastRemoteObject implements RMIMotorPort {
 
 	private static final long serialVersionUID = -5729213618672262271L;
-	private TachoMotorPort port;
+	private final TachoMotorPort port;
 	
 	protected RMIRemoteMotorPort(String portName) throws Exception {
 		super(0);

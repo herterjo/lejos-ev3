@@ -7,7 +7,7 @@ import lejos.hardware.port.AnalogPort;
 import lejos.remote.ev3.RMIAnalogPort;
 
 public class RMIRemoteAnalogPort extends UnicastRemoteObject implements RMIAnalogPort {
-	private AnalogPort port;
+	private final AnalogPort port;
 	
 	private static final long serialVersionUID = 3049365457299818710L;
 

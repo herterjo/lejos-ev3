@@ -8,8 +8,8 @@ package lejos.utility;
  */
 public class Timer
 {
-    private TimerListener myListener;
-    private Thread        myThread  ;
+    private final TimerListener myListener;
+    private final Thread        myThread  ;
     private int           delay     ;
     private boolean       running   ;
 

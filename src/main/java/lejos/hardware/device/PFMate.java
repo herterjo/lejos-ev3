@@ -24,7 +24,7 @@ public class PFMate extends I2CSensor{
 	private final static int OPER_B_REG = 0x46;  // register for motor direction of motor B
 	private final static int SPEED_B_REG = 0x47;  // register for speed of motor B
 	
-	private byte [] buffer = new byte[1];
+	private final byte [] buffer = new byte[1];
 
 	private void init(int channel)
 	{

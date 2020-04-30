@@ -2,44 +2,44 @@ package lejos.hardware;
 
 public interface Keys {
 	
-	public static final int ID_UP = 0x1;
-	public static final int ID_ENTER = 0x2;
-	public static final int ID_DOWN = 0x4;
-	public static final int ID_RIGHT = 0x8;
-	public static final int ID_LEFT = 0x10;
-	public static final int ID_ESCAPE = 0x20;
-	public static final int ID_ALL = 0x3f;
+	int ID_UP = 0x1;
+	int ID_ENTER = 0x2;
+	int ID_DOWN = 0x4;
+	int ID_RIGHT = 0x8;
+	int ID_LEFT = 0x10;
+	int ID_ESCAPE = 0x20;
+	int ID_ALL = 0x3f;
 	
-	public static int NUM_KEYS = 6;
+	int NUM_KEYS = 6;
 	
-	public static final String VOL_SETTING = "lejos.keyclick_volume";
-	public static final String LEN_SETTING = "lejos.keyclick_length";
-	public static final String FREQ_SETTING = "lejos.keyclick_frequency";
+	String VOL_SETTING = "lejos.keyclick_volume";
+	String LEN_SETTING = "lejos.keyclick_length";
+	String FREQ_SETTING = "lejos.keyclick_frequency";
 
-	public void discardEvents();
+	void discardEvents();
 	
-	public int waitForAnyEvent();
+	int waitForAnyEvent();
 	
-	public int waitForAnyEvent(int timeout);
+	int waitForAnyEvent(int timeout);
 	
-	public int waitForAnyPress(int timeout);
+	int waitForAnyPress(int timeout);
 	
-	public int waitForAnyPress();
+	int waitForAnyPress();
 	
-	public int getButtons();
+	int getButtons();
 	
-	public int readButtons();
+	int readButtons();
 	
-	public void setKeyClickVolume(int vol);
+	void setKeyClickVolume(int vol);
 	
-	public int getKeyClickVolume();
+	int getKeyClickVolume();
 	
-	public void setKeyClickLength(int len);
+	void setKeyClickLength(int len);
 	
-	public int getKeyClickLength();
+	int getKeyClickLength();
 	
-	public void setKeyClickTone(int key, int freq);
+	void setKeyClickTone(int key, int freq);
 	
-	public int getKeyClickTone(int key);
+	int getKeyClickTone(int key);
 	
 }

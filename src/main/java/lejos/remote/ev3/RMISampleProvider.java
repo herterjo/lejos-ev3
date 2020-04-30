@@ -4,7 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface RMISampleProvider extends Remote {
-	public float[] fetchSample() throws RemoteException;
+	float[] fetchSample() throws Exception;
 	
-	public void close() throws RemoteException;
+	void close() throws RemoteException;
 }

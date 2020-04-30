@@ -1,5 +1,6 @@
 package lejos.robotics;
 
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
 
 /**
@@ -14,16 +15,15 @@ public class RotatingRangeScanner implements RangeScanner
    * @param head the motor that rotates the sensor
    * @param rangeFinder the range finder
    */
-  public RotatingRangeScanner(RegulatedMotor head, RangeFinder rangeFinder)
-  {
+  public RotatingRangeScanner(RegulatedMotor head, RangeFinder rangeFinder) throws Exception {
 	  this(head,rangeFinder,1);
   }
   
-  public RotatingRangeScanner(RegulatedMotor head, RangeFinder rangeFinder, int gearRatio) {
+  public RotatingRangeScanner(RegulatedMotor head, RangeFinder rangeFinder, int gearRatio) throws Exception {
 	  this.head = head;
 	  this.rangeFinder = rangeFinder;
 	  this.gearRatio = gearRatio;
-	  head.resetTachoCount();
+	  AsyncExecutor.throwIfException(head.resetTachoCount());
   }
   
   /**
@@ -49,8 +49,7 @@ public class RotatingRangeScanner implements RangeScanner
    * Returns a set of Range Readings taken the angles specified.
    * @return the set of range values
    */
-  public RangeReadings getRangeValues()
-  {
+  public RangeReadings getRangeValues() throws Exception {
     if (readings == null || readings.getNumReadings() != angles.length)
     {
       readings = new RangeReadings(angles.length);

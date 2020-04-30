@@ -28,10 +28,10 @@ import lejos.robotics.navigation.WaypointListener;
 public class RandomPathFinder implements PathFinder {	
 	private static final long serialVersionUID = 1L;
 	
-	private float minGain = 1;	
+	private final float minGain = 1;
 	private float clearance = 20;	
-	private RangeMap map;
-	private RangeReadings readings;
+	private final RangeMap map;
+	private final RangeReadings readings;
 	private float maxRange = 150;
 	private float maxDistance = 200;
 	private int maxIterations = 1000;

@@ -8,7 +8,7 @@ import java.io.OutputStream;
  *
  */
 public class NXTOutputStream extends OutputStream {
-	private byte[] buffer;
+	private final byte[] buffer;
 	private int numBytes = 0;
 	private NXTConnection conn = null;
 	

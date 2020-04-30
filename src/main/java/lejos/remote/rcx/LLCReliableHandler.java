@@ -6,10 +6,10 @@ package lejos.remote.rcx;
  * 
  **/ 
 public class LLCReliableHandler extends PacketHandler {
-  private byte [] inPacket = new byte[3];
-  private byte [] outPacket = new byte[3];
-  private byte [] inAck = new byte[2];
-  private byte [] outAck = new byte [2];
+  private final byte [] inPacket = new byte[3];
+  private final byte [] outPacket = new byte[3];
+  private final byte [] inAck = new byte[2];
+  private final byte [] outAck = new byte [2];
   private int inPacketLength = 0;
 
   private boolean sequence = false, receiveSequence = false;

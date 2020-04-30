@@ -16,7 +16,7 @@ public class Dump extends AbstractFilter {
   }
  
   
-  public void fetchSample(float[] sample, int offset) {
+  public void fetchSample(float[] sample, int offset) throws Exception {
     String f;
   super.fetchSample(sample,offset);
   LCD.clear();

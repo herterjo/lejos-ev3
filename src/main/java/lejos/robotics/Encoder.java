@@ -18,13 +18,13 @@ public interface Encoder {
 	   * 
 	   * @return tachometer count in degrees
 	   */
-	  public Future<ReturnWrapper<Integer>> getTachoCount() throws Exception;
+      Future<ReturnWrapper<Integer>> getTachoCount() throws Exception;
 
 	  
 	  /**
 	   * Reset the tachometer count.
        * @return
        */
-	  public Future<ExceptionWrapper> resetTachoCount() throws Exception;
+      Future<ExceptionWrapper> resetTachoCount() throws Exception;
 
 }

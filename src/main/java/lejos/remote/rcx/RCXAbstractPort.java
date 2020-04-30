@@ -22,11 +22,11 @@ import lejos.utility.Delay;
 public abstract class RCXAbstractPort {
 
    private boolean portOpen = true;
-   private Listener listener;
+   private final Listener listener;
    private int timeOut = 0;
 
-   private RCXInputStream rcxin;
-   private RCXOutputStream rcxout;
+   private final RCXInputStream rcxin;
+   private final RCXOutputStream rcxout;
    protected PacketHandler packetHandler;
 
    /**
@@ -47,14 +47,14 @@ public abstract class RCXAbstractPort {
     * @return an input stream for reading bytes from this RCXPort.
     */
    public InputStream getInputStream() {
-      return (InputStream) rcxin;
+      return rcxin;
    }
 
    /** Returns an output stream for this RCXPort.
     * @return an output stream for writing bytes to this RCXPort.
     */
    public OutputStream getOutputStream() {
-      return (OutputStream) rcxout;
+      return rcxout;
    }
 
    /**
@@ -84,7 +84,7 @@ public abstract class RCXAbstractPort {
       this.timeOut = timeOut;
    }
 
-   private byte [] inPacket = new byte[2];
+   private final byte [] inPacket = new byte[2];
 
    /** Listener class runs a thread that reads and buffers bytes.
     * Allows a maximum of two bytes in a packet.
@@ -109,10 +109,10 @@ public abstract class RCXAbstractPort {
       /** The default buffer size for the InputStream
        */
       public static final int bufferSize = 32;
-      private byte[] buffer = new byte[bufferSize];
+      private final byte[] buffer = new byte[bufferSize];
       private int current = 0, last = 0;
-      private RCXAbstractPort dataPort;
-      private IOException ioe = new IOException();
+      private final RCXAbstractPort dataPort;
+      private final IOException ioe = new IOException();
 
       /** Creates new RCXInputStream
       * @param port The RCXAbstractPort which should deliver data for to this InputStream
@@ -175,8 +175,8 @@ public abstract class RCXAbstractPort {
     */
    private class RCXOutputStream extends OutputStream {
 
-      private PacketHandler packetHandler;
-      private IOException ioe = new IOException();
+      private final PacketHandler packetHandler;
+      private final IOException ioe = new IOException();
 
       /** Creates new RCXOutputStream
       * @param handler the packet handler used to send data
@@ -185,7 +185,7 @@ public abstract class RCXAbstractPort {
          packetHandler = handler;
       }
 
-      private byte [] bytePacket = new byte[1];
+      private final byte [] bytePacket = new byte[1];
 
       /** Write a byte to the OutputStream.
       * @param b The byte.

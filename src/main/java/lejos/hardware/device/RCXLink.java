@@ -16,7 +16,7 @@ import lejos.utility.Delay;
  */
 public class RCXLink extends I2CSensor implements Opcode, IRTransmitter {
 	
-	private byte[] buf = new byte[4];
+	private final byte[] buf = new byte[4];
 	
 	public RCXMotor A = new RCXMotor(new RCXRemoteMotorPort(this,0));
 	public RCXMotor B = new RCXMotor(new RCXRemoteMotorPort(this,1));

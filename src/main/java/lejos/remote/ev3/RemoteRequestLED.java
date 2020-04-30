@@ -9,8 +9,8 @@ import java.io.ObjectOutputStream;
 import java.util.concurrent.Future;
 
 public class RemoteRequestLED implements LED {
-    private ObjectOutputStream os;
-    private ObjectInputStream is;
+    private final ObjectOutputStream os;
+    private final ObjectInputStream is;
 
     public RemoteRequestLED(ObjectInputStream is, ObjectOutputStream os) {
         this.os = os;

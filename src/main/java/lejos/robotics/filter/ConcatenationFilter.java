@@ -8,7 +8,8 @@ import lejos.robotics.SampleProvider;
  * @author Lawrie Griffiths
  */
 public class ConcatenationFilter implements SampleProvider {
-	private SampleProvider source1, source2;
+	private final SampleProvider source1;
+	private final SampleProvider source2;
 
 	public ConcatenationFilter(SampleProvider source1, SampleProvider source2) {
 		this.source1 = source1;
@@ -21,7 +22,7 @@ public class ConcatenationFilter implements SampleProvider {
 	}
 
 	@Override
-	public void fetchSample(float[] sample, int offset) {
+	public void fetchSample(float[] sample, int offset) throws Exception {
 		source1.fetchSample(sample,offset);
 		source2.fetchSample(sample,source1.sampleSize() + offset);
 	}

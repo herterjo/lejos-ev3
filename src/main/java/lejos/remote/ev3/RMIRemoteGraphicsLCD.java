@@ -11,7 +11,7 @@ import lejos.hardware.lcd.Image;
 public class RMIRemoteGraphicsLCD  extends UnicastRemoteObject implements RMIGraphicsLCD {
 
 	private static final long serialVersionUID = 1561883712422890550L;
-	private GraphicsLCD g = LocalEV3.get().getGraphicsLCD();
+	private final GraphicsLCD g = LocalEV3.get().getGraphicsLCD();
 
 	protected RMIRemoteGraphicsLCD() throws RemoteException {
 		super(0);

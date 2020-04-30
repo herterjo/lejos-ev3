@@ -92,8 +92,7 @@ public class Line extends Line2D.Float {
    */
   private boolean between(float x, float x1, float x2) {
     if (x1 <= x2 && x >= x1 && x <= x2) return true;
-    if (x2 < x1 && x >= x2 && x <= x1) return true;
-    return false;
+      return x2 < x1 && x >= x2 && x <= x1;
   }
 /**
  *  Make this line longer by an amount delta at each end.

@@ -25,8 +25,8 @@ public class RandomSelfGeneratingNode extends Node {
 	 */
 	private boolean firstCall = true;
 	
-	private int connections;
-	private float maxDist;
+	private final int connections;
+	private final float maxDist;
 	
 	// TODO: Making the goal node static blows apart the possibility of using two sets of random nodes with different goals.
 	private static Node goal = null;

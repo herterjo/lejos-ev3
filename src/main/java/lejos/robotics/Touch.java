@@ -12,5 +12,5 @@ public interface Touch {
 	 * Check if the sensor is pressed.
 	 * @return <code>true</code> if sensor is pressed, <code>false</code> otherwise.
 	 */
-	public boolean isPressed();
+    boolean isPressed() throws Exception;
 }

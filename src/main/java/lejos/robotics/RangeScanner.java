@@ -12,18 +12,18 @@ public interface RangeScanner {
 	 * Take a set of range readings. The RangeReadings object defines the
 	 * number of readings and their angles to the robot's heading.
 	 * @return the range readings
-	 */ 
-	public RangeReadings getRangeValues();
+	 */
+    RangeReadings getRangeValues() throws Exception;
 
     /**
      * Set the array of angles at which range readings are to be taken
      * @param angles
      */
-     public void setAngles(float[] angles);
+    void setAngles(float[] angles);
      
      /**
       * Return the range finder for use by other classes
       * @return the range finder
       */
-     public RangeFinder getRangeFinder();
+     RangeFinder getRangeFinder();
 }

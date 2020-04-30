@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,12 +21,12 @@ import lejos.remote.nxt.NXTConnection;
  */
 public class MindsensorsBTSense {
 	private  int trId = 0;
-	private InputStream is;
-	private OutputStream os;
-	private byte[] reply = new byte[512];
+	private final InputStream is;
+	private final OutputStream os;
+	private final byte[] reply = new byte[512];
 	private int currLen = 0;
 	private int packets = 0;
-	private boolean debug = true;
+	private final boolean debug = true;
 	
 	/**
 	 * A - Accelerometer
@@ -45,7 +46,7 @@ public class MindsensorsBTSense {
 	 * W - Network location
 	 * O - GPS Location
 	 */
-	private Map<Character, BTSenseMode> modes = new HashMap<Character, BTSenseMode>();
+	private final Map<Character, BTSenseMode> modes = new HashMap<Character, BTSenseMode>();
 	
 	/**
 	 * Connection to the BTSense application and identify device as EV3
@@ -415,7 +416,7 @@ public class MindsensorsBTSense {
 	private int getInt(byte[] packet, int offset, int len) throws NumberFormatException, UnsupportedEncodingException {
 		byte[] b = new byte[len];
 		System.arraycopy(packet, offset, b, 0, len);
-		return Integer.parseInt(new String(b,"UTF-8"), 16);
+		return Integer.parseInt(new String(b, StandardCharsets.UTF_8), 16);
 	}
 	
 	/*
@@ -441,11 +442,11 @@ public class MindsensorsBTSense {
 	 * Class that implements a SensorMode for the specific sensor
 	 */
 	static class BTSenseMode implements SensorMode {
-		private char sensorType;
-		private int sampleSize;
-		private float[] latest;
+		private final char sensorType;
+		private final int sampleSize;
+		private final float[] latest;
 		
-		private static Map<Character, Integer> sampleSizes = new HashMap<Character, Integer>();
+		private static final Map<Character, Integer> sampleSizes = new HashMap<Character, Integer>();
 		
 		static {
 			sampleSizes.put('A', 3);

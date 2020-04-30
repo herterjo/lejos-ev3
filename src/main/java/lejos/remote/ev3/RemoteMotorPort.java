@@ -25,6 +25,8 @@ public class RemoteMotorPort extends RemoteIOPort implements TachoMotorPort {
 			rmi = rmiEV3.openMotorPort(getName());
 		} catch (RemoteException e) {
 			throw new PortException(e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		return res;
 	}

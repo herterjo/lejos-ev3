@@ -52,7 +52,7 @@ public class EV3NavigationModel extends NavigationModel implements MoveListener,
 	protected boolean sendMoveStart = false, sendMoveStop = true;
 	
 	private float oldRange = -1;	
-	private Thread receiver;
+	private final Thread receiver;
 	private boolean  running = true;
 	
 	/**
@@ -377,7 +377,7 @@ public class EV3NavigationModel extends NavigationModel implements MoveListener,
 							float maxDist = dis.readFloat();
 							for (FeatureDetector detector : detectors) {
 								if (detector instanceof RangeFeatureDetector) {
-									((RangeFeatureDetector) detector).setDelay(delay);
+									detector.setDelay(delay);
 									((RangeFeatureDetector) detector).setMaxDistance(maxDist);
 								}
 							}
@@ -409,11 +409,13 @@ public class EV3NavigationModel extends NavigationModel implements MoveListener,
 					}
 				} catch (IOException ioe) {
 					fatal("IOException in receiver:");
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
 			}		
 		}
 		
-		private void randomMove() {
+		private void randomMove() throws Exception {
 			if (pilot != null && pilot instanceof RotateMoveController) {
 			    float angle = (float) Math.random() * 360;
 			    float distance = (float) Math.random() * maxDistance;
@@ -466,6 +468,8 @@ public class EV3NavigationModel extends NavigationModel implements MoveListener,
 					particles.dumpObject(dos);
 				} catch (IOException ioe) {
 					fatal("IOException in localize");
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 			sendMoveStart = saveSendMoveStart;
@@ -481,7 +485,7 @@ public class EV3NavigationModel extends NavigationModel implements MoveListener,
 		  }
 		
 		// Calculate the angle for ROTATE_TO
-		private int angleTo(float angle) {
+		private int angleTo(float angle) throws Exception {
 			int angleTo = ((int) (angle - pp.getPose().getHeading())) % 360;
 			return (angleTo < 180 ? angleTo : angleTo - 360);
 		}
@@ -522,17 +526,19 @@ public class EV3NavigationModel extends NavigationModel implements MoveListener,
 			}
 		} catch (IOException ioe) {
 			fatal("IOException in moveStopped");	
-		}	
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * Called when a feature is detected.
 	 * Only range features currently supported
 	 */
-	public void featureDetected(Feature feature, FeatureDetector detector) {
+	public void featureDetected(Feature feature, FeatureDetector detector) throws Exception {
 		if (dos == null) return;
 		if (!(feature instanceof RangeFeature)) return;
-		float range = ((RangeFeature) feature).getRangeReading().getRange();
+		float range = feature.getRangeReading().getRange();
 		if (range < 0) return;
 		if  (pilot == null || !pilot.isMoving()) {
 			if (range == oldRange) return;

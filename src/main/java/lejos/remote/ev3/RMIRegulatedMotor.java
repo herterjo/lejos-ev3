@@ -14,13 +14,13 @@ public interface RMIRegulatedMotor extends Remote {
 		//TODO method name sounds like listener is added to some list.
 		// javadoc and method name should be changed such that they indicate that only one listener is supported.
 		// suggested method name: setListener(...)
-		public void addListener(RegulatedMotorListener listener) throws RemoteException;
+      void addListener(RegulatedMotorListener listener) throws RemoteException;
 
 		/**
 		 * Removes the RegulatedMotorListener from this class.
 		 * @return The RegulatedMotorListener that was removed, if any. Null if none existed.
 		 */
-		public RegulatedMotorListener removeListener() throws RemoteException;
+        RegulatedMotorListener removeListener() throws RemoteException;
 		
 	    /**
 	     * Causes motor to stop, pretty much
@@ -30,20 +30,20 @@ public interface RMIRegulatedMotor extends Remote {
 	     * Cancels any rotate() orders in progress
 	     * @param immediateReturn if true do not wait for the motor to actually stop
 	     */
-	    public void stop(boolean immediateReturn) throws RemoteException;
+        void stop(boolean immediateReturn) throws Exception;
 
 	    /**
 	     * Set the motor into float mode. This will stop the motor without braking
 	     * and the position of the motor will not be maintained.
 	     * @param immediateReturn If true do not wait for the motor to actually stop
 	     */
-	    public void flt(boolean immediateReturn) throws RemoteException;
+        void flt(boolean immediateReturn) throws Exception;
 
 	    /**
 	     * Wait until the current movement operation is complete (this can include
 	     * the motor stalling).
 	     */
-	    public void waitComplete() throws RemoteException;
+        void waitComplete() throws RemoteException;
 
 		
 	  /**
@@ -57,7 +57,7 @@ public interface RMIRegulatedMotor extends Remote {
 	   * 
 	   *  @see lejos.robotics.RegulatedMotor#rotate(int, boolean)
 	   */
-	  void rotate(int angle, boolean immediateReturn) throws RemoteException;
+	  void rotate(int angle, boolean immediateReturn) throws Exception;
 
 	  /**
 	   * Causes motor to rotate by a specified angle. The resulting tachometer count should be within +- 2 degrees on the NXT.
@@ -66,7 +66,7 @@ public interface RMIRegulatedMotor extends Remote {
 	   * @param angle by which the motor will rotate.
 	   * 
 	   */
-	  void rotate(int angle) throws RemoteException;
+	  void rotate(int angle) throws Exception;
 
 	  
 	  /**
@@ -74,7 +74,7 @@ public interface RMIRegulatedMotor extends Remote {
 	   * Then getTachoCount should be within +- 2 degrees of the limit angle when the method returns
 	   * @param  limitAngle to which the motor will rotate, and then stop (in degrees). Includes any positive or negative int, even values &gt; 360.
 	   */
-	  public void rotateTo(int limitAngle) throws RemoteException;
+      void rotateTo(int limitAngle) throws Exception;
 	  
 	  /**
 	   * causes motor to rotate to limitAngle; <br>
@@ -85,13 +85,13 @@ public interface RMIRegulatedMotor extends Remote {
 	   * @param  limitAngle to which the motor will rotate, and then stop (in degrees). Includes any positive or negative int, even values &gt; 360. 
 	   * @param immediateReturn iff true, method returns immediately, thus allowing monitoring of sensors in the calling thread.
 	   */
-	  public void rotateTo(int limitAngle,boolean immediateReturn) throws RemoteException;  
+      void rotateTo(int limitAngle, boolean immediateReturn) throws Exception;
 
 	  /**
 	   * Return the limit angle (if any)
 	   * @return the current limit angle
 	   */
-	  public int getLimitAngle() throws RemoteException;
+      int getLimitAngle() throws Exception;
 
 	  /**
 	   * Set motor speed. As a rule of thumb 100 degrees per second are possible for each volt on an NXT motor. Therefore,
@@ -100,14 +100,14 @@ public interface RMIRegulatedMotor extends Remote {
 	   * 
 	   * @param speed in degrees per second.
 	   */
-	  void setSpeed(int speed) throws RemoteException;
+	  void setSpeed(int speed) throws Exception;
 
 	  /**
 	   * Returns the current motor speed.
 	   * 
 	   * @return motor speed in degrees per second
 	   */
-	  int getSpeed() throws RemoteException;
+	  int getSpeed() throws Exception;
 	 
 	  /**
 	   * Returns the maximim speed of the motor.
@@ -120,7 +120,7 @@ public interface RMIRegulatedMotor extends Remote {
 	   * returns true if motor is stalled
 	   * @return true if stalled
 	   */
-	   boolean isStalled() throws RemoteException, Exception;
+	   boolean isStalled() throws Exception;
 	   
 	   /**
 	    * Set the parameters for detecting a stalled motor. A motor will be recognized as 
@@ -140,15 +140,15 @@ public interface RMIRegulatedMotor extends Remote {
 	   
 	   void close() throws RemoteException;
 	   
-	   void forward() throws RemoteException;
+	   void forward() throws Exception;
 	   
-	   void backward() throws RemoteException;
+	   void backward() throws Exception;
 	   
-	   void resetTachoCount() throws RemoteException;
+	   void resetTachoCount() throws Exception;
 	   
-	   int getTachoCount() throws RemoteException, Exception;
+	   int getTachoCount() throws Exception;
 	   
-	   boolean isMoving() throws RemoteException, Exception;
+	   boolean isMoving() throws Exception;
 
 }
 

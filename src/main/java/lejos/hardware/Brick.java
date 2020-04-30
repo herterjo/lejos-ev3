@@ -16,92 +16,92 @@ public interface Brick
      * @param portName The name of port
      * @return the request port
      */
-    public Port getPort(String portName);
+    Port getPort(String portName);
     
     /**
      * return a battery object which can be used to obtain battery voltage etc.
      * @return A battery object
      */
-    public Power getPower();
+    Power getPower();
 
     /**
      * return a Audio object which can be used to access the device's audio playback
      * @return A Audio device
      */
-    public Audio getAudio();
+    Audio getAudio();
 
-    public Video getVideo();
+    Video getVideo();
     /**
      * Get text access to the LCD using the default font
      * @return the text LCD 
      */
-    public TextLCD getTextLCD();
+    TextLCD getTextLCD();
     
     /**
      * Get text access to the LCD using a specified font
      * @param f the font
      * @return the text LCD
      */
-    public TextLCD getTextLCD(Font f);
+    TextLCD getTextLCD(Font f);
     
     /**
      * Get graphics access to the LCD
      * @return the graphics LCD
      */
-    public GraphicsLCD getGraphicsLCD();
+    GraphicsLCD getGraphicsLCD();
     
     /**
      * Test whether the brick is a local one
      * @return true iff brick is local
      */
-    public boolean isLocal();
+    boolean isLocal();
     
     /**
      * Get the type of brick, e.g. "EV3", "NXT", "BrickPi"
      * @return the brick type
      */
-    public String getType();
+    String getType();
     
     /**
      * Get he name of the brick
      * @return the name
      */
-    public String getName();
+    String getName();
     
     /**
      * Get the local Bluetooth device
      * @return the local Bluetooth device
      */
-    public LocalBTDevice getBluetoothDevice();
+    LocalBTDevice getBluetoothDevice();
     
     /**
      * Get the local Wifi device
      * @return the local Wifi device
      */
-    public LocalWifiDevice getWifiDevice();
+    LocalWifiDevice getWifiDevice();
     
     /**
      * Set this brick as the default one for static methods
      */
-    public void setDefault();
+    void setDefault();
     
     /**
      * Get access to the keys (buttons)
      * @return an implementation of the Keys interface
      */
-    public Keys getKeys();
+    Keys getKeys();
     
     /**
      * Get access to a specific Key (aka Button)
      * @param name the key name
      * @return an implementation of the Key interface
      */
-    public Key getKey(String name);
+    Key getKey(String name);
     
     /**
      * Get access to the LED
      * @return an implementation of the LED interface
      */
-    public LED getLED();
+    LED getLED();
     
 }

@@ -8,8 +8,8 @@ import lejos.internal.io.NativeWifi;
 import lejos.utility.Delay;
 
 public class LocalWifiDevice {
-	private String ifName;
-	private NativeWifi wifi = new NativeWifi();
+	private final String ifName;
+	private final NativeWifi wifi = new NativeWifi();
 	NativeWifi.WReqPoint reqP = new NativeWifi.WReqPoint();
 	NativeWifi.WReqSocket reqS = new NativeWifi.WReqSocket();
 	HashSet<String> results;

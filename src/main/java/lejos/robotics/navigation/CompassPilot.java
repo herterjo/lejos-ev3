@@ -82,8 +82,7 @@ public class CompassPilot extends DifferentialPilot
    * Returns the change in robot heading since the last call of reset()
    * normalized to be within -180 and _180 degrees
    */
-  public float getAngleIncrement()
-  {
+  public float getAngleIncrement() throws Exception {
     return normalize(getCompassHeading() - _heading0);
   }
 
@@ -99,8 +98,7 @@ public class CompassPilot extends DifferentialPilot
    * Method returns the current compass heading
    * @return Compass heading in degrees.
    */
-  public float getCompassHeading()
-  {
+  public float getCompassHeading() throws Exception {
     return normalize(compass.getDegreesCartesian());
   }
 
@@ -124,8 +122,7 @@ public class CompassPilot extends DifferentialPilot
 
   }
 
-  public void resetCartesianZero()
-  {
+  public void resetCartesianZero() throws Exception {
     compass.resetCartesianZero();
     _heading = 0;
   }
@@ -134,8 +131,7 @@ public class CompassPilot extends DifferentialPilot
    * Determines the difference between actual compass direction and desired  heading in degrees
    * @return error (in degrees)
    */
-  public float getHeadingError()
-  {
+  public float getHeadingError() throws Exception {
     float err = compass.getDegreesCartesian() - _heading;
     // Handles the wrap-around problem:
     return normalize(err);

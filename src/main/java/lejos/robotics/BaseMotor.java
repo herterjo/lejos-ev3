@@ -29,7 +29,7 @@ public interface BaseMotor {
 	   * Motor loses all power, causing the rotor to float freely to a stop.
 	   * This is not the same as stopping, which locks the rotor.
 	   */
-	  public void flt() throws Exception;
+      void flt() throws Exception;
 
 	  /**
 	   * Return <code>true</code> if the motor is moving.

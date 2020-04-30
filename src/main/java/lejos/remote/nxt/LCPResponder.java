@@ -75,8 +75,7 @@ public class LCPResponder extends Thread {
      * @param reply bytes to send back in response to the command
      * @return length of the reply
      */
-    protected int command(byte[] inMsg, int len, byte[] reply)
-    {
+    protected int command(byte[] inMsg, int len, byte[] reply) throws Exception {
         return LCP.emulateCommand(inMsg, len, reply);
     }
     
@@ -102,7 +101,12 @@ public class LCPResponder extends Thread {
                 len = preCommand(inMsg, len);
                 if (len > 0)
                 {
-                    int replyLen = command(inMsg,len, reply);
+                    int replyLen = 0;
+                    try {
+                        replyLen = command(inMsg,len, reply);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                     if ((inMsg[0] & 0x80) == 0 && replyLen > 0) conn.write(reply, replyLen);
                     postCommand(inMsg, len, reply, replyLen);
                 }

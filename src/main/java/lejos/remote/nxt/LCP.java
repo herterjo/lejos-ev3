@@ -22,7 +22,7 @@ import lejos.internal.io.SystemSettings;
  *
  */
 public class LCP {
-	private static byte[] i2cBuffer = new byte[16];
+	private static final byte[] i2cBuffer = new byte[16];
     private static File[] files = null;
     private static String[] fileNames = null;
     private static int fileIdx = -1;
@@ -31,7 +31,7 @@ public class LCP {
     private static FileOutputStream out = null;
     private static FileInputStream in = null;
     private static int numFiles;	
-	private static char[] charBuffer = new char[20];
+	private static final char[] charBuffer = new char[20];
 	//public static InBox[] inBoxes = new InBox[20];
     
 	// Command types constants. Indicates type of packet being sent or received.
@@ -114,7 +114,7 @@ public class LCP {
     
     private static LCPMessageListener listener = null;
 	
-    private static Port[] PORTS = {SensorPort.S1, SensorPort.S2, SensorPort.S3, SensorPort.S4};
+    private static final Port[] PORTS = {SensorPort.S1, SensorPort.S2, SensorPort.S3, SensorPort.S4};
     
 	private LCP()
 	{

@@ -14,8 +14,8 @@ public class LLCHandler extends PacketHandler {
   private byte op;
   private boolean gotAck = false;
   private boolean gotPacket = false;
-  private byte [] inPacket = new byte [3];
-  private byte [] ackPacket = new byte [2];
+  private final byte [] inPacket = new byte [3];
+  private final byte [] ackPacket = new byte [2];
   private int inPacketLength;
 
   public LLCHandler(I2CPort port) {

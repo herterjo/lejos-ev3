@@ -60,8 +60,8 @@ public class TetrixControllerFactory  {
     
     private int currentMotorIndex=0;
     private int currentServoIndex=0;
-    private Port port;
-    private Finder finder;
+    private final Port port;
+    private final Finder finder;
     
     /**
      * Instantiate a <code>TetrixControllerFactory</code> using the specified NXT sensor port.

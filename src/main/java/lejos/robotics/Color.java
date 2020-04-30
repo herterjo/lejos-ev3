@@ -20,9 +20,9 @@ public class Color {
     public static final int BROWN = 13;
     public static final int NONE = -1;
 	
-	private int red;
-	private int blue;
-	private int green;
+	private final int red;
+	private final int blue;
+	private final int green;
 	
 	private int color;
 	

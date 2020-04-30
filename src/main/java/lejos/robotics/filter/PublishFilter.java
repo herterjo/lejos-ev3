@@ -63,7 +63,7 @@ public class PublishFilter extends AbstractFilter  {
 	}
 	
 	@Override
-	public void fetchSample(float[] sample, int offset) {
+	public void fetchSample(float[] sample, int offset) throws Exception {
 		byte[] sampleMessage;
 		source.fetchSample(latest, offset);
 		for(int i=0;i<sampleSize();i++) sample[offset+i] = latest[i];

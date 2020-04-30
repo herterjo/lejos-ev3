@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 public class SimpleGPS extends Thread {
 
 
-	private InputStream in;
+	private final InputStream in;
 
 	//Classes which manages GGA, VTG, GSA Sentences
 	protected GGASentence ggaSentence;
@@ -36,7 +36,7 @@ public class SimpleGPS extends Thread {
 	private boolean close = false;
 	
 	// Listener-notifier
-	static private ArrayList<GPSListener> listeners = new ArrayList<GPSListener>();
+	static private final ArrayList<GPSListener> listeners = new ArrayList<GPSListener>();
 
 	
 	/**

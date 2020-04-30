@@ -7,7 +7,7 @@ import lejos.hardware.Wifi;
 
 public class RMIRemoteWifi  extends UnicastRemoteObject implements RMIWifi {
 	private static final long serialVersionUID = -3707578706658225092L;
-	private LocalWifiDevice wifi = Wifi.getLocalDevice("wlan0");
+	private final LocalWifiDevice wifi = Wifi.getLocalDevice("wlan0");
 
 	protected RMIRemoteWifi() throws RemoteException {
 		super(0);

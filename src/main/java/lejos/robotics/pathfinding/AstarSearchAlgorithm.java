@@ -72,13 +72,11 @@ public class AstarSearchAlgorithm implements SearchAlgorithm{
 				float tentative_g_score = x.getG_Score() + x.calculateG(y); // NEW2
 				boolean tentative_is_better = false;
 
-				if (!openset.contains(y)) { // if y not in openset
+                // if tentative_g_score < g_score[y]
+                if (!openset.contains(y)) { // if y not in openset
 					openset.add(y); // add y to openset
 					tentative_is_better = true;
-				} else if(tentative_g_score < y.getG_Score()) { // if tentative_g_score < g_score[y]
-					tentative_is_better = true;
-				} else
-					tentative_is_better = false;
+				} else tentative_is_better = tentative_g_score < y.getG_Score();
 
 				if (tentative_is_better) {
 					y.setPredecessor(x); // came_from[y] := x

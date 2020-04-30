@@ -10,7 +10,7 @@ import java.io.*;
  */
 public class NXTComm implements NXTCommRequest {
 	private NXTConnection con;
-    private NXTCommConnector connector;
+    private final NXTCommConnector connector;
 	byte[] buf = new byte[64];
 
     /**
@@ -25,10 +25,8 @@ public class NXTComm implements NXTCommRequest {
 
 	public boolean open(String name, int mode) throws IOException {		
 		con = connector.connect(name, mode);
-		if (con == null) return false;
-		
-		return true;
-	}
+        return con != null;
+    }
 	
 	private void sendData(byte [] data) throws IOException {
 		if (con.write(data, data.length) < 0) throw new IOException();

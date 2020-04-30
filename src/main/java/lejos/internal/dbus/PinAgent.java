@@ -5,7 +5,7 @@ import org.freedesktop.dbus.UInt32;
 
 public class PinAgent implements Agent {
 	
-	private String pin;
+	private final String pin;
 	
 	public PinAgent(String pin) {
 		this.pin = pin;

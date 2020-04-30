@@ -298,7 +298,7 @@ public class WheeledChassis implements Chassis {
 
 
   @Override
-  public  void travel(double linear) {
+  public  void travel(double linear) throws Exception {
     if (Double.isInfinite(linear) ) {
       setVelocity(Math.signum(linear) * linearSpeed,0);
     }
@@ -311,7 +311,7 @@ public class WheeledChassis implements Chassis {
   }
 
   @Override
-  public  void rotate(double angular) {
+  public  void rotate(double angular) throws Exception {
     if (Double.isInfinite(angular) ) {
       setVelocity(0, Math.signum(angular) * angularSpeed);
     }
@@ -325,7 +325,7 @@ public class WheeledChassis implements Chassis {
 
 
   @Override
-  public void arc (double radius, double angle) {
+  public void arc (double radius, double angle) throws Exception {
     if (angle == 0) return;
     // ratio between linear and angular speed that corresponds with the radius
     double ratio =  Math.abs(Math.PI * radius / 180 );
@@ -380,7 +380,7 @@ public class WheeledChassis implements Chassis {
    * @param motorSpeed
    * @param motorAcceleration
    */
-  protected synchronized void setMotors(Matrix motorDelta, Matrix motorSpeed, Matrix motorAcceleration) {
+  protected synchronized void setMotors(Matrix motorDelta, Matrix motorSpeed, Matrix motorAcceleration) throws Exception {
     master.startSynchronization();
     for (int i = 0; i < nWheels; i++) {
       motor[i].setAcceleration((int) motorAcceleration.get(i, 0));

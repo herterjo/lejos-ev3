@@ -9,9 +9,9 @@ public interface Wheel {
    *  The factors form the row of a forward matrix 
    * @return the factors  as a matrix
    */
-  public Matrix getFactors();  
+  Matrix getFactors();
   
-  public RegulatedMotor getMotor();
+  RegulatedMotor getMotor();
   
 
  

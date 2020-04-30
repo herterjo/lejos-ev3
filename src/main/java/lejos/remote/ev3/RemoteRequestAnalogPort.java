@@ -8,8 +8,8 @@ import lejos.hardware.port.AnalogPort;
 import lejos.utility.ExceptionWrapper;
 
 public class RemoteRequestAnalogPort extends RemoteRequestIOPort implements AnalogPort {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	private int portNum;
 	
 	public RemoteRequestAnalogPort(ObjectInputStream is, ObjectOutputStream os) {
@@ -23,8 +23,8 @@ public class RemoteRequestAnalogPort extends RemoteRequestIOPort implements Anal
 		boolean res = super.open(typ,portNum,remoteRequestPort);
 		this.portNum = portNum;
 		EV3Request req = new EV3Request();
-		req.request = EV3Request.Request.OPEN_ANALOG_PORT;;
-		req.intValue2 = typ;
+		req.request = EV3Request.Request.OPEN_ANALOG_PORT;
+        req.intValue2 = typ;
 		sendRequest(req, true);
 		return res;
 	}

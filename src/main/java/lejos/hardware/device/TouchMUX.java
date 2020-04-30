@@ -26,7 +26,7 @@ public class TouchMUX extends AnalogSensor {
 
     private class MuxTouchSensor implements Touch
     {
-        private int id;
+        private final int id;
 
         /**
          * Create an object to represent one touch sensor attached to the

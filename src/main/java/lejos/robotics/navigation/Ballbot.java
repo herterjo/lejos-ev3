@@ -110,7 +110,7 @@ public class Ballbot extends Thread { // TODO: Thread should be a private inner 
 	 * motorControlSteer is the target change in difference for two motors
 	 * in degrees per second.
 	 */
-	private double motorControlSteer = 0.0;
+	private final double motorControlSteer = 0.0;
 
 	/**
 	 * This global contains the target motor differential, essentially, which 
@@ -244,7 +244,7 @@ public class Ballbot extends Thread { // TODO: Thread should be a private inner 
 	 * Maintains an automatically adjusted gyro offset as well as the integrated gyro angle.
 	 * 
 	 */
-	private void updateGyroData() {
+	private void updateGyroData() throws Exception {
 		float gyroRaw;
 
 		gyroRaw = gyro.getAngularVelocity();
@@ -381,73 +381,76 @@ public class Ballbot extends Thread { // TODO: Thread should be a private inner 
 	//             KSPEED     * motorSpeed;
 	//
 	public void run() {
+		try {
+			int power;
+			long tMotorPosOK;
+			long cLoop = 0;
 
-		int power;
-		long tMotorPosOK;
-		long cLoop = 0;
-		
-		LCD.clear();
-		LCD.drawString("leJOS NXJ Ballbot", 0, 1);
-		LCD.drawString("Balancing", 0, 4);
+			LCD.clear();
+			LCD.drawString("leJOS NXJ Ballbot", 0, 1);
+			LCD.drawString("Balancing", 0, 4);
 
-		tMotorPosOK = System.currentTimeMillis();
+			tMotorPosOK = System.currentTimeMillis();
 
-		// Reset the motors to make sure we start at a zero position
-		my_motor.resetTachoCount();
-		//right_motor.resetTachoCount();
+			// Reset the motors to make sure we start at a zero position
+			my_motor.resetTachoCount();
+			//right_motor.resetTachoCount();
 
-		// NOTE: This balance control loop only takes 1.128 MS to execute each loop in leJOS NXJ.
-		while(true) {
-			calcInterval(cLoop++);
+			// NOTE: This balance control loop only takes 1.128 MS to execute each loop in leJOS NXJ.
+			while(true) {
+				calcInterval(cLoop++);
 
-			updateGyroData();
+				updateGyroData();
 
-			try {
-				updateMotorData();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+				try {
+					updateMotorData();
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
 
-			// Apply the drive control value to the motor position to get robot to move.
-			motorPos -= motorControlDrive * tInterval;
+				// Apply the drive control value to the motor position to get robot to move.
+				motorPos -= motorControlDrive * tInterval;
 
-			// This is the main balancing equation
-			power = (int)((KGYROSPEED * gyroSpeed +               // Deg/Sec from Gyro sensor
-					KGYROANGLE * gyroAngle) / ratioWheel + // Deg from integral of gyro
-					KPOS       * motorPos +                 // From MotorRotaionCount of both motors
-					KDRIVE     * motorControlDrive +        // To improve start/stop performance
-					KSPEED     * motorSpeed);                // Motor speed in Deg/Sec
+				// This is the main balancing equation
+				power = (int)((KGYROSPEED * gyroSpeed +               // Deg/Sec from Gyro sensor
+						KGYROANGLE * gyroAngle) / ratioWheel + // Deg from integral of gyro
+						KPOS       * motorPos +                 // From MotorRotaionCount of both motors
+						KDRIVE     * motorControlDrive +        // To improve start/stop performance
+						KSPEED     * motorSpeed);                // Motor speed in Deg/Sec
 
-			if (Math.abs(power) < 100)
-				tMotorPosOK = System.currentTimeMillis();
+				if (Math.abs(power) < 100)
+					tMotorPosOK = System.currentTimeMillis();
 
-			steerControl(power); // Movement control. Not used for balancing.
+				steerControl(power); // Movement control. Not used for balancing.
 
-			// Apply the power values to the motors
-			// NOTE: It would be easier/faster to use MotorPort.controlMotorById(), but it needs to be public.
-			my_motor.setPower(Math.abs(powerLeft));
-			//right_motor.setPower(Math.abs(powerRight));
+				// Apply the power values to the motors
+				// NOTE: It would be easier/faster to use MotorPort.controlMotorById(), but it needs to be public.
+				my_motor.setPower(Math.abs(powerLeft));
+				//right_motor.setPower(Math.abs(powerRight));
 
-			if(powerLeft > 0) my_motor.forward(); 
-			else my_motor.backward();
+				if(powerLeft > 0) my_motor.forward();
+				else my_motor.backward();
 
-			//if(powerRight > 0) right_motor.forward(); 
-			//else right_motor.backward();
+				//if(powerRight > 0) right_motor.forward();
+				//else right_motor.backward();
 
-			// Check if robot has fallen by detecting that motorPos is being limited
-			// for an extended amount of time.
-			if ((System.currentTimeMillis() - tMotorPosOK) > TIME_FALL_LIMIT) break;
-			
-			try {Thread.sleep(WAIT_TIME);} catch (InterruptedException e) {}
-		} // end of while() loop
-		
-		my_motor.flt();
-		//right_motor.flt();
+				// Check if robot has fallen by detecting that motorPos is being limited
+				// for an extended amount of time.
+				if ((System.currentTimeMillis() - tMotorPosOK) > TIME_FALL_LIMIT) break;
 
-		Sound.beepSequenceUp();
-		LCD.drawString("Oops... I fell", 0, 4);
-		LCD.drawString("tInt ms:", 0, 8);
-		LCD.drawInt((int)tInterval*1000, 9, 8);
+				try {Thread.sleep(WAIT_TIME);} catch (InterruptedException e) {}
+			} // end of while() loop
+
+			my_motor.flt();
+			//right_motor.flt();
+
+			Sound.beepSequenceUp();
+			LCD.drawString("Oops... I fell", 0, 4);
+			LCD.drawString("tInt ms:", 0, 8);
+			LCD.drawInt((int)tInterval*1000, 9, 8);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	} // END OF BALANCING THREAD CODE
 
 	/**

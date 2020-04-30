@@ -52,7 +52,7 @@ public class RFIDSensor extends I2CSensor
     private static final int DELAY_ACQUIRE = 250;
     private static final int DELAY_READ = 200;
 
-    private byte buf1[] = new byte[1];
+    private final byte[] buf1 = new byte[1];
     private long nextRead = now();
 
     private void init()
@@ -178,7 +178,7 @@ public class RFIDSensor extends I2CSensor
     public int getStatus()
     {
         getData(REG_STATUS, buf1, buf1.length);
-        return (int)buf1[0];
+        return buf1[0];
     }
 
     /**

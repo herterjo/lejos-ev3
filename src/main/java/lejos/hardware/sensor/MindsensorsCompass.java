@@ -78,7 +78,7 @@ public class MindsensorsCompass extends I2CSensor implements Calibrate {
   private final static byte BEGIN_CALIBRATION = 0x43;
   private final static byte END_CALIBRATION   = 0x44;
 
-  private byte[]            buf               = new byte[2];
+  private final byte[]            buf               = new byte[2];
 
   /**
    * Create a compass sensor object

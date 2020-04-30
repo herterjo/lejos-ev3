@@ -21,11 +21,11 @@ import lejos.robotics.SampleProvider;
 public class OffsetCorrectionFilter extends AbstractFilter {
   float[]                offset;
   float[]                reference;
-  private float[]        mean;
-  private float[]        m2;
-  private float[]        actual;
-  private Queue<Float>[] buffer;
-  private int            bufferSize;
+  private final float[]        mean;
+  private final float[]        m2;
+  private final float[]        actual;
+  private final Queue<Float>[] buffer;
+  private final int            bufferSize;
 
   /**
    * Constructor for the offset correction filter using default parameters. <br>
@@ -81,7 +81,7 @@ public class OffsetCorrectionFilter extends AbstractFilter {
     }
   }
 
-  public void fetchSample(float[] sample, int offset) {
+  public void fetchSample(float[] sample, int offset) throws Exception {
     super.fetchSample(actual, 0);
     updateStatistics();
     for (int i = 0; i < sampleSize; i++) {
@@ -108,9 +108,7 @@ public class OffsetCorrectionFilter extends AbstractFilter {
     float interval = 2 * this.getStandardDeviation(i);
     if (actual[i] < mean[i] - interval)
       return false;
-    if (actual[i] > mean[i] + interval)
-      return false;
-    return true;
+    return !(actual[i] > mean[i] + interval);
   }
 
   /**
@@ -132,10 +130,9 @@ public class OffsetCorrectionFilter extends AbstractFilter {
    * @param i
    */
   private void removeSample(int i) {
-    float x = (Float) buffer[i].poll();
+    float x = buffer[i].poll();
     float delta = x - mean[i];
     mean[i] -= delta / buffer[i].size();
-    ;
     m2[i] -= delta * (x - mean[i]);
   }
   

@@ -8,7 +8,7 @@ import lejos.hardware.ev3.LocalEV3;
 
 public class RMIRemoteKeys extends UnicastRemoteObject implements RMIKeys  {
 	private static final long serialVersionUID = -7696209202724226195L;
-	private Keys keys = LocalEV3.get().getKeys();
+	private final Keys keys = LocalEV3.get().getKeys();
 	
 	protected RMIRemoteKeys() throws RemoteException {
 		super(0);

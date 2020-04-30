@@ -84,7 +84,7 @@ import lejos.utility.EndianTools;
 	private static final int REG_SET_EMISSIVITY = 0x02;
 	private static final int MAX_EMISSIVITY = 10000;
 	
-	private byte [] buf = new byte[2];
+	private final byte [] buf = new byte[2];
 	
 	/**
 	 * Construct a sensor instance that is connected to <code>port</code>.

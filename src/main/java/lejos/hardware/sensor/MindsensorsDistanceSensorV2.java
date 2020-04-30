@@ -60,7 +60,7 @@ import lejos.utility.EndianTools;
  * 
  */
 public class MindsensorsDistanceSensorV2 extends I2CSensor  {
-	private byte[] buf = new byte[2];
+	private final byte[] buf = new byte[2];
 	
 	//Registers
 	private final static int COMMAND = 0x41;

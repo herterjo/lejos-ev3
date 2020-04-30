@@ -124,7 +124,7 @@ public class EV3I2CPort extends EV3IOPort implements I2CPort {
                                             int readLen) {
         //long st = System.currentTimeMillis();
        i2cGeneral(deviceAddress, writeBuf, writeOffset, writeLen, readLen);
-        int result = (int) cmd[1];
+        int result = cmd[1];
         if (result == STATUS_FAIL)
             throw new I2CException("I2C I/O error");
         if (result == STATUS_BUSY)

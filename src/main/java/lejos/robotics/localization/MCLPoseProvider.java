@@ -41,13 +41,13 @@ public class MCLPoseProvider implements PoseProvider, MoveListener, Transmittabl
   private float minX, maxX, minY, maxY;
   private double varX, varY, varH;
   private boolean updated;
-  private Updater updater = new Updater();
-  private int border;
+  private final Updater updater = new Updater();
+  private final int border;
   private boolean debug = false;
   private boolean busy = false;
-  private float BIG_FLOAT = 1000000f;
+  private final float BIG_FLOAT = 1000000f;
   private RangeReadings readings;
-  private boolean lost = false;
+  private final boolean lost = false;
   private boolean incomplete = true;
 
   /**
@@ -208,8 +208,7 @@ public class MCLPoseProvider implements PoseProvider, MoveListener, Transmittabl
    *
    * @return true if update was successful
    */
-  public boolean  update()
-  {
+  public boolean  update() throws Exception {
 	// if(updated) return true;
     if(debug)System.out.println("MCLPP update called ");
     updated = false;
@@ -307,8 +306,7 @@ public class MCLPoseProvider implements PoseProvider, MoveListener, Transmittabl
    * Returns the best best estimate of the current pose;
    * @return the estimated pose
    */
-  public Pose getPose()
-  {
+  public Pose getPose() throws Exception {
    if(debug) System.out.println("Mcl call update; updated? "+updated
               +" busy "+busy);
     if (!updated)

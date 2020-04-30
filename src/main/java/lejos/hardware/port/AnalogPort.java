@@ -11,13 +11,13 @@ public interface AnalogPort extends IOPort, BasicSensorPort {
      * return the voltage present on pin 6 of the sensor port
      * @return voltage reading
      */
-	public float getPin6();
+    float getPin6();
 	
     /**
      * return the voltage present on pin 1 of the sensor port
      * @return voltage reading
      */
-	public float getPin1();
+    float getPin1();
 	
 	/**
 	 * Return a series of results obtained from the sensor.
@@ -26,5 +26,5 @@ public interface AnalogPort extends IOPort, BasicSensorPort {
 	 * @param offset Offset into the above array to start storing
 	 * @param length number of values to read
 	 */
-	public void getFloats(float [] vals, int offset, int length);
+    void getFloats(float[] vals, int offset, int length);
 }

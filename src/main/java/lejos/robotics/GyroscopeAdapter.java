@@ -49,7 +49,7 @@ public class GyroscopeAdapter implements Gyroscope {
   }
 
   @Override
-  public float getAngularVelocity() {
+  public float getAngularVelocity() throws Exception {
     calibrator.fetchSample(buffer, index);
     return buffer[0];
   }
@@ -66,7 +66,7 @@ public class GyroscopeAdapter implements Gyroscope {
   }
 
   @Override
-  public int getAngle() {
+  public int getAngle() throws Exception {
     sampler.fetchSample(buffer, index);
     return (int)buffer[0];
   }

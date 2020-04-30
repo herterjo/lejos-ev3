@@ -2,8 +2,8 @@ package lejos.hardware;
 
 public interface KeyListener {
 	
-	public void keyPressed (Key k);
+	void keyPressed(Key k);
 	
-	public void keyReleased (Key k);
+	void keyReleased(Key k);
 
 }

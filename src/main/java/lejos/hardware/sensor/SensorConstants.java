@@ -13,49 +13,49 @@ public interface SensorConstants {
      * as defined in the Color class.
      */
 
-    public static final int BLACK = 1;
-    public static final int BLUE = 2;
-    public static final int GREEN = 3;
-    public static final int YELLOW = 4;
-    public static final int RED = 5;
-    public static final int WHITE = 6;
-    public static final int BROWN = 7;
+    int BLACK = 1;
+    int BLUE = 2;
+    int GREEN = 3;
+    int YELLOW = 4;
+    int RED = 5;
+    int WHITE = 6;
+    int BROWN = 7;
     /** Color sensor data RED value index. */
-    public static final int RED_INDEX = 0;
+    int RED_INDEX = 0;
     /** Color sensor data GREEN value index. */
-    public static final int GREEN_INDEX = 1;
+    int GREEN_INDEX = 1;
     /** Color sensor data BLUE value index. */
-    public static final int BLUE_INDEX = 2;
+    int BLUE_INDEX = 2;
     /** Color sensor data BLANK/Background value index. */
-    public static final int BLANK_INDEX = 3;
+    int BLANK_INDEX = 3;
 
-	public static final int TYPE_NO_SENSOR = 0;
-	public static final int TYPE_SWITCH = 1;
-	public static final int TYPE_TEMPERATURE = 2;
-	public static final int TYPE_REFLECTION = 3;
-	public static final int TYPE_ANGLE = 4;
-	public static final int TYPE_LIGHT_ACTIVE = 5;
-	public static final int TYPE_LIGHT_INACTIVE = 6;
-	public static final int TYPE_SOUND_DB = 7; 
-	public static final int TYPE_SOUND_DBA = 8;
-	public static final int TYPE_CUSTOM = 9;
-	public static final int TYPE_LOWSPEED = 10;
-	public static final int TYPE_LOWSPEED_9V = 11;
-    public static final int TYPE_HISPEED = 12;
-    public static final int TYPE_COLORFULL = 13;
-    public static final int TYPE_COLORRED = 14;
-    public static final int TYPE_COLORGREEN = 15;
-    public static final int TYPE_COLORBLUE = 16;
-    public static final int TYPE_COLORNONE = 17;
+	int TYPE_NO_SENSOR = 0;
+	int TYPE_SWITCH = 1;
+	int TYPE_TEMPERATURE = 2;
+	int TYPE_REFLECTION = 3;
+	int TYPE_ANGLE = 4;
+	int TYPE_LIGHT_ACTIVE = 5;
+	int TYPE_LIGHT_INACTIVE = 6;
+	int TYPE_SOUND_DB = 7;
+	int TYPE_SOUND_DBA = 8;
+	int TYPE_CUSTOM = 9;
+	int TYPE_LOWSPEED = 10;
+	int TYPE_LOWSPEED_9V = 11;
+    int TYPE_HISPEED = 12;
+    int TYPE_COLORFULL = 13;
+    int TYPE_COLORRED = 14;
+    int TYPE_COLORGREEN = 15;
+    int TYPE_COLORBLUE = 16;
+    int TYPE_COLORNONE = 17;
     // additional leJOS types for the EV3
-    public static final int TYPE_HIGHSPEED = 18;
-    public static final int TYPE_HIGHSPEED_9V = 19;
+    int TYPE_HIGHSPEED = 18;
+    int TYPE_HIGHSPEED_9V = 19;
     
-    public static final int MIN_TYPE = 0;
-    public static final int MAX_TYPE = 19;
+    int MIN_TYPE = 0;
+    int MAX_TYPE = 19;
 
     // Only RAW mode on the EV3
-	public static final int MODE_RAW = 0x00;
+    int MODE_RAW = 0x00;
     /** MAX value returned as a RAW sensor reading for standard NXT A/D sensors */
-    public static final int NXT_ADC_RES = 1023;
+    int NXT_ADC_RES = 1023;
 }

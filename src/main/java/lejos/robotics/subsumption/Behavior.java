@@ -30,7 +30,7 @@ public interface Behavior {
    * } <BR>
    * @return boolean  Indicates if this Behavior should seize control.
    */
-   public boolean takeControl();
+   boolean takeControl();
    
    /**
    * The code in action() represents the tasks  the robot performs when this
@@ -43,13 +43,13 @@ public interface Behavior {
     * When this method exits, the robot is in a safe state for another behavior
     * to run its action() method
    */
-   public void action();
+   void action();
    
    /**
    * The code in suppress() should cause the current behavior to exit. <BR>
    * <B>The contract for implementing this method is:</B><BR>
    *  Exit  quickly, for example, just set boolean flag.
    */
-   public void suppress();
+   void suppress();
    
 }
