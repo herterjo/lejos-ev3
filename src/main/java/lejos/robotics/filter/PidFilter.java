@@ -14,17 +14,17 @@ import lejos.robotics.filter.AbstractFilter;
 public class PidFilter extends AbstractFilter {
 
   private long           lastTime;        // timestamp for previous iteration
-  private float[]        kp;              // Proportional coefficient
-  private float[]        ki;              // Integral Coefficient
-  private float[]        kd;              // Derivative coefficient
-  private float[]        sp;              // set-point
+  private final float[]        kp;              // Proportional coefficient
+  private final float[]        ki;              // Integral Coefficient
+  private final float[]        kd;              // Derivative coefficient
+  private final float[]        sp;              // set-point
   private float[]        cp;              // Proportional term
   private float[]        ci;              // Integral term
   private float[]        cd;              // Derivative term
-  private float[]        ul;              // Maximum value for the process variable
-  private float[]        ll;              // minimum value for the process variable
-  private float[]        pv;              // process variable
-  private float[]        ca;              // controllable area for the controller
+  private final float[]        ul;              // Maximum value for the process variable
+  private final float[]        ll;              // minimum value for the process variable
+  private final float[]        pv;              // process variable
+  private final float[]        ca;              // controllable area for the controller
   private SampleProvider setPointProvider;
 
   public PidFilter(SampleProvider source) {
@@ -136,7 +136,7 @@ public class PidFilter extends AbstractFilter {
   }
 
   @Override
-  public void fetchSample(float[] sample, int offset) {
+  public void fetchSample(float[] sample, int offset) throws Exception {
     // Process variable
     source.fetchSample(pv, 0);
     if (setPointProvider != null)

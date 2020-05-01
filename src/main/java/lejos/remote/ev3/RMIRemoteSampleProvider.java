@@ -13,9 +13,9 @@ import lejos.robotics.SampleProvider;
 public class RMIRemoteSampleProvider extends UnicastRemoteObject implements RMISampleProvider {
 
 	private static final long serialVersionUID = -8432755905878519147L;
-	private SampleProvider provider;
+	private final SampleProvider provider;
 	private BaseSensor sensor;
-	private int sampleSize;
+	private final int sampleSize;
 
 	protected RMIRemoteSampleProvider(String portName, String sensorName, String modeName) throws RemoteException {
 		super(0);
@@ -27,7 +27,7 @@ public class RMIRemoteSampleProvider extends UnicastRemoteObject implements RMIS
 			Object[] args = new Object[1];
 			args[0] = LocalEV3.get().getPort(portName);
 			sensor = (BaseSensor) con.newInstance(args);
-			if (modeName == null) provider = (SampleProvider) sensor;
+			if (modeName == null) provider = sensor;
 			else provider = sensor.getMode(modeName);
 			sampleSize = provider.sampleSize();
 		} catch (Exception e) {
@@ -37,7 +37,7 @@ public class RMIRemoteSampleProvider extends UnicastRemoteObject implements RMIS
 	}
 
 	@Override
-	public float[] fetchSample() throws RemoteException {
+	public float[] fetchSample() throws Exception {
 		float[] sample = new float[sampleSize];
 		provider.fetchSample(sample, 0);
 		return sample;

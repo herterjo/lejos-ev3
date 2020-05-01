@@ -49,7 +49,7 @@ public class EV3Wrapper implements UncaughtExceptionHandler {
 	private static void invokeClass(String name, String[] args) 
 			throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, InvocationTargetException{
 	    Class<?> c = Class.forName(name);
-	    Method m = c.getMethod("main", new Class[] { args.getClass() });
+	    Method m = c.getMethod("main", args.getClass());
 	    m.setAccessible(true);
 	    int mods = m.getModifiers();
 	    

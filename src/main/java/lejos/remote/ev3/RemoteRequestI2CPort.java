@@ -8,8 +8,8 @@ import lejos.hardware.port.I2CPort;
 import lejos.utility.ExceptionWrapper;
 
 public class RemoteRequestI2CPort extends RemoteRequestIOPort implements I2CPort {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	private int portNum;
 	
 	public RemoteRequestI2CPort(ObjectInputStream is, ObjectOutputStream os) {
@@ -30,7 +30,7 @@ public class RemoteRequestI2CPort extends RemoteRequestIOPort implements I2CPort
 	}
 	
 	@Override
-	public Future<ExceptionWrapper> close() {
+	public void close() {
 		EV3Request req = new EV3Request();
 		req.request = EV3Request.Request.CLOSE_SENSOR_PORT;
 		sendRequest(req, false);	

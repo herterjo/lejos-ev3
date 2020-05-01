@@ -41,8 +41,7 @@ public class MindsensorsGlideWheelMRegulatedMotor extends BaseRegulatedMotor
      * Use this constructor to assign a variable of type motor connected to a particular port.
      * @param port  to which this motor is connected
      */
-    public MindsensorsGlideWheelMRegulatedMotor(Port port)
-    {
+    public MindsensorsGlideWheelMRegulatedMotor(Port port) throws Exception {
         super(port, null, EV3SensorConstants.TYPE_NEWTACHO, MOVE_P, MOVE_I, MOVE_D,
                 HOLD_P, HOLD_I, HOLD_D, OFFSET, MAX_SPEED);
     }

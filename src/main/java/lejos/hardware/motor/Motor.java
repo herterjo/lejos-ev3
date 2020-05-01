@@ -27,21 +27,33 @@ public class Motor
     /**
      * Motor A.
      */
-    public static final NXTRegulatedMotor A = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("A"));
+    public static NXTRegulatedMotor A;
+
     /**
      * Motor B.
      */
-    public static final NXTRegulatedMotor B = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("B"));
+    public static NXTRegulatedMotor B;
     /**
      * Motor C.
      */
-    public static final NXTRegulatedMotor C = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("C"));
-    
+    public static NXTRegulatedMotor C;
+
     /**
      * Motor D.
      */
-    public static final NXTRegulatedMotor D = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("D"));
-    
+    public static NXTRegulatedMotor D;
+
+    static {
+        try {
+            A = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("A"));
+            B = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("B"));
+            C = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("C"));
+            D = new NXTRegulatedMotor(BrickFinder.getDefault().getPort("D"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Motor() {
     	// Motor class cannot be instantiated
     }

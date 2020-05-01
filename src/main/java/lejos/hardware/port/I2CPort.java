@@ -11,7 +11,7 @@ public interface I2CPort extends IOPort, BasicSensorPort {
     /**
      * Maximum read/write request length
      */
-    public static final int MAX_IO = EV3SensorConstants.IIC_DATA_LENGTH;
+    int MAX_IO = EV3SensorConstants.IIC_DATA_LENGTH;
 
     /**
      * High level i2c interface. Perform a complete i2c transaction and return
@@ -26,7 +26,7 @@ public interface I2CPort extends IOPort, BasicSensorPort {
      * @param readOffset    Location to write the results to
      * @param readLen       The length of the read
      */
-    public void i2cTransaction(int deviceAddress, byte[] writeBuf,
-                               int writeOffset, int writeLen, byte[] readBuf, int readOffset,
-                               int readLen);
+    void i2cTransaction(int deviceAddress, byte[] writeBuf,
+                        int writeOffset, int writeLen, byte[] readBuf, int readOffset,
+                        int readLen);
 }

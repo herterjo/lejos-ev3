@@ -6,9 +6,9 @@ import java.io.ObjectOutputStream;
 import lejos.robotics.SampleProvider;
 
 public class RemoteRequestSampleProvider implements SampleProvider {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
-	private int portNum;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
+	private final int portNum;
 
 	public RemoteRequestSampleProvider(ObjectInputStream is,
 			ObjectOutputStream os, String portName, String sensorName, String modeName) {

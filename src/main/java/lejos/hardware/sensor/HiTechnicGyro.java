@@ -49,7 +49,7 @@ import lejos.hardware.port.Port;
  */
 public class HiTechnicGyro extends AnalogSensor implements SensorConstants {
 	private static final float TO_SI=-1;
-	private float zero = 600f;
+	private final float zero = 600f;
 	
     /**
      * Supports the SampleProvider interface. <br>
@@ -70,7 +70,7 @@ public class HiTechnicGyro extends AnalogSensor implements SensorConstants {
 	 * 
 	 * @param port the Sensor port
 	 */
-    public HiTechnicGyro(Port port) {
+    public HiTechnicGyro(Port port) throws Exception {
         super(port);
         init();
     }
@@ -102,7 +102,7 @@ public class HiTechnicGyro extends AnalogSensor implements SensorConstants {
 
 	@Override
 	public void fetchSample(float[] sample, int offset) {
-		sample[offset] = ((float) NXTRawValue(port.getPin1()) - zero) * TO_SI;
+		sample[offset] = (NXTRawValue(port.getPin1()) - zero) * TO_SI;
 	}
 
 	@Override

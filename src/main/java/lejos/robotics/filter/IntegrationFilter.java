@@ -42,7 +42,7 @@ public class IntegrationFilter extends AbstractFilter{
 	 * 
 	 * @see lejos.robotics.filter.AbstractFilter#fetchSample(float[], int)
 	 */
-	public void fetchSample(float sample[], int off) {
+	public void fetchSample(float[] sample, int off) throws Exception {
 		super.fetchSample(sample, off);
 		long now = System.nanoTime();
 		if (lastTime == 0)

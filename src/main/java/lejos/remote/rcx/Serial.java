@@ -12,8 +12,8 @@ import lejos.utility.Delay;
  */
 public class Serial {
 	private static RCXLink link;
-	private static byte[] buf1 = new byte[1];
-	private static byte[] packet = new byte[32];
+	private static final byte[] buf1 = new byte[1];
+	private static final byte[] packet = new byte[32];
 	private static boolean gotOpcode = false;
 	private static boolean gotPacket = false;
 	private static boolean skipping = false;

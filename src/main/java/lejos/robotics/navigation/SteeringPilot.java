@@ -3,6 +3,8 @@ package lejos.robotics.navigation;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
 
+import java.util.concurrent.ExecutionException;
+
 /*
  * DEV NOTES: Should add an optional method to auto-calibrate the steering. With low power, rotate steering all 
  * the way to the left and record tacho limit, then all the way to the right and record tacho limit. Assumes
@@ -33,10 +35,10 @@ import lejos.robotics.RegulatedMotorListener;
  */
 public class SteeringPilot implements ArcMoveController, RegulatedMotorListener {
 
-	private lejos.robotics.RegulatedMotor driveMotor;
-	private lejos.robotics.RegulatedMotor steeringMotor;
+	private final lejos.robotics.RegulatedMotor driveMotor;
+	private final lejos.robotics.RegulatedMotor steeringMotor;
 	private double minTurnRadius;
-	private double driveWheelDiameter;
+	private final double driveWheelDiameter;
 	
 	private boolean isMoving;
 	private int oldTacho;
@@ -106,7 +108,7 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 	 * to set the reverse parameter to true for proper calibration. NOTE: The next time you run the calibrate
 	 * method it will still turn left first, but...  </p>
 	 */
-	public void calibrateSteering() {
+	public void calibrateSteering() throws Exception {
 		
 		// TODO: Not really necessary to check for stall. Could just rotate for about 2 seconds and take a tacho reading. 
 		// This would help with RemoteMotor and remote SteeringPilot, which doesn't implement isStalled().
@@ -115,8 +117,8 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		steeringMotor.setStallThreshold(10, 100);
 				
 		steeringMotor.forward();
-		while(!steeringMotor.isStalled()) Thread.yield();
-		int r = steeringMotor.getTachoCount();
+		while(!steeringMotor.isStalled().get().getValue()) Thread.yield();
+		int r = steeringMotor.getTachoCount().get().getValue();
 		
 		steeringMotor.backward();
 		try {
@@ -124,8 +126,8 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		while(!steeringMotor.isStalled()) Thread.yield();
-		int l = steeringMotor.getTachoCount();
+		while(!steeringMotor.isStalled().get().getValue()) Thread.yield();
+		int l = steeringMotor.getTachoCount().get().getValue();
 					
 		int center = (l + r) / 2; // TODO: Maybe reset tacho to zero? Seems like there is no center variable.
 		
@@ -178,7 +180,7 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 	 * Positive radius = left turn
 	 * Negative radius = right turn
 	 */
-	private double steer(double radius) {
+	private double steer(double radius) throws Exception {
 		if(radius == Double.POSITIVE_INFINITY) {
 			this.steeringMotor.rotateTo(0);
 			return Double.POSITIVE_INFINITY;
@@ -191,20 +193,20 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		}
 	}
 	
-	public void arcForward(double turnRadius) {
+	public void arcForward(double turnRadius) throws Exception {
 		 arc(turnRadius, Double.POSITIVE_INFINITY, true);
 	}
 	
-	public void arcBackward(double turnRadius) {
+	public void arcBackward(double turnRadius) throws Exception {
 		arc(turnRadius, Double.NEGATIVE_INFINITY, true);
 	}
 	
-	public void arc(double turnRadius, double arcAngle) throws IllegalArgumentException {
+	public void arc(double turnRadius, double arcAngle) throws Exception {
 		if(turnRadius == 0) throw new IllegalArgumentException("SteeringPilot can't do zero radius turns."); // Can't turn in one spot
 		 arc(turnRadius, arcAngle, false);
 	}
 
-	public void arc(double turnRadius, double arcAngle, boolean immediateReturn) {
+	public void arc(double turnRadius, double arcAngle, boolean immediateReturn) throws Exception {
 		double distance = Move.convertAngleToDistance((float)arcAngle, (float)turnRadius);
 		 travelArc(turnRadius, (float)distance, immediateReturn);
 	}
@@ -213,12 +215,12 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		this.minTurnRadius = minTurnRadius;
 	}
 
-	public void travelArc(double turnRadius, double distance) {
+	public void travelArc(double turnRadius, double distance) throws Exception {
 		travelArc(turnRadius, distance, false);
 	}
 
 	// TODO: Currently the DifferentialPilot goes forward if radius is negative. This goes backwards.
-	public void travelArc(double turnRadius, double distance, boolean immediateReturn) throws IllegalArgumentException {
+	public void travelArc(double turnRadius, double distance, boolean immediateReturn) throws Exception {
 		
 		// Hack here because JVM causes extra decimals for Math.abs function?
 		double diff = this.getMinRadius() - Math.abs(turnRadius); 
@@ -250,11 +252,11 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		//return moveEvent;
 	}
 	
-	public void backward() {
+	public void backward() throws Exception {
 		travel(Double.NEGATIVE_INFINITY, true);
 	}
 
-	public void forward() {
+	public void forward() throws Exception {
 		travel(Double.POSITIVE_INFINITY, true);
 	}
 
@@ -284,7 +286,7 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		
 	}
 
-	public void stop() {
+	public void stop() throws Exception {
 		// 1. Check if moving. If not, return?
 //		if(!isMoving()) return false; // Should return no movement? Or moveEvent? Null might be appropriate.
 		
@@ -301,11 +303,11 @@ public class SteeringPilot implements ArcMoveController, RegulatedMotorListener 
 		//return moveEvent;
 	}
 
-	public void travel(double distance) {
+	public void travel(double distance) throws Exception {
 		 travel(distance, false);
 	}
 
-	public void travel(double distance, boolean immediateReturn) {
+	public void travel(double distance, boolean immediateReturn) throws Exception {
 		travelArc(Double.POSITIVE_INFINITY, distance, immediateReturn);
 	}
 

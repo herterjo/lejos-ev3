@@ -101,14 +101,14 @@ public class TetrixServoController extends I2CSensor {
     private static final float PULSE_RESOLUTION = 255f/(CONTROLLER_PULSE_RANGE_HIGH-CONTROLLER_PULSE_RANGE_LOW) ;
     
     // servo parameters
-    private int[][] servoParams = new int[4][CHANNELS]; 
+    private final int[][] servoParams = new int[4][CHANNELS];
     private static final int SRVOPARAM_PULSEWIDTH_RANGE_LOW = 0; // low pulse width range in usec
     private static final int SRVOPARAM_PULSEWIDTH_RANGE_HIGH = 1; // high pulse width range in usec
     private static final int SRVOPARAM_ROTATION_RANGE = 2; // Range of servo in degrees
     private static final int SRVOPARAM_PULSEBYTE = 3; //  current pulse width in usec
     
     // servo instances
-    private TetrixServo[] servos= new TetrixServo[CHANNELS];
+    private final TetrixServo[] servos= new TetrixServo[CHANNELS];
     
     /**
      * Instantiate for a HiTechnic TETRIX Servo Controller connected to the given <code>port</code> and daisy chain position.

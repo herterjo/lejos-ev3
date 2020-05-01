@@ -11,8 +11,9 @@ import lejos.hardware.lcd.GraphicsLCD;
   *
   */
  public class YUYVImage {  
-     private byte[] pix;  
-     private int width, height;  
+     private final byte[] pix;
+     private final int width;
+     private final int height;
 
      /**
       * Create a YUYV image of the requested size using the byte array as the source of pixel information

@@ -56,7 +56,11 @@ public class SampleThread extends AbstractFilter {
       while (true) {
         nextTime += interval;
         if (running) {
-          source.fetchSample(buffer,0);
+          try {
+            source.fetchSample(buffer,0);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
           newSampleAvailable=true;
         }
         currentTime=System.currentTimeMillis();

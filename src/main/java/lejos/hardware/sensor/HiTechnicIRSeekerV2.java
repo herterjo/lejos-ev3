@@ -60,14 +60,14 @@ import lejos.hardware.port.Port;
 public class HiTechnicIRSeekerV2 extends I2CSensor 
 {
     private static final byte   address   = 0x10;
-    private byte[] buf = new byte[1]; 
+    private final byte[] buf = new byte[1];
 
     public HiTechnicIRSeekerV2(I2CPort port) { 
        super(port, address);
        init();
     } 
 
-    public HiTechnicIRSeekerV2(Port port)  { 
+    public HiTechnicIRSeekerV2(Port port) throws Exception {
        super(port, address);
        init();
     } 

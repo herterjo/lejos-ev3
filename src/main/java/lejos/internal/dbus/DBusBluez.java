@@ -11,8 +11,8 @@ import org.freedesktop.dbus.Variant;
 import org.freedesktop.dbus.exceptions.DBusException;
 
 public class DBusBluez {
-	private Manager dbusManager;
-	private DBusConnection dbusConn;
+	private final Manager dbusManager;
+	private final DBusConnection dbusConn;
 	private Path adapterPath;
 	private Adapter adapter;
 	

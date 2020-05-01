@@ -12,7 +12,7 @@ import lejos.hardware.RemoteBTDevice;
 
 public class RMIRemoteBluetooth extends UnicastRemoteObject implements RMIBluetooth {
 	private static final long serialVersionUID = 6508261990932121690L;
-	private LocalBTDevice blue = Bluetooth.getLocalDevice();
+	private final LocalBTDevice blue = Bluetooth.getLocalDevice();
 
 	protected RMIRemoteBluetooth() throws RemoteException {
 		super(0);

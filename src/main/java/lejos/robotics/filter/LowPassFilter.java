@@ -35,7 +35,7 @@ public class LowPassFilter extends AbstractFilter {
    * 
    * See http://en.wikipedia.org/wiki/Low-pass_filter
    */
-  public void fetchSample(float[] dst, int off) {
+  public void fetchSample(float[] dst, int off) throws Exception {
     super.fetchSample(dst, off);
     if (lastTime == 0 || timeConstant == 0) {
       for (int axis = 0; axis < sampleSize; axis++) {

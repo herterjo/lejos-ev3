@@ -36,7 +36,7 @@ public interface LineFollowingMoveController extends ArcRotateMoveController {
    *            If positive, the left side of the robot is on the inside of
    *            the turn. If negative, the left side is on the outside.
    */
-  public void steer(double turnRate);
+  void steer(double turnRate) throws Exception;
   
   /** Moves the robot backward while making a curve specified by <code>turnRate</code>. <p>
    * 
@@ -73,6 +73,6 @@ public interface LineFollowingMoveController extends ArcRotateMoveController {
    *            If positive, the left side of the robot is on the inside of
    *            the turn. If negative, the left side is on the outside.
    */
-  public void steerBackward(double steerRatio);
+  void steerBackward(double steerRatio) throws Exception;
   
 }

@@ -15,11 +15,11 @@ public interface DirectionFinder extends Calibrate  {
 	 * on North as being zero.
 	 * @return Cartesian direction. Between 0 and 360, excluding 360. Values increase counter-clockwise.
 	 */
-	public float getDegreesCartesian();
+    float getDegreesCartesian() throws Exception;
 	
 	/**
 	 * Changes the current direction the compass is facing into the zero 
 	 * angle. 
 	 */
-	public void resetCartesianZero();
+    void resetCartesianZero() throws Exception;
 }

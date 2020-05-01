@@ -9,6 +9,6 @@ import java.util.concurrent.Future;
 
 public interface RMILED extends Remote {
 	
-	public Future<ExceptionWrapper> setPattern(int pattern) throws RemoteException;
+	Future<ExceptionWrapper> setPattern(int pattern) throws RemoteException;
 
 }

@@ -19,7 +19,7 @@ public interface Feature {
 	 * 
 	 * @return RangeReading object containing angle and range.
 	 */
-	public RangeReading getRangeReading();
+    RangeReading getRangeReading();
 
 	/**
 	 * Returns a set of RangeReadings for a number of detected objects. If the sensor is only capable of returning
@@ -27,7 +27,7 @@ public interface Feature {
 	 * 
 	 * @return RangeReadings object containing a set of RangeReading objects.
 	 */
-	public RangeReadings getRangeReadings();
+    RangeReadings getRangeReadings();
 	
 	/**
 	 * The time-stamp is the recorded system time when the range reading was taken. This is generally
@@ -35,5 +35,5 @@ public interface Feature {
 	 * identify the vector of the detected object.
 	 * @return The system time (in milliseconds) when the reading was taken. 
 	 */
-	public long getTimeStamp();
+    long getTimeStamp();
 }

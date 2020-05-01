@@ -63,7 +63,7 @@ public class HiTechnicEOPD extends AnalogSensor implements SensorConstants {
     /**
      * @param port NXT sensor port 1-4
      */
-    public HiTechnicEOPD (Port port){
+    public HiTechnicEOPD (Port port) throws Exception {
         super(port);
         init();
     }

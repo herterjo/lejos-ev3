@@ -3,6 +3,11 @@ package lejos.hardware.motor;
 import lejos.hardware.Device;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.robotics.DCMotor;
+import lejos.utility.AsyncExecutor;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /** 
  * Abstraction for basic motor operations.
@@ -62,9 +67,9 @@ public abstract class BasicMotor extends Device implements DCMotor
 	 * 
 	 * @return true iff the motor is currently in motion.
 	 */
-	public boolean isMoving()
+	public synchronized Future<ReturnWrapper<Boolean>> isMoving()
 	{
-		return (mode == BasicMotorPort.FORWARD || mode == BasicMotorPort.BACKWARD);
+		return ReturnWrapper.getCompletedReturnNormal(mode == BasicMotorPort.FORWARD || mode == BasicMotorPort.BACKWARD);
 	}
 
 	/**

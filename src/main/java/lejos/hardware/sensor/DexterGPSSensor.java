@@ -85,7 +85,7 @@ public class DexterGPSSensor extends I2CSensor {
     public static final byte DGPS_CMD_SLAT   = 0x0B;       /* !< Set latitude of destination */
     public static final byte DGPS_CMD_SLONG  = 0x0C;       /* !< Set longitude of destination */
 
-    private byte             reply[]         = new byte[4];
+    private final byte[] reply = new byte[4];
 
     /**
      * Constructor
@@ -104,7 +104,7 @@ public class DexterGPSSensor extends I2CSensor {
      * @param sensorPort
      *            the sensor port the sensor is connected to
      */
-    public DexterGPSSensor(Port sensorPort) {
+    public DexterGPSSensor(Port sensorPort) throws Exception {
         super(sensorPort, DGPS_I2C_ADDR);
         init();
     }

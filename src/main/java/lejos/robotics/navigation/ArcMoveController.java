@@ -13,14 +13,14 @@ public interface ArcMoveController extends MoveController {
 	 * 
 	 * @return the radius in degrees
 	 */
-	public double getMinRadius();
+    double getMinRadius();
 	
 	/**
 	 * Set the radius of the minimum turning circle.
 	 * 
 	 * @param radius the radius in degrees
 	 */
-	public void setMinRadius(double radius);
+    void setMinRadius(double radius);
 
 	/**
 	  * Starts the NXT robot moving forward along an arc with a specified radius.
@@ -36,7 +36,7 @@ public interface ArcMoveController extends MoveController {
 	  * @param radius of the arc path. If positive, the left side of the robot is on the inside of the turn. If negative, the left
 	  *          side of the robot is on the outside of the turn.
 	  */
-	 public void arcForward(double radius);
+    void arcForward(double radius) throws Exception;
 
 	 /**
 	  * Starts the NXT robot moving backward along an arc with a specified radius.
@@ -52,7 +52,7 @@ public interface ArcMoveController extends MoveController {
 	  * @param radius of the arc path. If positive, the left side of the robot is on the inside of the turn. If negative, the left
 	  *          side of the robot is on the outside of the turn.
 	  */
-	 public void arcBackward(double radius);
+     void arcBackward(double radius) throws Exception;
 	 
 	/**
 	 * Moves the NXT robot along an arc with a specified radius and  angle,
@@ -77,7 +77,7 @@ public interface ArcMoveController extends MoveController {
 	 * @param angle The sign of the angle determines the direction of the robot turns: Positive is anti-clockwise,  negative is clockwise.
 	 * @see #travelArc(double, double)
 	 */
-	 public void arc(double radius, double angle);
+    void arc(double radius, double angle) throws Exception;
 
 	/**
 	 * Moves the NXT robot along an arc with a specified radius and  angle,
@@ -103,7 +103,7 @@ public interface ArcMoveController extends MoveController {
 	 * @param immediateReturn If immediateReturn is true then the method returns immediately. 
 	 * @see #travelArc(double, double, boolean)
 	 */
-	public void arc(double radius, double angle, boolean immediateReturn);
+    void arc(double radius, double angle, boolean immediateReturn) throws Exception;
 
 	/**
 	 * Moves the NXT robot a specified distance along an arc of specified radius,
@@ -129,7 +129,7 @@ public interface ArcMoveController extends MoveController {
 	 * @see #arc(double, double)
 	 * 
 	 */
-	 public void travelArc(double radius, double distance);
+    void travelArc(double radius, double distance) throws Exception;
 
 	/**
 	 * Moves the NXT robot a specified distance along an arc of specified radius,
@@ -157,5 +157,5 @@ public interface ArcMoveController extends MoveController {
 	 * @see #arc(double, double, boolean)
 	 * 
 	 */
-	public void travelArc(double radius, double distance, boolean immediateReturn);
+    void travelArc(double radius, double distance, boolean immediateReturn) throws Exception;
 }

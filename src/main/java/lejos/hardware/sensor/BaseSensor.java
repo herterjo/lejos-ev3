@@ -61,8 +61,7 @@ public class BaseSensor extends Device implements SensorModes
     }
     
     private boolean isValid(int mode) {
-      if (mode < 0 || modes == null || mode >= modes.length) return false;
-      return true;
+        return mode >= 0 && modes != null && mode < modes.length;
     }
     
     private int getIndex(String modeName) {
@@ -87,7 +86,7 @@ public class BaseSensor extends Device implements SensorModes
     }
 
     @Override
-    public void fetchSample(float[] sample, int offset) {
+    public void fetchSample(float[] sample, int offset) throws Exception {
       modes[currentMode].fetchSample(sample, offset);
     }
 

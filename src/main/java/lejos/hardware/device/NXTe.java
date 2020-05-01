@@ -25,7 +25,7 @@ public class NXTe  extends I2CSensor{
 	
 	//I2C
 	private I2CPort portConnected;
-	private final byte SPI_PORT[] = {0x01,0x02,0x04,0x08};//SPI Ports where you connect LSC
+	private final byte[] SPI_PORT = {0x01,0x02,0x04,0x08};//SPI Ports where you connect LSC
 	public static final byte NXTE_ADDRESS = 0x50;
 	private final byte REGISTER_IIC = (byte)0xF0;//NXTe IIC address
 
@@ -36,7 +36,7 @@ public class NXTe  extends I2CSensor{
         arrLSC = new ArrayList<LSC>();
         
 
-        this.sendData((int)this.REGISTER_IIC, (byte)0x0c);
+        this.sendData(this.REGISTER_IIC, (byte)0x0c);
 	    
 	}
 	/**
@@ -49,7 +49,7 @@ public class NXTe  extends I2CSensor{
         init(this.port);
     }
     
-    public NXTe(Port port){
+    public NXTe(Port port) throws Exception {
         super(port, NXTE_ADDRESS, TYPE_LOWSPEED_9V);
         init(this.port);
     }

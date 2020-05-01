@@ -70,14 +70,14 @@ import lejos.robotics.ColorIdentifier;
  */
 public class HiTechnicColorSensor extends I2CSensor implements ColorIdentifier {
 
-  private byte[] buf      = new byte[3];
+  private final byte[] buf      = new byte[3];
 
   // TODO: Problem: The following table ignores pastels and other subtle colors
   // HiTechnic can detect.
   // Converting to limited JSE color set means this generic interface isn't as
   // rich at describing color
   // ID as it could be.
-  private int[]  colorMap = { Color.BLACK, Color.MAGENTA, Color.MAGENTA,
+  private final int[]  colorMap = { Color.BLACK, Color.MAGENTA, Color.MAGENTA,
       Color.BLUE, Color.GREEN, Color.YELLOW, Color.YELLOW, Color.ORANGE,
       Color.RED, Color.RED, Color.MAGENTA, Color.MAGENTA, Color.YELLOW,
       Color.PINK, Color.PINK, Color.PINK, Color.MAGENTA, Color.WHITE };
@@ -87,7 +87,7 @@ public class HiTechnicColorSensor extends I2CSensor implements ColorIdentifier {
     init();
   }
 
-  public HiTechnicColorSensor(Port port) {
+  public HiTechnicColorSensor(Port port) throws Exception {
     super(port);
     init();
   }

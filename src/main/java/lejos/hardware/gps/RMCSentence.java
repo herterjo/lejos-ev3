@@ -114,7 +114,7 @@ public class RMCSentence extends NMEASentence {
 //			}
 //		}
 		
-		return (double)(degrees + minutes * (double)(1.0 / 60.0));
+		return degrees + minutes * (1.0 / 60.0);
 	}
 
 	/*

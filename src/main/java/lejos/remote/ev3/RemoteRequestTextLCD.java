@@ -7,8 +7,8 @@ import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.TextLCD;
 
 public class RemoteRequestTextLCD implements TextLCD {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	private Font font;
 
 	public RemoteRequestTextLCD(ObjectInputStream is, ObjectOutputStream os) {

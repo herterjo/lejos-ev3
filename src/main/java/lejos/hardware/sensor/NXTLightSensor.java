@@ -89,8 +89,7 @@ public class NXTLightSensor extends AnalogSensor implements LampController, Sens
      * The sensor will be set to floodlight mode, i.e. the LED will be turned on.
      * @param port port, e.g. Port.S1
      */
-    public NXTLightSensor(Port port)
-    {
+    public NXTLightSensor(Port port) throws Exception {
         super(port);
         init();
     }

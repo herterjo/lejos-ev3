@@ -10,8 +10,8 @@ package lejos.hardware.motor;
  */
 public interface Tachometer {
 	
-	public int getTachoCount();
+	int getTachoCount();
 	
-	public void resetTachoCount();
+	void resetTachoCount();
 
 }

@@ -12,8 +12,8 @@ import lejos.robotics.Servo;
  * @author Kirk P. Thompson
  */
 public class TetrixServo implements Servo{
-    private TetrixServoController sc;
-    private int channel;
+    private final TetrixServoController sc;
+    private final int channel;
     
     TetrixServo(TetrixServoController sc, int channel) {
         this.sc=sc;

@@ -24,16 +24,16 @@ import java.util.concurrent.Future;
 public class LnrActrFirgelliNXT implements LinearActuator{
 //    private static final int MIN_POWER = 30;
     
-    private EncoderMotor encoderMotor;
+    private final EncoderMotor encoderMotor;
     private volatile int motorPower =0;
     private volatile int tick_wait; // this is calculated in setPower() to fit the power setting. Variable because lower powers move it slower.
     private volatile boolean isMoveCommand = false;
     private volatile boolean isStalled=false;
-    private Thread actuator;
+    private final Thread actuator;
     private volatile boolean dirExtend = true;
     private volatile int distanceTicks;
     private volatile boolean killCurrentAction=false;
-    private Object synchObj1 = new Object();
+    private final Object synchObj1 = new Object();
     private volatile int tachoCount=0;
     
     /**Create a <code>LnrActrFirgelliNXT</code> instance.
@@ -51,7 +51,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
      * @see MMXMotor
      * @see EncoderMotor
      */
-    public LnrActrFirgelliNXT(EncoderMotor encoderMotor) {
+    public LnrActrFirgelliNXT(EncoderMotor encoderMotor) throws Exception {
         this.encoderMotor=encoderMotor;
         this.encoderMotor.flt();
         
@@ -70,7 +70,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
      * @see lejos.hardware.port.MotorPort
      * @see UnregulatedMotor
      */
-    public LnrActrFirgelliNXT(Port port) {
+    public LnrActrFirgelliNXT(Port port) throws Exception {
         this(new UnregulatedMotor(port));
     }
     
@@ -85,7 +85,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
      * @see LinearActuator#move(int,boolean)
      * @see #isStalled
      */
-    public void setPower(int power){
+    public void setPower(int power) throws Exception {
         power=Math.abs(power);
         this.motorPower = (power>100)?100:power;
         this.encoderMotor.setPower(this.motorPower);
@@ -189,7 +189,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
                     try {
                         this.synchObj1.wait();
                     } catch (InterruptedException e) {
-                        ; //ignore
+                        //ignore
                     }
                 }
             }
@@ -211,7 +211,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
                     try {
                         this.synchObj1.wait();
                     } catch (InterruptedException e) {
-                        ; // ignore
+                        // ignore
                     }
                 }
             }
@@ -232,14 +232,18 @@ public class LnrActrFirgelliNXT implements LinearActuator{
                             LnrActrFirgelliNXT.this.actuator.wait();
                             if (LnrActrFirgelliNXT.this.isMoveCommand) break;
                         } catch (InterruptedException e) {
-                            ; // do nothing and continue
+                            // do nothing and continue
                         }
                     }
                 }
                 
                 // this blocks. When finished, toExtent() will reset this.isMoveCommand, etc. w/ call to stop()
-                toExtent(); 
-                
+                try {
+                    toExtent();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+
                 // wake up any wait in doAction()
                 synchronized(LnrActrFirgelliNXT.this.synchObj1){
                     LnrActrFirgelliNXT.this.synchObj1.notify();
@@ -249,7 +253,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
         
         // starts the motor and waits until move is completed or interrupted with the this.killCurrentAction
         // flag which in effect, causes the thread wait/block until next command is issued (this.isMoveCommand set to true)
-        private void toExtent() {
+        private void toExtent() throws Exception {
             int power = LnrActrFirgelliNXT.this.motorPower;
             int tacho=0;
             int temptacho;
@@ -264,9 +268,9 @@ public class LnrActrFirgelliNXT implements LinearActuator{
             }
             
             // wait until the actuator shaft starts moving (with a time limit)
-            int begTacho=LnrActrFirgelliNXT.this.encoderMotor.getTachoCount();
+            int begTacho=LnrActrFirgelliNXT.this.encoderMotor.getTachoCount().get().getValue();
             long begTime = System.currentTimeMillis();
-            while (!LnrActrFirgelliNXT.this.killCurrentAction&&(begTacho==LnrActrFirgelliNXT.this.encoderMotor.getTachoCount())) {
+            while (!LnrActrFirgelliNXT.this.killCurrentAction&&(begTacho==LnrActrFirgelliNXT.this.encoderMotor.getTachoCount().get().getValue())) {
                 doWait(LnrActrFirgelliNXT.this.tick_wait/2);
                 // kill the move and exit if it takes too long to start moving  
                 if ((System.currentTimeMillis()-begTime)>LnrActrFirgelliNXT.this.tick_wait*6) {
@@ -281,7 +285,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
             temptacho=LnrActrFirgelliNXT.this.tachoCount;
             while (!LnrActrFirgelliNXT.this.killCurrentAction) {
                 // Stall check. if no tacho change...
-                if (begTacho==LnrActrFirgelliNXT.this.encoderMotor.getTachoCount()) {
+                if (begTacho==LnrActrFirgelliNXT.this.encoderMotor.getTachoCount().get().getValue()) {
                     // ...and we exceed STALL_COUNT wait periods and have been commanded to move, it probably means we have stalled
                     if (System.currentTimeMillis()- begTime>LnrActrFirgelliNXT.this.tick_wait*STALL_COUNT) {
                         LnrActrFirgelliNXT.this.isStalled=true;
@@ -289,11 +293,11 @@ public class LnrActrFirgelliNXT implements LinearActuator{
                     }
                 } else {
                     // The tacho is moving, get the current point and time for next comparision
-                    begTacho=LnrActrFirgelliNXT.this.encoderMotor.getTachoCount();
+                    begTacho=LnrActrFirgelliNXT.this.encoderMotor.getTachoCount().get().getValue();
                     begTime = System.currentTimeMillis();
                 }
                 // calc abs tacho
-                tacho = LnrActrFirgelliNXT.this.encoderMotor.getTachoCount();
+                tacho = LnrActrFirgelliNXT.this.encoderMotor.getTachoCount().get().getValue();
                 LnrActrFirgelliNXT.this.tachoCount = temptacho - tacho;
                 tacho=Math.abs(tacho);
                 
@@ -314,7 +318,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
             // stop the motor
             LnrActrFirgelliNXT.this.encoderMotor.stop(); 
             stop(); // potentially redundant state-setting when user calls stop()
-            LnrActrFirgelliNXT.this.tachoCount=temptacho-LnrActrFirgelliNXT.this.encoderMotor.getTachoCount();
+            LnrActrFirgelliNXT.this.tachoCount=temptacho-LnrActrFirgelliNXT.this.encoderMotor.getTachoCount().get().getValue();
             
             // set the power back (if changed)
             if (LnrActrFirgelliNXT.this.distanceTicks-tacho<=4&&power>80) 
@@ -326,7 +330,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
         try {
             Thread.sleep(milliseconds);
         } catch (InterruptedException e) {
-            ; // do nothing
+            // do nothing
         }
     }
 
@@ -348,7 +352,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
      * @see #resetTachoCount
      */
     public Future<ReturnWrapper<Integer>> getTachoCount() {
-       return this.tachoCount;
+       return ReturnWrapper.getCompletedReturnNormal(this.tachoCount);
     }
     
     /**Resets the tachometer (encoder) count to zero at the current actuator shaft position.
@@ -357,6 +361,7 @@ public class LnrActrFirgelliNXT implements LinearActuator{
      */
     public Future<ExceptionWrapper> resetTachoCount() {
          this.tachoCount=0;
+         return ExceptionWrapper.getCompletedException(null);
     }
     
 }

@@ -9,6 +9,6 @@ import lejos.hardware.port.AnalogPort;
  *
  */
 public interface LegacySensorPort extends AnalogPort {
-	public void activate();	
-	public void passivate();
+	void activate();
+	void passivate();
 }

@@ -1,6 +1,7 @@
 package lejos.hardware.device.tetrix;
 
 import lejos.robotics.Encoder;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
@@ -17,12 +18,12 @@ import java.util.concurrent.Future;
  * @author Kirk P. Thompson
  */
 public class TetrixEncoderMotor extends TetrixMotor implements Encoder{
-    TetrixEncoderMotor(TetrixMotorController mc, int channel) {
+    TetrixEncoderMotor(TetrixMotorController mc, int channel) throws Exception {
         super(mc, channel);
     }
     
-    public Future<ReturnWrapper<Integer>> getTachoCount() {
-        return (int)(mc.doCommand(TetrixMotorController.CMD_GETTACHO, 0, channel) * .25);
+    public Future<ReturnWrapper<Integer>> getTachoCount() throws Exception {
+        return ReturnWrapper.getCompletedReturnNormal((int)(mc.doCommand(TetrixMotorController.CMD_GETTACHO, 0, channel) * .25));
     }
     
     /** 
@@ -30,27 +31,30 @@ public class TetrixEncoderMotor extends TetrixMotor implements Encoder{
      * Motor Controller firmware.
      * @return
      */
-    public synchronized Future<ExceptionWrapper> resetTachoCount() {
+    public synchronized Future<ExceptionWrapper> resetTachoCount() throws Exception {
         mc.doCommand(TetrixMotorController.CMD_RESETTACHO, 0, channel);
+        return ExceptionWrapper.getCompletedException(null);
     }
    
-    synchronized void waitRotateComplete() {
-        while (isMoving()) {
-            Delay.msDelay(50);
-        }
+    synchronized Future<ExceptionWrapper> waitRotateComplete(){
+        return AsyncExecutor.execute(() -> {
+            while (isMoving().get().getValue()) {
+                Delay.msDelay(50);
+            }
+        });
     }
     
     /**
      * Rotate by the requested number of degrees with option for wait until completion or immediate return where the motor
      * completes its rotation asynchronously.
-     * 
-     * @param degrees number of degrees to rotate relative to the current position.
+     *  @param degrees number of degrees to rotate relative to the current position.
      * @param immediateReturn if <code>true</code>, do not wait for the move to complete. <code>false</code> will block
-     * until the rotation completes.
+     * @return
      */
-    public void rotate(int degrees, boolean immediateReturn){
+    public Future<ExceptionWrapper> rotate(int degrees, boolean immediateReturn) throws Exception {
         mc.doCommand(TetrixMotorController.CMD_ROTATE, degrees, channel);
         if (!immediateReturn) mc.waitRotateComplete(channel);
+        return ExceptionWrapper.getCompletedException(null);
     }
     
     /**
@@ -61,7 +65,7 @@ public class TetrixEncoderMotor extends TetrixMotor implements Encoder{
      * @param immediateReturn if <code>true</code>, do not wait for the move to complete. <code>false</code> will block
      * until the rotation completes.
      */
-    public void rotateTo(int limitAngle, boolean immediateReturn){
+    public void rotateTo(int limitAngle, boolean immediateReturn) throws Exception {
         mc.doCommand(TetrixMotorController.CMD_ROTATE_TO, limitAngle, channel);
         if (!immediateReturn) mc.waitRotateComplete(channel);
     }
@@ -70,7 +74,7 @@ public class TetrixEncoderMotor extends TetrixMotor implements Encoder{
      * Return the last angle that this motor was rotating to via one of the rotate methods.
      * @return angle in degrees
      */
-    public int getLimitAngle() {
+    public int getLimitAngle() throws Exception {
         return mc.doCommand(TetrixMotorController.CMD_GETLIMITANGLE, 0, channel);
     }
     
@@ -81,7 +85,7 @@ public class TetrixEncoderMotor extends TetrixMotor implements Encoder{
      * 
      * @param regulate <code>true</code> to enable regulation, <code>false</code> otherwise.
      */
-    public void setRegulate(boolean regulate){
+    public void setRegulate(boolean regulate) throws Exception {
         int operand=TetrixMotorController.MOTPARAM_OP_FALSE;
         if (regulate) operand=TetrixMotorController.MOTPARAM_OP_TRUE;
         mc.doCommand(TetrixMotorController.CMD_SETREGULATE, operand, channel);

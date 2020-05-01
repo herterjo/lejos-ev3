@@ -13,9 +13,9 @@ import lejos.robotics.SampleProvider;
 public class SubscribedProvider implements SampleProvider {
 	protected DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
 	private int sampleSize;
-	private float[] latest;
-	private PublishedSource source;
-	private DataInputStream dis;
+	private final float[] latest;
+	private final PublishedSource source;
+	private final DataInputStream dis;
 	private long timeStamp;
 	private String host;
 	private String name;

@@ -16,7 +16,7 @@ public interface NavigationListener
     * @param pose of the robot
     * @param sequence of the Waypoint in the path
     */
-  public void atWaypoint(Waypoint waypoint, Pose pose, int sequence);
+   void atWaypoint(Waypoint waypoint, Pose pose, int sequence);
   
 /**
    * Called when the robot has reached the last Waypoint of the path
@@ -24,7 +24,7 @@ public interface NavigationListener
     * @param pose of the robot
     * @param sequence of the Waypoint in the path 
    */
-  public void pathComplete(Waypoint waypoint, Pose pose, int sequence);  
+void pathComplete(Waypoint waypoint, Pose pose, int sequence);
  
 /**
    *  called when the robot has stopped, not at a Waypoint 
@@ -32,5 +32,5 @@ public interface NavigationListener
    * @param pose   current pose of the robot
    * @param sequence number of the next Waypoint
    */
-  public void pathInterrupted(Waypoint waypoint, Pose pose, int sequence);
+void pathInterrupted(Waypoint waypoint, Pose pose, int sequence);
 }

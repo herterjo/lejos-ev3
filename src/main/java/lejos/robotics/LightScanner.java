@@ -40,11 +40,11 @@ public class LightScanner
    /**
     * speed of head while scanning for beacons.  Used by scanLight()
     */
-   private int lightSpeed = 100;
+   private final int lightSpeed = 100;
    /**
     * direction of scanner movement 
     */
-   private int _direction = 1;
+   private final int _direction = 1;
 
    /**
     * number of beacons found so far
@@ -62,8 +62,7 @@ public class LightScanner
     * @param background 
     */
    public LightScanner(RegulatedMotor headMotor, LightDetector lightDetector,
-           int minBeaconLight, int background)
-   {
+           int minBeaconLight, int background) throws Exception {
       head = headMotor;
       head.setSpeed(lightSpeed);
       eye = lightDetector;
@@ -71,13 +70,11 @@ public class LightScanner
       _lightMin = minBeaconLight;
    }
 
-   public void setSpeed(int speed)
-   {
+   public void setSpeed(int speed) throws Exception {
       head.setSpeed(speed);
    }
 
-   public void halt()
-   {
+   public void halt() throws Exception {
       _scanning = false;
       head.stop();
    }
@@ -95,7 +92,7 @@ public class LightScanner
     * @return the set of range readings, containing the light intensity and angle of each beacon
     */
    public RangeReadings scanLight(float startAngle, float endAngle, int direction,
-           int numReadings)
+           int numReadings) throws Exception
    {
       _numReadings = numReadings;
       // working arrays to hold data
@@ -122,7 +119,7 @@ public class LightScanner
       head.setSpeed(lightSpeed);
       head.rotate(arc, true);
       int k = 0;
-      while (_scanning && head.isMoving())
+      while (_scanning && head.isMoving().get().getValue())
       {
          light = (int) ( eye.getNormalizedLightValue()*100);
          if (!beacon && light > _lightMin)//seeing beacon
@@ -135,7 +132,7 @@ public class LightScanner
             if (light > intensity[indx]) 
             {
                intensity[indx] = light;
-               bearing[indx] = head.getTachoCount();
+               bearing[indx] = head.getTachoCount().get().getValue();
             }
             if (light < _background) // past the beacon          
             {
@@ -165,7 +162,7 @@ public class LightScanner
 
                }// light < backaground
             }// end past beacon
-            if (!head.isMoving() && _scanning)
+            if (!head.isMoving().get().getValue() && _scanning)
             {
                _readings.set(0, new RangeReading(-1, -1)); //incomplete readings
             }
@@ -183,8 +180,7 @@ public class LightScanner
     * @param intensity
     * @param bearing 
     */
-   private void forwardComplete(RangeReadings readings, int[] intensity, int[] bearing)
-   {
+   private void forwardComplete(RangeReadings readings, int[] intensity, int[] bearing) throws Exception {
       readings.clear();
       head.stop();
       for (int i = 0; i < _numReadings; i++)  // store data in readings

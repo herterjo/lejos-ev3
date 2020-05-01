@@ -20,10 +20,10 @@ import lejos.robotics.navigation.Pose;
  * 
  */
 public class MCLParticle {
-  private static Random rand = new Random();
+  private static final Random rand = new Random();
  
   // Instance variables (kept to minimum to allow maximum number of particles)
-  private Pose pose;
+  private final Pose pose;
   private float weight = 1;
   private  static  boolean debug = false;
 

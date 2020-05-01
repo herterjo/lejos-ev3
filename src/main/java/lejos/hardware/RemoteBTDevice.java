@@ -5,9 +5,9 @@ import java.io.Serializable;
 public class RemoteBTDevice implements Serializable {
 	
 	private static final long serialVersionUID = -1668354353670941450L;
-	private String name;
-	private byte[] address;
-	private int cod;
+	private final String name;
+	private final byte[] address;
+	private final int cod;
 	
 	public RemoteBTDevice(String name, byte[] address, int cod) {
 		this.name = name;

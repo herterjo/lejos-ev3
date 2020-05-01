@@ -67,12 +67,12 @@ public class DexterIMUSensor extends BaseSensor implements SensorModes {
     protected int Accel_I2C_address = 0x3A;
     protected int Gyro_I2C_address  = 0xD2;
 
-    public DexterIMUSensor(I2CPort port) {
+    public DexterIMUSensor(I2CPort port) throws Exception {
         DexterIMUGyroSensor gyro = new DexterIMUGyroSensor(port, Gyro_I2C_address);
         setModes(new SensorMode[] { gyro.getMode(0), new DexterIMUAccelerationSensor(port, Accel_I2C_address), gyro.getMode(1) });
     }
 
-    public DexterIMUSensor(Port port) {
+    public DexterIMUSensor(Port port) throws Exception {
         DexterIMUGyroSensor gyro = new DexterIMUGyroSensor(port, Gyro_I2C_address);
         setModes(new SensorMode[] { gyro.getMode(0), new DexterIMUAccelerationSensor(gyro.port, Accel_I2C_address), gyro.getMode(1) });
         releaseOnClose(gyro);
@@ -169,25 +169,25 @@ public class DexterIMUSensor extends BaseSensor implements SensorModes {
         // The code to set other values is there.
 
         // private float[] RATES = { 100,200,400,800};
-        private int[]            RATECODES   = { 0x00, 0x40, 0x80, 0xC0 };
+        private final int[]            RATECODES   = { 0x00, 0x40, 0x80, 0xC0 };
         // private float[] RANGES = { 250,500,2000};
-        private int[]            RANGECODES  = { 0x00, 0x10, 0x20 };
-        private float[]          MULTIPLIERS = { 8.75f, 17.5f, 70f };
+        private final int[]            RANGECODES  = { 0x00, 0x10, 0x20 };
+        private final float[]          MULTIPLIERS = { 8.75f, 17.5f, 70f };
 
-        private int              range       = 2;
+        private final int              range       = 2;
         private int              rate        = 0;
         private float            toSI        = 1f / MULTIPLIERS[range];
 
-        private byte[]           buf         = new byte[7];
+        private final byte[]           buf         = new byte[7];
 
-        public DexterIMUGyroSensor(I2CPort port, int address) {
+        public DexterIMUGyroSensor(I2CPort port, int address) throws Exception {
             super(port, address);
             if (port.getType() == I2CPort.TYPE_HIGHSPEED)
                 rate = 2;
             init();
         }
 
-        public DexterIMUGyroSensor(Port port, int address) {
+        public DexterIMUGyroSensor(Port port, int address) throws Exception {
             super(port, address, TYPE_LOWSPEED_9V);
             init();
         }
@@ -195,7 +195,7 @@ public class DexterIMUSensor extends BaseSensor implements SensorModes {
         /**
          * This method configures the sensor
          */
-        private void init() {
+        private void init() throws Exception {
             setModes(new SensorMode[] { new RateMode(), new TemperatureMode() });
             int reg;
             // put in sleep mode;
@@ -233,9 +233,7 @@ public class DexterIMUSensor extends BaseSensor implements SensorModes {
         @SuppressWarnings("unused")
         private boolean isNewDataAvailable() {
             getData(REG_STATUS, buf, 1);
-            if ((buf[0] & 0x08) == 0x08)
-                return true;
-            return false;
+            return (buf[0] & 0x08) == 0x08;
         }
 
         @SuppressWarnings("unused")
@@ -335,7 +333,7 @@ public class DexterIMUSensor extends BaseSensor implements SensorModes {
         protected static final int   MODE_REG       = 0x16;
         protected static final float TOSI           = 100f / (64.0f * 9.81f);
 
-        private byte[]               buf            = new byte[6];
+        private final byte[]               buf            = new byte[6];
 
         private DexterIMUAccelerationSensor(I2CPort port, int address) {
             super(port, address);

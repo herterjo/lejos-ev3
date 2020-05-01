@@ -90,7 +90,7 @@ import lejos.hardware.port.Port;
      * @param port
      *            port, e.g. Port.S1
      */
-    public DexterLaserSensor(Port port) {
+    public DexterLaserSensor(Port port) throws Exception {
         super(port);
         init();
     }
@@ -152,8 +152,8 @@ public SensorMode getAmbientMode() {
 
     private class Laser implements SensorMode {
 
-        private boolean state;
-        private String  name;
+        private final boolean state;
+        private final String  name;
 
         private Laser(boolean state, String name) {
             this.state = state;

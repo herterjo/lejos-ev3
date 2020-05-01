@@ -100,7 +100,7 @@ public class MSC extends I2CSensor {
 	 * @param port the NXTServo is connected to
 	 * 
 	 */
-    public MSC(Port port){
+    public MSC(Port port) throws Exception {
         super(port);
         this.port.setType(TYPE_LOWSPEED_9V);
         this.setAddress(NXTSERVO_ADDRESS);

@@ -3,13 +3,13 @@ package lejos.hardware.port;
 
 public interface UARTPort extends IOPort, BasicSensorPort
 {
-    public static final int UART_RAW_MODE = -1;
+    int UART_RAW_MODE = -1;
 
     /**
      * read a single byte from the device
      * @return the byte value
      */
-    public byte getByte();
+    byte getByte();
 
     /**
      * read a number of bytes from the device
@@ -17,13 +17,13 @@ public interface UARTPort extends IOPort, BasicSensorPort
      * @param offset offset at which to store the data
      * @param len number of bytes to read
      */
-    public void getBytes(byte [] vals, int offset, int len);
+    void getBytes(byte[] vals, int offset, int len);
 
     /**
      * read a single short from the device.
      * @return the short value
      */
-    public int getShort();
+    int getShort();
    
     /**
      * read a number of shorts from the device
@@ -31,7 +31,7 @@ public interface UARTPort extends IOPort, BasicSensorPort
      * @param offset offset at which to store the data
      * @param len number of shorts to read
      */
-    public void getShorts(short [] vals, int offset, int len);
+    void getShorts(short[] vals, int offset, int len);
 
     /**
      * Get the string name of the specified mode.<p><p>
@@ -39,12 +39,12 @@ public interface UARTPort extends IOPort, BasicSensorPort
      * @param mode mode to lookup
      * @return String version of the mode name
      */
-    public String getModeName(int mode);
+    String getModeName(int mode);
 
     /**
      * Return the current sensor reading to a string. 
      */
-    public String toString();
+    String toString();
 
     /**
      * Initialise the attached sensor and set it to the required operating mode.<br>
@@ -79,7 +79,7 @@ public interface UARTPort extends IOPort, BasicSensorPort
      * @param len The maximum number of bytes to read
      * @return The actual number of bytes read
      */
-    public int rawRead(byte[] buffer, int offset, int len);
+    int rawRead(byte[] buffer, int offset, int len);
 
     /**
      * Attempt to write a series of bytes to the uart port. This call
@@ -92,12 +92,12 @@ public interface UARTPort extends IOPort, BasicSensorPort
      * @param len The number of bytes to attempt to write
      * @return The actual number of bytes written
      */
-    public int rawWrite(byte[] buffer, int offset, int len);
+    int rawWrite(byte[] buffer, int offset, int len);
     
     /**
      * Set the bit rate of the port when operating in RAW mode.
      * @param bitRate The new bit rate
      */
-    public void setBitRate(int bitRate);
+    void setBitRate(int bitRate);
 
 }

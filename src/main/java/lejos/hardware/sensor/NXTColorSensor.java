@@ -84,7 +84,7 @@ public class NXTColorSensor extends AnalogSensor implements SensorConstants,  La
     {
         -1, Color.BLACK, Color.BLUE, Color.GREEN, Color.YELLOW, Color.RED, Color.WHITE
     };
-    private float[] ADRaw = new float[5];
+    private final float[] ADRaw = new float[5];
 
     private class ModeProvider implements SensorMode
     {
@@ -116,7 +116,7 @@ public class NXTColorSensor extends AnalogSensor implements SensorConstants,  La
           //TODO: Is this the correct way to normalize this output?
           // Normalize to 3.3 the ref voltage on pin 6 on the NXT
           for(int i = 0; i < sampleSize; i++)
-              sample[offset+i] = (float)ADRaw[startOffset+i]/3.3f; 
+              sample[offset+i] = ADRaw[startOffset+i] /3.3f;
         }
 
         @Override
@@ -153,8 +153,7 @@ public class NXTColorSensor extends AnalogSensor implements SensorConstants,  La
      * Create a new Color Sensor instance and bind it to a port.
      * @param port Port to use for the sensor.
      */
-    public NXTColorSensor(Port port)
-    {
+    public NXTColorSensor(Port port) throws Exception {
         super(port);
         init();
     }

@@ -71,7 +71,7 @@ public class EV3UltrasonicSensor extends UARTSensor {
    * 
    * @param port
    */
-  public EV3UltrasonicSensor(Port port) {
+  public EV3UltrasonicSensor(Port port) throws Exception {
     super(port, 0);
     init();
   }
@@ -137,7 +137,7 @@ public class EV3UltrasonicSensor extends UARTSensor {
    *         False, when the sensor is disabled.
    */
   public boolean isEnabled() {
-    return (currentMode == DISABLED) ? false : true;
+    return currentMode != DISABLED;
   }
 
 

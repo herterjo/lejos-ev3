@@ -78,7 +78,7 @@ public class MindsensorsCompass extends I2CSensor implements Calibrate {
   private final static byte BEGIN_CALIBRATION = 0x43;
   private final static byte END_CALIBRATION   = 0x44;
 
-  private byte[]            buf               = new byte[2];
+  private final byte[]            buf               = new byte[2];
 
   /**
    * Create a compass sensor object
@@ -112,7 +112,7 @@ public class MindsensorsCompass extends I2CSensor implements Calibrate {
    * @param address
    *          The I2C address used by the sensor
    */
-  public MindsensorsCompass(Port port, int address) {
+  public MindsensorsCompass(Port port, int address) throws Exception {
     super(port, address);
     init();
   }
@@ -123,7 +123,7 @@ public class MindsensorsCompass extends I2CSensor implements Calibrate {
    * @param port
    *          Sensor port for the compass
    */
-  public MindsensorsCompass(Port port) {
+  public MindsensorsCompass(Port port) throws Exception {
     super(port);
     init();
   }

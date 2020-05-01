@@ -20,8 +20,8 @@ public class LMotor extends I2CSensor{
 	private SensorPort portConnected;//What
 	protected byte SPI_PORT;//What SPI Port is connected LSC
 
-	public static final int arrMotorUnload[] = {0x01,0x02,0x04,0x08,0x20,0x40,0x80,0x100,0x200};
-	public static final int arrMotorLoad[] = {0x3FE,0x3FD,0x3FB,0x3F7,0x3EF,0x3DF,0x3BF,0x37F,0x2FF,0x1FF};
+	public static final int[] arrMotorUnload = {0x01,0x02,0x04,0x08,0x20,0x40,0x80,0x100,0x200};
+	public static final int[] arrMotorLoad = {0x3FE,0x3FD,0x3FB,0x3F7,0x3EF,0x3DF,0x3BF,0x37F,0x2FF,0x1FF};
 	
     /**
      * Constructor
@@ -49,7 +49,7 @@ public class LMotor extends I2CSensor{
      * @param SPI_PORT the SPI port
      *  
      */
-    public LMotor(Port port, int location, String name, byte SPI_PORT){
+    public LMotor(Port port, int location, String name, byte SPI_PORT) throws Exception {
         super(port, NXTe.NXTE_ADDRESS);
         this.name = name;
         this.LSC_position = location;
@@ -74,16 +74,16 @@ public class LMotor extends I2CSensor{
 		int motion = -1;
 		
 		//Write OP Code
-		sendData((int)this.SPI_PORT, (byte)0x68);
+		sendData(this.SPI_PORT, (byte)0x68);
 		
 		//Read High Byte
-		sendData((int)this.SPI_PORT, (byte)0x00);	
-		getData((int)this.SPI_PORT, bufReadResponse, 1);
+		sendData(this.SPI_PORT, (byte)0x00);
+		getData(this.SPI_PORT, bufReadResponse, 1);
 		h_byte = bufReadResponse[0];
 
 		//Read Low Byte
-		sendData((int)this.SPI_PORT, (byte)0x00);	
-		getData((int)this.SPI_PORT, bufReadResponse, 1);
+		sendData(this.SPI_PORT, (byte)0x00);
+		getData(this.SPI_PORT, bufReadResponse, 1);
 		l_byte = bufReadResponse[0];
 	
 		if(l_byte == 0xFF){
@@ -120,8 +120,8 @@ public class LMotor extends I2CSensor{
 		h_byte = (byte)0xF0;
 		l_byte = (byte)(((motor)<<4) + delay);
 	     
-		sendData((int)this.SPI_PORT, h_byte);
-		sendData((int)this.SPI_PORT, l_byte);
+		sendData(this.SPI_PORT, h_byte);
+		sendData(this.SPI_PORT, l_byte);
 	}
 	
 	public void unload(){
@@ -136,10 +136,10 @@ public class LMotor extends I2CSensor{
 		l_byte = (byte)channel;
 	     
 	    //High Byte Write
-		sendData((int)this.SPI_PORT, h_byte);
+		sendData(this.SPI_PORT, h_byte);
 
 	    //Low Byte Write
-		sendData((int)this.SPI_PORT, l_byte);		
+		sendData(this.SPI_PORT, l_byte);
 	}
 	
 	/**
@@ -157,10 +157,10 @@ public class LMotor extends I2CSensor{
 		l_byte = (byte)channel;
 	     
 	    //High Byte Write
-		sendData((int)this.SPI_PORT, h_byte);
+		sendData(this.SPI_PORT, h_byte);
 
 	    //Low Byte Write
-		sendData((int)this.SPI_PORT, l_byte);		
+		sendData(this.SPI_PORT, l_byte);
 	}
 
 	/**
@@ -185,10 +185,10 @@ public class LMotor extends I2CSensor{
 	    l_byte = (byte)pulse;
 		
 	    //High Byte Write
-		sendData((int)this.SPI_PORT, h_byte);
+		sendData(this.SPI_PORT, h_byte);
 
 	    //Low Byte Write
-		sendData((int)this.SPI_PORT, l_byte);
+		sendData(this.SPI_PORT, l_byte);
 	}
 
 	/**
@@ -207,18 +207,18 @@ public class LMotor extends I2CSensor{
 		int servo = LSC_position;
 	    //Write OP Code
 	    h_byte  = (byte)(servo << 3);
-		sendData((int)this.SPI_PORT, h_byte);
+		sendData(this.SPI_PORT, h_byte);
 		
 	    //Read High Byte
 	    //I2CBytes(IN_3, bufReadValue, buflen, bufReadResponse);
-		sendData((int)this.SPI_PORT, (byte)0x00);
-		getData((int)this.SPI_PORT, bufReadResponse, 1);
+		sendData(this.SPI_PORT, (byte)0x00);
+		getData(this.SPI_PORT, bufReadResponse, 1);
 		
 	    h_byte = bufReadResponse[0];
 	    
 	    //Read Low Byte
-		sendData((int)this.SPI_PORT, (byte)0x00);
-		getData((int)this.SPI_PORT, bufReadResponse, 1);
+		sendData(this.SPI_PORT, (byte)0x00);
+		getData(this.SPI_PORT, bufReadResponse, 1);
 	    l_byte = bufReadResponse[0];
 	    
 	    return  ((h_byte & 0x07 ) << 8) +  (l_byte & 0x00000000FF);

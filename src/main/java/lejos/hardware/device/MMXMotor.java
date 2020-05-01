@@ -72,15 +72,15 @@ public class MMXMotor implements EncoderMotor {
      *
      * @return <code>true</code> if the motor is executing a movement command, <code>false</code> if stopped.
      */
-    public boolean isMoving() {
-        return NXTMMX.MOTPARAM_OP_TRUE==mmx.doCommand(NXTMMX.CMD_ISMOVING, 0, channel);
+    public Future<ReturnWrapper<Boolean>> isMoving() {
+        return ReturnWrapper.getCompletedReturnNormal(NXTMMX.MOTPARAM_OP_TRUE==mmx.doCommand(NXTMMX.CMD_ISMOVING, 0, channel));
     }
 
     /* (non-Javadoc)
      * @see lejos.robotics.Encoder#getTachoCount()
      */
     public Future<ReturnWrapper<Integer>> getTachoCount() {
-        return mmx.doCommand(NXTMMX.CMD_GETTACHO, 0, channel);
+        return ReturnWrapper.getCompletedReturnNormal(mmx.doCommand(NXTMMX.CMD_GETTACHO, 0, channel));
     }
     
     /** 
@@ -90,6 +90,7 @@ public class MMXMotor implements EncoderMotor {
      */
     public synchronized Future<ExceptionWrapper> resetTachoCount() {
     	mmx.doCommand(NXTMMX.CMD_RESETTACHO, 0, channel);
+    	return ExceptionWrapper.getCompletedException(null);
     }
     
     /**

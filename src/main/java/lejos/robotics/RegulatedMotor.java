@@ -1,10 +1,10 @@
 package lejos.robotics;
 
 import java.io.Closeable;
+import java.util.concurrent.Future;
 
-import lejos.hardware.motor.BaseRegulatedMotor;
-import lejos.hardware.motor.MotorRegulator;
-import lejos.internal.ev3.EV3MotorPort;
+import lejos.utility.ExceptionWrapper;
+import lejos.utility.ReturnWrapper;
 
 /**
  * Interface for encoded motors without limited range of movement (e.g. NXT motor).
@@ -21,13 +21,13 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
 	//TODO method name sounds like listener is added to some list.
 	// javadoc and method name should be changed such that they indicate that only one listener is supported.
 	// suggested method name: setListener(...)
-	public void addListener(RegulatedMotorListener listener);
+  void addListener(RegulatedMotorListener listener);
 
 	/**
 	 * Removes the RegulatedMotorListener from this class.
 	 * @return The RegulatedMotorListener that was removed, if any. Null if none existed.
 	 */
-	public RegulatedMotorListener removeListener();
+    RegulatedMotorListener removeListener();
 	
     /**
      * Causes motor to stop, pretty much
@@ -37,20 +37,21 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
      * Cancels any rotate() orders in progress
      * @param immediateReturn if true do not wait for the motor to actually stop
      */
-    public void stop(boolean immediateReturn);
+    void stop(boolean immediateReturn) throws Exception;
 
     /**
      * Set the motor into float mode. This will stop the motor without braking
      * and the position of the motor will not be maintained.
      * @param immediateReturn If true do not wait for the motor to actually stop
      */
-    public void flt(boolean immediateReturn);
+    void flt(boolean immediateReturn) throws Exception;
 
     /**
      * Wait until the current movement operation is complete (this can include
      * the motor stalling).
+     * @return
      */
-    public void waitComplete();
+    Future<ExceptionWrapper> waitComplete();
 
 	
   /**
@@ -60,11 +61,12 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
    * When the angle is reached, the method isMoving() returns false;<br>
    * 
    * @param  angle through which the motor will rotate
-   * @param immediateReturn iff true, method returns immediately, thus allowing monitoring of sensors in the calling thread. 
-   * 
+   * @param immediateReturn iff true, method returns immediately, thus allowing monitoring of sensors in the calling thread.
+   *
    *  @see RegulatedMotor#rotate(int, boolean)
+   * @return
    */
-  void rotate(int angle, boolean immediateReturn);
+  Future<ExceptionWrapper> rotate(int angle, boolean immediateReturn) throws Exception;
 
   /**
    * Causes motor to rotate by a specified angle. The resulting tachometer count should be within +- 2 degrees on the NXT.
@@ -73,7 +75,7 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
    * @param angle by which the motor will rotate.
    * 
    */
-  void rotate(int angle);
+  void rotate(int angle) throws Exception;
 
   
   /**
@@ -81,7 +83,7 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
    * Then getTachoCount should be within +- 2 degrees of the limit angle when the method returns
    * @param  limitAngle to which the motor will rotate, and then stop (in degrees). Includes any positive or negative int, even values &gt; 360.
    */
-  public void rotateTo(int limitAngle);
+  void rotateTo(int limitAngle) throws Exception;
   
   /**
    * causes motor to rotate to limitAngle; <br>
@@ -92,13 +94,13 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
    * @param  limitAngle to which the motor will rotate, and then stop (in degrees). Includes any positive or negative int, even values &gt; 360. 
    * @param immediateReturn iff true, method returns immediately, thus allowing monitoring of sensors in the calling thread.
    */
-  public void rotateTo(int limitAngle,boolean immediateReturn);  
+  void rotateTo(int limitAngle, boolean immediateReturn) throws Exception;
 
   /**
    * Return the limit angle (if any)
    * @return the current limit angle
    */
-  public int getLimitAngle();
+  int getLimitAngle() throws Exception;
 
   /**
    * Set motor speed. As a rule of thumb 100 degrees per second are possible for each volt on an NXT motor. Therefore,
@@ -107,14 +109,14 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
    * 
    * @param speed in degrees per second.
    */
-  void setSpeed(int speed);
+  void setSpeed(int speed) throws Exception;
 
   /**
    * Returns the current motor speed.
    * 
    * @return motor speed in degrees per second
    */
-  int getSpeed();
+  int getSpeed() throws Exception;
  
   /**
    * Returns the maximum speed that can be maintained by the regulation system based upon the 
@@ -128,7 +130,7 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
    * returns true if motor is stalled
    * @return true if stalled
    */
-   boolean isStalled();
+   Future<ReturnWrapper<Boolean>> isStalled();
    
    /**
     * Set the parameters for detecting a stalled motor. A motor will be recognized as 
@@ -154,21 +156,21 @@ public interface RegulatedMotor extends BaseMotor, Tachometer, Closeable {
     * that reads of the motor state will also be consistent.
     * @param syncList an array of motors to synchronize with.
     */
-   public void synchronizeWith(RegulatedMotor[] syncList);
+   void synchronizeWith(RegulatedMotor[] syncList);
 
    /**
     * Begin a set of synchronized motor operations
     */
-   public void startSynchronization();
+   void startSynchronization();
 
    /**
     * Complete a set of synchronized motor operations.
     */
-   public void endSynchronization();
+   void endSynchronization();
    
    /**
     * Close the port, the port can not be used after this call.
     */
-   public void close();
+   void close();
    
 }

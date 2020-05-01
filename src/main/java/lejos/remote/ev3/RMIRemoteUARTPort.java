@@ -8,11 +8,11 @@ import lejos.remote.ev3.RMIUARTPort;
 
 
 public class RMIRemoteUARTPort extends UnicastRemoteObject implements RMIUARTPort {
-	private UARTPort port;
+	private final UARTPort port;
 	
 	private static final long serialVersionUID = 6528817103650932337L;
 
-	protected RMIRemoteUARTPort(String portName) throws RemoteException {
+	protected RMIRemoteUARTPort(String portName) throws Exception {
 		super(0);
 		port = LocalEV3.get().getPort(portName).open(UARTPort.class);
 	}

@@ -17,7 +17,7 @@ public interface RMIAudio extends Remote
      * <TR><TD>4</TD><TD>long, low buzz</TD></TR>
      * </TABLE>
      */
-    public void systemSound(int aCode) throws RemoteException;
+    void systemSound(int aCode) throws RemoteException;
     
     /**
      * Plays a tone, given its frequency and duration. 
@@ -25,10 +25,10 @@ public interface RMIAudio extends Remote
      * @param aDuration The duration of the tone, in milliseconds.
      * @param aVolume The volume of the playback 100 corresponds to 100%
      */
-    public void playTone(int aFrequency, int aDuration, int aVolume) throws RemoteException;
+    void playTone(int aFrequency, int aDuration, int aVolume) throws RemoteException;
     
 
-    public void playTone(int freq, int duration) throws RemoteException;
+    void playTone(int freq, int duration) throws RemoteException;
 
     
     /**
@@ -39,7 +39,7 @@ public interface RMIAudio extends Remote
      *         there is an error.
      * @throws FileNotFoundException 
      */
-    public int playSample(File file, int vol) throws RemoteException;
+    int playSample(File file, int vol) throws RemoteException;
 
 
     /**
@@ -49,7 +49,7 @@ public interface RMIAudio extends Remote
      *         there is an error.
      * @throws FileNotFoundException 
      */
-    public int playSample(File file)  throws RemoteException;
+    int playSample(File file)  throws RemoteException;
 
     /**
      * Queue a series of PCM samples to play at the
@@ -62,7 +62,7 @@ public interface RMIAudio extends Remote
      * @param vol playback volume
      * @return Number of samples actually queued
      */
-    public int playSample(byte [] data, int offset, int len, int freq, int vol) throws RemoteException;
+    int playSample(byte[] data, int offset, int len, int freq, int vol) throws RemoteException;
 
     /**
      * Play a note with attack, decay, sustain and release shape. This function
@@ -73,24 +73,24 @@ public interface RMIAudio extends Remote
      * @param freq The note to play (in Hz)
      * @param len  The duration of the note (in ms)
      */
-    public void playNote(int[] inst, int freq, int len)  throws RemoteException;
+    void playNote(int[] inst, int freq, int len)  throws RemoteException;
     
     /**
      * Set the master volume level
      * @param vol 0-100
      */
-    public void setVolume(int vol)  throws RemoteException;
+    void setVolume(int vol)  throws RemoteException;
 
     /**
      * Get the current master volume level
      * @return the current master volume 0-100
      */
-    public int getVolume()  throws RemoteException;
+    int getVolume()  throws RemoteException;
     
     /**
      * Load the current system settings associated with this class. Called
      * automatically to initialize the class. May be called if it is required
      * to reload any settings.
      */
-    public void loadSettings()  throws RemoteException;
+    void loadSettings()  throws RemoteException;
 }

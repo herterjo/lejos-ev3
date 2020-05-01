@@ -8,11 +8,11 @@ import lejos.hardware.port.I2CPort;
 import lejos.remote.ev3.RMII2CPort;
 
 public class RMIRemoteI2CPort extends UnicastRemoteObject implements RMII2CPort {
-	private I2CPort port;
+	private final I2CPort port;
 	
 	private static final long serialVersionUID = 3049365457299818710L;
 
-	protected RMIRemoteI2CPort(String portName) throws RemoteException {
+	protected RMIRemoteI2CPort(String portName) throws Exception {
 		super(0);
 		port = LocalEV3.get().getPort(portName).open(I2CPort.class);
 	}

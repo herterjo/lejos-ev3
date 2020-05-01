@@ -9,7 +9,7 @@ import org.freedesktop.dbus.UInt32;
 
 @DBusInterfaceName("org.bluez.Adapter")
 public interface Adapter extends DBusInterface, DBusProperties.PropertiesAccess{
-    public static enum Properties implements DBusProperties.PropertyEnum {
+    enum Properties implements DBusProperties.PropertyEnum {
 
         /**
          * The Bluetooth device address. Example: "00:11:22:33:44:55"

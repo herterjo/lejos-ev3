@@ -1,6 +1,7 @@
 package lejos.robotics.navigation;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import lejos.hardware.Power;
 import lejos.robotics.Gyroscope;
@@ -43,7 +44,7 @@ import lejos.utility.Matrix;
 @Deprecated
 public class OmniPilot implements ArcRotateMoveController, RegulatedMotorListener {
     
-    private Pose pose = new Pose(); // TODO: Technically this variable should be removed. Navigator handles Pose.
+    private final Pose pose = new Pose(); // TODO: Technically this variable should be removed. Navigator handles Pose.
 	private float wheelBase = 7.0f; // units
 	private float wheelDiameter = 4.6f; // units
 	private double[][] ikPars;
@@ -60,12 +61,12 @@ public class OmniPilot implements ArcRotateMoveController, RegulatedMotorListene
 	private int motor1Speed = 0; //deg/s
 	private int motor2Speed = 0; //deg/s
 	private int motor3Speed = 0; //deg/s
-	private Odometer odo = new Odometer();
+	private final Odometer odo = new Odometer();
 	private boolean spinningMode = false; 
 	private float spinLinSpeed = 0; // units/s
 	private float spinAngSpeed = 0; // deg/s
 	private float spinTravelDirection = 0; // deg
-	private Power battery;
+	private final Power battery;
 	
 	private double minTurnRadius = 0; // This vehicle can turn withgout moving therefore minimum turn radius = 0
 	
@@ -76,7 +77,7 @@ public class OmniPilot implements ArcRotateMoveController, RegulatedMotorListene
 	/**
 	 * MoveListeners to notify when a move is started or stopped.
 	 */
-	private ArrayList<MoveListener> listeners= new ArrayList<MoveListener>();
+	private final ArrayList<MoveListener> listeners= new ArrayList<MoveListener>();
   private int acceleration;
 	
 	/**
@@ -227,7 +228,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param dir the dir
 	 * @param angSpeed the ang speed
 	 */
-	private void setSpeed(double linSpeed, double dir, double angSpeed) {
+	private void setSpeed(double linSpeed, double dir, double angSpeed) throws Exception {
 		double ang = Math.toRadians(dir);
 		double angspd = Math.toRadians(angSpeed);
 		double[] spd = {linSpeed*Math.cos(ang), linSpeed*Math.sin(ang), angspd};
@@ -268,7 +269,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	/**
 	 * Start motors.
 	 */
-	private synchronized void  startMotors() {
+	private synchronized void  startMotors() throws Exception {
 		if (motor1Speed>0) 
 			motor1.forward(); 
 		else 
@@ -284,20 +285,20 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	/**
 	 * Coast. TODO: Probably delete this method?
 	 */
-	private synchronized void coast() {
+	private synchronized void coast() throws Exception {
 		motor1.flt();
 		motor2.flt();
 		motor3.flt();
 		spinningMode = false;
 	}
 	
-	public synchronized void forward() {
+	public synchronized void forward() throws Exception {
 		spinningMode = false;
 		setSpeed(linearSpeed, 0, angularSpeed);
 		startMotors();
 	}
 
-	public synchronized void backward() {
+	public synchronized void backward() throws Exception {
 		spinningMode = false;
 		setSpeed(linearSpeed, 180, angularSpeed);
 		startMotors();
@@ -309,7 +310,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param linSpeed the lin speed
 	 * @param direction the direction relative to the current direction the robot is facing
 	 */
-	public synchronized void moveStraight(float linSpeed, int direction) {
+	public synchronized void moveStraight(float linSpeed, int direction) throws Exception {
 //		float dir = linSpeed>0? direction : direction+180;
 		spinningMode = false;
 		setSpeed(linSpeed, direction, 0);
@@ -333,15 +334,15 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 //		startMotors();
 	}
 	
-	public synchronized void stop() {
+	public synchronized void stop() throws Exception {
 		motor1.stop();
 		motor2.stop();
 		motor3.stop();
 		spinningMode = false;
 	}
 
-	public boolean isMoving() {
-		return motor1.isMoving() || motor2.isMoving() || motor3.isMoving();
+	public boolean isMoving() throws Exception {
+		return motor1.isMoving().get().getValue() || motor2.isMoving().get().getValue() || motor3.isMoving().get().getValue();
 	}
 
 	public void setLinearSpeed(double speed) {
@@ -413,7 +414,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param angle the angle
 	 * @param immediateReturn the immediate return
 	 */
-	private void move(final double distance, double direction, final double angle, boolean immediateReturn) {
+	private void move(final double distance, double direction, final double angle, boolean immediateReturn) throws Exception {
 		// Notify MoveListeners that a new move has begun.
 		
 		if(distance != 0 & angle == 0) previousMoveType = Move.MoveType.TRAVEL;
@@ -453,7 +454,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 				Thread.yield();
 	}
 	
-	public void travel(double distance) {
+	public void travel(double distance) throws Exception {
 		travel(distance, 0, false);
 	}
 
@@ -465,11 +466,11 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param distance
 	 * @param direction
 	 */
-	public void travel(double distance, double direction) {
+	public void travel(double distance, double direction) throws Exception {
 		travel(distance, direction, false);
 	}
 	
-	public void travel(double distance, boolean immediateReturn) {
+	public void travel(double distance, boolean immediateReturn) throws Exception {
 		travel(distance, 0, immediateReturn);
 	}
 	
@@ -482,15 +483,15 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param direction
 	 * @param immediateReturn
 	 */
-	public void travel(double distance, double direction, boolean immediateReturn) {
+	public void travel(double distance, double direction, boolean immediateReturn) throws Exception {
 		move(distance, direction, 0, immediateReturn);
 	}
 
-	public void rotate(double angle) {
+	public void rotate(double angle) throws Exception {
 		rotate(angle, false);
 	}
 
-	public void rotate(double angle, boolean immediateReturn) {
+	public void rotate(double angle, boolean immediateReturn) throws Exception {
 		if (angularSpeed==0) angularSpeed = 90;
 		move(0, 0, angle, immediateReturn);
 	}
@@ -501,11 +502,11 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 *
 	 * @return the angle
 	 */
-	private float getAngle() {
+	private float getAngle() throws Exception {
 //		Sound.playTone(2000, 10);
-		int t1 = motor1.getTachoCount();
-		int t2 = motor2.getTachoCount();
-		int t3 = motor3.getTachoCount();
+		int t1 = motor1.getTachoCount().get().getValue();
+		int t2 = motor2.getTachoCount().get().getValue();
+		int t3 = motor3.getTachoCount().get().getValue();
 		double[] dsp = {Math.toRadians(t1),Math.toRadians(t2),Math.toRadians(t3)};
 		Matrix displacement = new Matrix(dsp, 3);
 		Matrix distances = kMatrix.times(displacement);
@@ -520,10 +521,10 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 *
 	 * @return the travel distance
 	 */
-	private float getTravelDistance() {
-		int t1 = motor1.getTachoCount();
-		int t2 = motor2.getTachoCount();
-		int t3 = motor3.getTachoCount();
+	private float getTravelDistance() throws Exception {
+		int t1 = motor1.getTachoCount().get().getValue();
+		int t2 = motor2.getTachoCount().get().getValue();
+		int t3 = motor3.getTachoCount().get().getValue();
 		double[] dsp = {Math.toRadians(t1),Math.toRadians(t2),Math.toRadians(t3)};
 		Matrix displacement = new Matrix(dsp, 3);
 		Matrix distances = kMatrix.times(displacement);
@@ -538,7 +539,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 *
 	 * @param turnRate the turn rate
 	 */
-	public void steer(float turnRate) {
+	public void steer(float turnRate) throws Exception {
 		float angSpeed = (float)(turnRate*getMaxAngularSpeed()/200);
 		float dir = reverse? speedVectorDirection : speedVectorDirection+180;
 		spinningMode = false;
@@ -552,7 +553,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param linSpeed the lin speed
 	 * @param angSpeed the ang speed
 	 */
-	public void steer(float linSpeed, float angSpeed) {
+	public void steer(float linSpeed, float angSpeed) throws Exception {
 //		float dir = linSpeed>0? speedVectorDirection : speedVectorDirection+180;
 		spinningMode = false;
 		setSpeed(linSpeed, speedVectorDirection, angSpeed);
@@ -566,18 +567,18 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param angle the angle
 	 * @param immediateReturn the immediate return
 	 */
-	public void steer(float turnRate, float angle, boolean immediateReturn) {
+	public void steer(float turnRate, float angle, boolean immediateReturn) throws Exception {
 		angularSpeed = (float)(turnRate*getMaxAngularSpeed()/200);
 //		LCD.drawString("spd "+angularSpeed+" deg/s ", 0, 0);	
 		float radius = (float) (linearSpeed/Math.toRadians(angularSpeed));
 		arc(radius,angle,immediateReturn);
 	}
 	
-	public void travelArc(double radius, double distance) {
+	public void travelArc(double radius, double distance) throws Exception {
 		travelArc(radius, distance, false);
 	}
 
-	public void travelArc(double radius, double distance, boolean immediateReturn) {
+	public void travelArc(double radius, double distance, boolean immediateReturn) throws Exception {
 		travelArc(radius, distance, 0, false);
 	}
 	
@@ -591,7 +592,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param distance
 	 * @param direction
 	 */
-	public void travelArc(double radius, double distance, float direction) {
+	public void travelArc(double radius, double distance, float direction) throws Exception {
 		travelArc(radius, distance, direction, false);
 	}
 	
@@ -606,12 +607,12 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param direction
 	 * @param immediateReturn
 	 */
-	public void travelArc(double radius, double distance, float direction,  boolean immediateReturn) {
+	public void travelArc(double radius, double distance, float direction,  boolean immediateReturn) throws Exception {
 		float angle = (float) ((distance * 180) / (Math.PI * radius));
 		arc(radius, angle, direction, immediateReturn);
 	}
 
-	public void arc(double radius, double angle) {
+	public void arc(double radius, double angle) throws Exception {
 		arc(radius, angle, 0, false);
 	}
 	
@@ -625,11 +626,11 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param angle
 	 * @param direction
 	 */
-	public void arc(double radius, double angle, double direction) {
+	public void arc(double radius, double angle, double direction) throws Exception {
 		arc(radius, angle, direction, false);
 	}
 		
-	public void arc(double radius, double angle, boolean immediateReturn) {
+	public void arc(double radius, double angle, boolean immediateReturn) throws Exception {
 		arc(radius,angle,0,immediateReturn);
 	}
 	
@@ -644,7 +645,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	 * @param direction
 	 * @param immediateReturn
 	 */
-	public void arc(double radius, double angle, double direction, boolean immediateReturn) {
+	public void arc(double radius, double angle, double direction, boolean immediateReturn) throws Exception {
 		
 		float angSpeed = (float) Math.toDegrees(linearSpeed/radius);
 		spinningMode = false;
@@ -665,7 +666,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	/**
 	 * Reset all tacho counts. TODO: Delete this method? Unused by any other method or class.
 	 */
-	public void reset() {
+	public void reset() throws Exception {
 		motor1.resetTachoCount();
 		motor2.resetTachoCount();
 		motor3.resetTachoCount();
@@ -694,7 +695,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 		
 		private boolean keepRunning = true;
 		
-		private int period = 10; //ms
+		private final int period = 10; //ms
 		
 		//private boolean displayPose = false;
 		
@@ -713,13 +714,25 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 			while(keepRunning) {
                if(System.currentTimeMillis()>= tick) { // simulate timer
                   tick += period;
-                  updatePose();
-                  if (gyroEnabled) {
-                	  pose.setHeading(gyro.getAngle()/100.0f);
-                  }
+				   try {
+					   updatePose();
+				   } catch (Exception e) {
+					   throw new RuntimeException(e);
+				   }
+				   if (gyroEnabled) {
+					   try {
+						   pose.setHeading(gyro.getAngle()/100.0f);
+					   } catch (Exception e) {
+						   throw new RuntimeException(e);
+					   }
+				   }
                   if (spinningMode) {
-                	  setSpeed(spinLinSpeed, spinTravelDirection-pose.getHeading(), spinAngSpeed);
-                	  startMotors();
+					  try {
+						  setSpeed(spinLinSpeed, spinTravelDirection-pose.getHeading(), spinAngSpeed);
+						  startMotors();
+					  } catch (Exception e) {
+						  throw new RuntimeException(e);
+					  }
                 	  //LCD.drawString("t:"+tick, 0, 0);
                   } 
                } else {
@@ -739,12 +752,11 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 			}
 		}
 
-		private void updatePose()
-		{
+		private void updatePose() throws Exception {
 //			Sound.playTone(1000, 5);
-			int t1 = motor1.getTachoCount();
-			int t2 = motor2.getTachoCount();
-			int t3 = motor3.getTachoCount();
+			int t1 = motor1.getTachoCount().get().getValue();
+			int t2 = motor2.getTachoCount().get().getValue();
+			int t3 = motor3.getTachoCount().get().getValue();
 			double[] angles = {Math.toRadians(t1-t1old),Math.toRadians(t2-t2old),Math.toRadians(t3-t3old)};
 			Matrix wheelTachos = new Matrix(angles, 3);
 			Matrix localDeltaPose = kMatrix.times(wheelTachos);
@@ -771,11 +783,11 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	}
 
 	
-	public void arcBackward(double radius) {
+	public void arcBackward(double radius) throws Exception {
 		arc(radius, Double.NEGATIVE_INFINITY, true);
 	}
 
-	public void arcForward(double radius) {
+	public void arcForward(double radius) throws Exception {
 		arc(radius, Double.POSITIVE_INFINITY, true);
 	}
 
@@ -791,7 +803,7 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 		listeners.add(listener);
 	}
 
-	public Move getMovement() {
+	public Move getMovement() throws Exception {
 		return new Move(previousMoveType, getTravelDistance() - previousDistance, getAngle() - previousAngle, isMoving());
 	}
 
@@ -802,8 +814,8 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	/**
 	 * Notify the MoveListeners when a move is completed.
 	 */
-	public void rotationStopped(RegulatedMotor motor, int tachoCount, boolean stalled, long timeStamp) {
-		if(!motor1.isMoving() && !motor2.isMoving() && !motor3.isMoving()) {
+	public void rotationStopped(RegulatedMotor motor, int tachoCount, boolean stalled, long timeStamp) throws Exception {
+		if(!motor1.isMoving().get().getValue() && !motor2.isMoving().get().getValue() && !motor3.isMoving().get().getValue()) {
 			float newDistance = getTravelDistance();
 			float newAngle = getAngle();
 			Move finalMove = new Move(previousMoveType, newDistance - previousDistance, newAngle - previousAngle, isMoving());
@@ -817,12 +829,12 @@ private void initMatrices(boolean centralWheelForward, boolean motorReverse) {
 	}
 
   @Override
-  public void rotateRight() {
+  public void rotateRight() throws Exception {
     rotate(Double.NEGATIVE_INFINITY, true);
       }
 
   @Override
-  public void rotateLeft() {
+  public void rotateLeft() throws Exception {
     rotate(Double.POSITIVE_INFINITY, true);
   }
 

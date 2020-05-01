@@ -11,6 +11,8 @@ import lejos.hardware.port.TachoMotorPort;
 import lejos.hardware.port.UARTPort;
 import lejos.hardware.sensor.EV3SensorConstants;
 
+import java.util.concurrent.ExecutionException;
+
 public class EV3Port implements Port
 {
     public static final int SENSOR_PORT = 0;
@@ -44,8 +46,7 @@ public class EV3Port implements Port
     /** {@inheritDoc}
      */    
     @Override
-    public <T extends IOPort> T open(Class<T> portclass)
-    {
+    public <T extends IOPort> T open(Class<T> portclass) throws Exception {
         EV3IOPort p = null;
         switch(typ)
         {
@@ -71,7 +72,7 @@ public class EV3Port implements Port
         }
         if (p == null)
             throw new IllegalArgumentException("Invalid port interface");
-        if (!p.open(typ,  portNum, this))
+        if (!p.open(typ,  portNum, this).get().getValue())
             throw new DeviceException("unable to open port");
         return portclass.cast(p);
     }

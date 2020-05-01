@@ -15,13 +15,13 @@ import lejos.robotics.geometry.Point;
  */
 public class TouchFeatureDetector extends FeatureDetectorAdapter {
 
-	private Touch touch_sensor;
+	private final Touch touch_sensor;
 	//private int x_offset, y_offset;
 	private float angle = 0;
 	private float range = 0;
 	private static final int DELAY = 50;
 	
-	private ArrayList<FeatureListener> listeners = null;
+	private final ArrayList<FeatureListener> listeners = null;
 	
 	/**
 	 * Creates a touch detector in which the touch sensor is assumed to be situated in the center of
@@ -58,7 +58,7 @@ public class TouchFeatureDetector extends FeatureDetectorAdapter {
 		angle = robot_center.angleTo(bumper_p) - 90;
 	}
 
-	public Feature scan() {
+	public Feature scan() throws Exception {
 		RangeFeature rf = null;
 		if(touch_sensor.isPressed()) {
 			RangeReading rr = new RangeReading(angle, range);
@@ -68,7 +68,7 @@ public class TouchFeatureDetector extends FeatureDetectorAdapter {
 	}
 
 	@Override
-	protected void notifyListeners(Feature feature) {
+	protected void notifyListeners(Feature feature) throws Exception {
 		super.notifyListeners(feature);
 		// Wait until bumper is released before continuing to prevent multiple notifications from same press:
 		while(touch_sensor.isPressed());

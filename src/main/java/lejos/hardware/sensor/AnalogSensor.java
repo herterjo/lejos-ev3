@@ -19,8 +19,7 @@ public class AnalogSensor extends BaseSensor implements SensorConstants
         this.port = p;
     }
     
-    public AnalogSensor(Port p, int type, int mode)
-    {
+    public AnalogSensor(Port p, int type, int mode) throws Exception {
         this(p.open(AnalogPort.class));
         if (!port.setTypeAndMode(type, mode))
         {
@@ -30,8 +29,7 @@ public class AnalogSensor extends BaseSensor implements SensorConstants
         releaseOnClose(this.port);
     }
 
-    public AnalogSensor(Port p)
-    {
+    public AnalogSensor(Port p) throws Exception {
         this(p, TYPE_CUSTOM, MODE_RAW);
     }
 

@@ -11,8 +11,8 @@ import lejos.internal.dbus.DBusBluez;
 import lejos.internal.io.NativeHCI;
 
 public class LocalBTDevice {
-	private NativeHCI hci = new NativeHCI();
-	private DBusBluez db; 
+	private final NativeHCI hci = new NativeHCI();
+	private final DBusBluez db;
 	
 	public LocalBTDevice() {
 		try {

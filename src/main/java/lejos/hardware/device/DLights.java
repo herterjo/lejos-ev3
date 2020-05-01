@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
  */
 public class DLights {
 
-    private LED[] dLights = new LED[5];
+    private final LED[] dLights = new LED[5];
     private final int[] address = {0xe0, 0x04, 0x14, 0x24, 0x34};
 
     /**
@@ -36,7 +36,7 @@ public class DLights {
             dLights[i] = new LED(port, address[i]);
     }
 
-    public DLights(Port port) {
+    public DLights(Port port) throws Exception {
         for (int i = 0; i < 5; i++)
             dLights[i] = new LED(port, address[i]);
     }
@@ -248,7 +248,7 @@ public class DLights {
         private static final byte BLINKINGON = (byte) 0xff;
 
 
-        private byte[] buf = new byte[4];
+        private final byte[] buf = new byte[4];
 
         protected void init() {
             setRegister(MODE1, MODE1MASK);
@@ -266,7 +266,7 @@ public class DLights {
             init();
         }
 
-        protected LED(Port port, int address) {
+        protected LED(Port port, int address) throws Exception {
             super(port, address);
             init();
         }
@@ -399,14 +399,12 @@ public class DLights {
 
         public boolean isEnabled() {
             getData(MODE1, buf, 1);
-            if (buf[0] == MODE1MASK) return true;
-            return false;
+            return buf[0] == MODE1MASK;
         }
 
         public boolean isBlinkingEnabled() {
             getData(LEDOUT, buf, 1);
-            if (buf[0] == BLINKINGON) return true;
-            return false;
+            return buf[0] == BLINKINGON;
         }
 
     }

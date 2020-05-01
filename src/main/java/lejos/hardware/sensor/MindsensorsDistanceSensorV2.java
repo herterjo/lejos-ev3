@@ -60,7 +60,7 @@ import lejos.utility.EndianTools;
  * 
  */
 public class MindsensorsDistanceSensorV2 extends I2CSensor  {
-	private byte[] buf = new byte[2];
+	private final byte[] buf = new byte[2];
 	
 	//Registers
 	private final static int COMMAND = 0x41;
@@ -101,7 +101,7 @@ public class MindsensorsDistanceSensorV2 extends I2CSensor  {
      *
      * @param port NXT sensor port 1-4
      */
-    public MindsensorsDistanceSensorV2(Port port){
+    public MindsensorsDistanceSensorV2(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS);
         init();
     }
@@ -111,7 +111,7 @@ public class MindsensorsDistanceSensorV2 extends I2CSensor  {
      * @param port NXT sensor port 1-4
      * @param address I2C address for the sensor
      */
-    public MindsensorsDistanceSensorV2(Port port, int address){
+    public MindsensorsDistanceSensorV2(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED);
         init();
     }

@@ -11,7 +11,7 @@ public class FixedRangeScanner implements RangeScanner
   public FixedRangeScanner(RotateMoveController aPilot, RangeFinder rangeFinder)
   {
     pilot = aPilot;
-    this.rangeFinder = rangeFinder;;
+    this.rangeFinder = rangeFinder;
   }
 
   /**
@@ -20,8 +20,7 @@ public class FixedRangeScanner implements RangeScanner
    * The robot rotates back to its original heading at the end.
    * @return the set of range readings
    */
-  public RangeReadings getRangeValues()
-  {
+  public RangeReadings getRangeValues() throws Exception {
    if (readings == null || readings.getNumReadings() != angles.length)
     {
       readings = new RangeReadings(angles.length);
@@ -75,6 +74,6 @@ public class FixedRangeScanner implements RangeScanner
   protected float[] angles;
   protected final int MAX_RELIABLE_RANGE_READING = 180;
   protected final int ZERO = 2;// correction of sensor zero
-  protected RangeReadings readings;;
+  protected RangeReadings readings;
 }
 

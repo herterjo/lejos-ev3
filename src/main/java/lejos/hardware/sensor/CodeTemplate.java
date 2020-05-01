@@ -60,7 +60,7 @@ public class CodeTemplate extends UARTSensor {
      * 
      * @param port
      */
-    public CodeTemplate(Port port) {
+    public CodeTemplate(Port port) throws Exception {
         super(port);
         init();
     }

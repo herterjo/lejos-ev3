@@ -1,5 +1,9 @@
 package lejos.robotics;
 
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
+
 /**
  * Abstraction for a Tachometer, which monitors speed of the encoder.
  *
@@ -14,6 +18,6 @@ public interface Tachometer extends Encoder {
 	   * 
 	   * @return speed in degrees per second, negative value means motor is rotating backward
 	   */
-	  int getRotationSpeed();
+	  Future<ReturnWrapper<Integer>> getRotationSpeed() throws Exception;
 
 }

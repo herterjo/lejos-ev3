@@ -9,7 +9,7 @@ import lejos.robotics.SampleProvider;
  *
  */
 public class ModulusFilter extends AbstractFilter {
-	private float[] zeroValue;
+	private final float[] zeroValue;
 	float[] sample;
 	float modulus;
 	
@@ -19,7 +19,7 @@ public class ModulusFilter extends AbstractFilter {
 		this.modulus = modulus;
 	}
 
-	public void fetchSample(float sample[], int offset) {
+	public void fetchSample(float[] sample, int offset) throws Exception {
 		super.fetchSample(sample, offset);
 		for(int i=0;i<sampleSize();i++) {
 			sample[offset+i] = (modulus + sample[offset+i] - zeroValue[i]) % modulus;

@@ -9,10 +9,10 @@ import lejos.hardware.port.PortException;
 import lejos.internal.ev3.EV3Key;
 
 public class RemoteKey implements Key {
-	private RMIKey key;
-	private RemoteKeys keys;
-	private int iCode;
-	private String name;
+	private final RMIKey key;
+	private final RemoteKeys keys;
+	private final int iCode;
+	private final String name;
 	
 	private ArrayList<KeyListener> listeners;
 	

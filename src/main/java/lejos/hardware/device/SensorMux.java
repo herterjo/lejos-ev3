@@ -17,8 +17,8 @@ import lejos.hardware.sensor.I2CSensor;
 public class SensorMux extends I2CSensor {
    
 	private final int STATUS_BATTERY_BIT = 1;
-	private final byte digitalRegisters[] = {0x40,0x50,0x60,0x70};
-	private final byte analogRegisters[] = {0x36,0x38,0x3A,0x3C};
+	private final byte[] digitalRegisters = {0x40,0x50,0x60,0x70};
+	private final byte[] analogRegisters = {0x36,0x38,0x3A,0x3C};
 	
     /**
      * Constructor
@@ -32,7 +32,7 @@ public class SensorMux extends I2CSensor {
      * Constructor
      * @param port the port
      */
-    public SensorMux(Port port) {
+    public SensorMux(Port port) throws Exception {
         super(port, 0x10, TYPE_LOWSPEED_9V);
     }
    

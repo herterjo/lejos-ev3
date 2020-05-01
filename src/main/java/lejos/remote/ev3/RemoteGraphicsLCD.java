@@ -8,7 +8,7 @@ import lejos.hardware.lcd.Image;
 import lejos.hardware.port.PortException;
 
 public class RemoteGraphicsLCD implements GraphicsLCD {
-	private RMIGraphicsLCD g;
+	private final RMIGraphicsLCD g;
 	
 	public RemoteGraphicsLCD(RMIGraphicsLCD g) {
 		this.g = g;

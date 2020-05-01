@@ -31,7 +31,7 @@ public class EV3Audio implements Audio
     
     private static int masterVolume = 0;
     
-    private static NativeDevice dev = new NativeDevice("/dev/lms_sound");
+    private static final NativeDevice dev = new NativeDevice("/dev/lms_sound");
     private static final byte OP_BREAK = 0;
     private static final byte OP_TONE = 1;
     private static final byte OP_PLAY = 2;
@@ -61,7 +61,7 @@ public class EV3Audio implements Audio
         return singleton;
     }
     
-    private static int C2 = 523;
+    private static final int C2 = 523;
     
     /**
      * Play a system sound.

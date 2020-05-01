@@ -4,7 +4,14 @@ package lejos.utility;
  * Implementation of a Kalman filter using the Matrix class
  */
 public class KalmanFilter {
-  private Matrix a, b, c, i, q, r, at, ct;
+  private final Matrix a;
+    private final Matrix b;
+    private final Matrix c;
+    private Matrix i;
+    private final Matrix q;
+    private final Matrix r;
+    private final Matrix at;
+    private final Matrix ct;
   private Matrix mu, sigma, muBar, sigmaBar, gain;
   
   public KalmanFilter(Matrix a, Matrix b, Matrix c, Matrix q, Matrix r) {

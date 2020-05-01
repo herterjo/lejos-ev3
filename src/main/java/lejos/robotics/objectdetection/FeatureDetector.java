@@ -41,7 +41,7 @@ public interface FeatureDetector {
 	 * @param listener The FeatureListener that is notified every time a feature is detected.
 	 * 
 	 */
-	public void addListener(FeatureListener listener);
+    void addListener(FeatureListener listener);
 	
 	// TODO: Is null the best thing to return if it doesn't detect anything? 
 	/**
@@ -51,20 +51,20 @@ public interface FeatureDetector {
 	 * Feature object, otherwise your code will throw a null pointer exception.</i></p>  
 	 * @return A feature it has detected. null if nothing found. 
 	 */
-	public Feature scan();
+    Feature scan() throws Exception;
 	
 	/**
 	 * Enable or disable detection of objects.
 	 * 
 	 * @param on true enables detection and notifications, false disables this class until it is enabled again.
 	 */
-	public void enableDetection(boolean on);
+    void enableDetection(boolean on);
 	
 	/**
 	 * Indicates if automatic scanning mode and listener notification is currently enabled. (true by default)
 	 * @return true if enabled, false if not
 	 */
-	public boolean isEnabled();
+    boolean isEnabled();
 	
 	/**
 	 * The minimum delay between notification of readings from the feature detector. If no objects are detected,
@@ -73,7 +73,7 @@ public interface FeatureDetector {
 	 * 
 	 * @return The delay between sensor readings. 
 	 */
-	public int getDelay();
+    int getDelay();
 	
 	/**
 	 * Sets the minimum delay between readings from the feature detector. The notification thread will notify 
@@ -81,5 +81,5 @@ public interface FeatureDetector {
 	 * from the sensor.  
 	 * @param delay The FeatureDetector will return one new set of readings every <i>delay</i> milliseconds. 
 	 */
-	public void setDelay(int delay);
+    void setDelay(int delay);
 }

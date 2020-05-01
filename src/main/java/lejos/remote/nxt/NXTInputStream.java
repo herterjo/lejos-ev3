@@ -8,7 +8,7 @@ import java.io.InputStream;
  * @author   Roger Glassey revised on june 23, 2007, modified for Bluetooth2
  */
 public class NXTInputStream extends InputStream {
-	private byte buf[];
+	private final byte[] buf;
 	private int bufIdx = 0, bufSize = 0;
 	private NXTConnection conn = null;
     

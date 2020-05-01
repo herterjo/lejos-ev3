@@ -7,38 +7,38 @@ import lejos.hardware.lcd.Font;
 
 public interface RMIEV3 extends Remote {
 
-	public RMIAnalogPort openAnalogPort(String portName) throws RemoteException;
+	RMIAnalogPort openAnalogPort(String portName) throws Exception;
 	
-	public RMII2CPort openI2CPort(String portName) throws RemoteException;
+	RMII2CPort openI2CPort(String portName) throws Exception;
 
-	public RMIBattery getBattery() throws RemoteException;
+	RMIBattery getBattery() throws RemoteException;
 
-	public RMIUARTPort openUARTPort(String portName) throws RemoteException;
+	RMIUARTPort openUARTPort(String portName) throws Exception;
 
-	public RMIMotorPort openMotorPort(String portName) throws RemoteException;
+	RMIMotorPort openMotorPort(String portName) throws Exception;
 	
-	public RMISampleProvider createSampleProvider(String portName, String sensorName, String modeName) throws RemoteException;
+	RMISampleProvider createSampleProvider(String portName, String sensorName, String modeName) throws RemoteException;
 	
-	public RMIRegulatedMotor createRegulatedMotor(String portName, char motorType) throws RemoteException;
+	RMIRegulatedMotor createRegulatedMotor(String portName, char motorType) throws Exception;
 
-	public RMIAudio getAudio() throws RemoteException;
+	RMIAudio getAudio() throws RemoteException;
 	
-	public RMITextLCD getTextLCD() throws RemoteException;
+	RMITextLCD getTextLCD() throws RemoteException;
 	
-	public RMITextLCD getTextLCD(Font f) throws RemoteException;
+	RMITextLCD getTextLCD(Font f) throws RemoteException;
 	
-	public RMIGraphicsLCD getGraphicsLCD() throws RemoteException;
+	RMIGraphicsLCD getGraphicsLCD() throws RemoteException;
 	
-	public RMIWifi getWifi() throws RemoteException;
+	RMIWifi getWifi() throws RemoteException;
 	
-	public RMIBluetooth getBluetooth() throws RemoteException;
+	RMIBluetooth getBluetooth() throws RemoteException;
 	
-	public String getName() throws RemoteException;
+	String getName() throws RemoteException;
 	
-	public RMIKey getKey(String name) throws RemoteException;
+	RMIKey getKey(String name) throws RemoteException;
 
-	public RMILED getLED() throws RemoteException;
+	RMILED getLED() throws RemoteException;
 
-	public RMIKeys getKeys()  throws RemoteException;
+	RMIKeys getKeys()  throws RemoteException;
 	
 }

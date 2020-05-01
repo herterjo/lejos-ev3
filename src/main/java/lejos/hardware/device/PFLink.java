@@ -155,11 +155,11 @@ public class PFLink extends I2CSensor {
         super(_Port);
     }
 
-    public PFLink(Port _Port, int address) {
+    public PFLink(Port _Port, int address) throws Exception {
         super(_Port, address, TYPE_LOWSPEED);
     }
 
-    public PFLink(Port _Port) {
+    public PFLink(Port _Port) throws Exception {
         super(_Port);
     }
 

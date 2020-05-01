@@ -55,7 +55,7 @@ public abstract class AbstractCalibrationFilter extends AbstractFilter implement
    * Fetches a sample from the sensor and updates array with minimum and maximum values when
    * the calibration process is running.
    */
-  public void fetchSample(float[] dst, int off) {
+  public void fetchSample(float[] dst, int off) throws Exception {
     if (!calibrating) {
       source.fetchSample(dst, off);
     }
@@ -138,7 +138,7 @@ public abstract class AbstractCalibrationFilter extends AbstractFilter implement
    * filename of the stored calibration parameters
    * @throws FileNotFoundException 
    */
-  protected void load(String filename) throws FileNotFoundException, IOException {
+  protected void load(String filename) throws IOException {
     FileInputStream in=null;
     props.clear();
       File f = getFile(filename);

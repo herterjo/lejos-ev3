@@ -20,7 +20,7 @@ public interface LightDetector {
 	 * Returns the calibrated and normalized brightness of the white light detected.
 	 * @return A brightness value between 0 and 100%, with 0 = darkness and 100 = intense sunlight
 	 */
-	public float getLightValue();
+    float getLightValue();
 	
 	
 	/**
@@ -29,17 +29,17 @@ public interface LightDetector {
 	 * @return A raw value, between getLow() and getHigh(). Usually 
 	 * between 0 and 1.00 but can be anything depending on hardware. low values = dark, high values = bright 
 	 */
-	public float getNormalizedLightValue();
+    float getNormalizedLightValue();
 	
 	/**
 	 * The highest raw light value this sensor can return from intense bright light.
 	 * @return the high value
 	 */
-	public float getHigh();
+    float getHigh();
 
 	/**
 	 * The lowest raw light value this sensor can return in pitch black darkness.
 	 * @return the low value
 	 */
-	public float getLow();
+    float getLow();
 }

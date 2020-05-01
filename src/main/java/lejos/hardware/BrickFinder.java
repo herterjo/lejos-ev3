@@ -8,6 +8,7 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -182,7 +183,7 @@ public class BrickFinder {
                     .getNetworkInterfaces();
             while (interfaces.hasMoreElements())
             {
-                NetworkInterface networkInterface = (NetworkInterface) interfaces
+                NetworkInterface networkInterface = interfaces
                         .nextElement();
 
                 if (networkInterface.isLoopback() || !networkInterface.isUp())
@@ -252,7 +253,7 @@ public class BrickFinder {
             while ((System.currentTimeMillis() - start) < MAX_DISCOVERY_TIME) {
                 try {
                     socket.receive (packet);
-                    String message = new String(packet.getData(), "UTF-8").trim();
+                    String message = new String(packet.getData(), StandardCharsets.UTF_8).trim();
                     if (findAll || message.equalsIgnoreCase(name))
                     {
                         String ip = packet.getAddress().getHostAddress();

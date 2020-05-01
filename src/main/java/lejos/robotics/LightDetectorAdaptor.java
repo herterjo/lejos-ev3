@@ -59,7 +59,7 @@ public class LightDetectorAdaptor {
 	/**
 	 * returns the raw light value using whatever mode has been set.
 	 */
-	public float getLightValue() {
+	public float getLightValue() throws Exception {
 		Delay.msDelay(10);
 		mode.fetchSample(sample, 0);
 		return sample[0];
@@ -72,7 +72,7 @@ public class LightDetectorAdaptor {
 	 * @return value between 0.0 and 1.0
 	 */
 
-	public float getNormalizedLightValue() {
+	public float getNormalizedLightValue() throws Exception {
 		float light = getLightValue();
 		return (light - low) / (high - low);
 	}
@@ -106,9 +106,9 @@ public class LightDetectorAdaptor {
 	private SensorMode ambientMode;
 	private SensorMode reflectedMode;
 	private SensorMode mode;
-	private SampleProvider sensor;
-	private float[] sample = new float[3];
+	private final SampleProvider sensor;
+	private final float[] sample = new float[3];
 	private float high, low;
-	private boolean reflected = false;
+	private final boolean reflected = false;
 
 }

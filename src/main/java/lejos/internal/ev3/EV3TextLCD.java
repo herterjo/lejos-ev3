@@ -4,7 +4,7 @@ import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.TextLCD;
 
 public class EV3TextLCD extends EV3LCD implements TextLCD {
-	private Font font;
+	private final Font font;
 	
 	public EV3TextLCD(String layerName, Font font) {
 		super(layerName);

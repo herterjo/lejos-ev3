@@ -1,7 +1,7 @@
 package lejos.hardware;
 
 public class Battery {
-	private static Power power = BrickFinder.getDefault().getPower();
+	private static final Power power = BrickFinder.getDefault().getPower();
 
 	public static int getVoltageMilliVolt() {
 		return power.getVoltageMilliVolt();

@@ -23,9 +23,9 @@ public class EV3GraphicsLCD extends EV3LCD implements GraphicsLCD
     private int pixelRop = ROP_SET;
     private int strokeStyle = SOLID;
     private Font font = Font.getDefaultFont();
-    private byte[] imageBuf;
-    private int width;
-    private int height;
+    private final byte[] imageBuf;
+    private final int width;
+    private final int height;
     private int transX = 0;
     private int transY = 0;
     

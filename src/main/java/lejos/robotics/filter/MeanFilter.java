@@ -16,7 +16,7 @@ public class MeanFilter extends SumFilter {
   }
 
   @Override
-  public void fetchSample(float[] sample, int off) {
+  public void fetchSample(float[] sample, int off) throws Exception {
     super.fetchSample(sample, off);
     for (int i = 0; i < sampleSize; i++)
       sample[i + off] /= getActualSize();

@@ -1,6 +1,9 @@
 package lejos.hardware.device;
 
 import lejos.robotics.DCMotor;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 /**
  * Motor class for PFMate class
@@ -9,9 +12,10 @@ import lejos.robotics.DCMotor;
  * 
  **/
 public class PFMateMotor implements DCMotor {
-	private PFMate receiver;
-	private int operReg, speedReg;
-	private byte [] buffer = new byte[1];
+	private final PFMate receiver;
+	private final int operReg;
+	private final int speedReg;
+	private final byte [] buffer = new byte[1];
 	private final static byte FLT = 0, FORWARD = 1, BACKWARD = 2, STOP = 3;
 	private boolean moving = false;
 
@@ -91,8 +95,7 @@ public class PFMateMotor implements DCMotor {
 	 */
 	public boolean isFlt(){
 		receiver.getData(operReg, buffer, 1);
-		if(buffer[0]== FLT) return true;
-		return false;
+		return buffer[0] == FLT;
 	}
 	
 	/**
@@ -101,8 +104,7 @@ public class PFMateMotor implements DCMotor {
 	 */
 	public boolean isForward(){
 		receiver.getData(operReg, buffer, 1);
-		if(buffer[0]== FORWARD) return true;
-		return false;
+		return buffer[0] == FORWARD;
 	}
 	
 	/**
@@ -111,8 +113,7 @@ public class PFMateMotor implements DCMotor {
 	 */
 	public boolean isBackward(){
 		receiver.getData(operReg, buffer, 1);
-		if(buffer[0]== BACKWARD) return true;
-		return false;
+		return buffer[0] == BACKWARD;
 	}
 	
 	/**
@@ -121,12 +122,11 @@ public class PFMateMotor implements DCMotor {
 	 */
 	public boolean isStop(){
 		receiver.getData(operReg, buffer, 1);
-		if(buffer[0]== STOP) return true;
-		return false;
+		return buffer[0] == STOP;
 	}
 	
-	public boolean isMoving() {
-		return moving;
+	public Future<ReturnWrapper<Boolean>> isMoving() {
+		return ReturnWrapper.getCompletedReturnNormal(moving);
 	}
 
     public void setPower(int power)

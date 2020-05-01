@@ -7,6 +7,7 @@ import lejos.hardware.motor.MotorRegulator;
 import lejos.hardware.port.BasicMotorPort;
 import lejos.hardware.port.PortException;
 import lejos.hardware.port.TachoMotorPort;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
@@ -58,6 +59,8 @@ public class RemoteNXTMotorPort extends RemoteNXTIOPort implements NXTProtocol, 
 		} catch (IOException e) {
 			throw new PortException(e);
 		}
+
+		return ExceptionWrapper.getCompletedException(null);
     }
 
 
@@ -67,11 +70,13 @@ public class RemoteNXTMotorPort extends RemoteNXTIOPort implements NXTProtocol, 
      */
     public Future<ReturnWrapper<Integer>> getTachoCount()
     {
-		try {
-			return nxtCommand.getTachoCount(port);
-		} catch (IOException e) {
-			throw new PortException(e);
-		}
+    	return AsyncExecutor.execute(() -> {
+			try {
+				return nxtCommand.getTachoCount(port);
+			} catch (IOException e) {
+				throw new PortException(e);
+			}
+		});
     }
     
     /**
@@ -80,11 +85,13 @@ public class RemoteNXTMotorPort extends RemoteNXTIOPort implements NXTProtocol, 
      */ 
     public Future<ExceptionWrapper> resetTachoCount()
     {
-		try {
-			nxtCommand.resetMotorPosition(port, false);
-		} catch (IOException e) {
-			throw new PortException(e);
-		}
+    	return AsyncExecutor.execute(() -> {
+			try {
+				nxtCommand.resetMotorPosition(port, false);
+			} catch (IOException e) {
+				throw new PortException(e);
+			}
+		});
     }
     
     public void setPWMMode(int mode)
@@ -98,5 +105,10 @@ public class RemoteNXTMotorPort extends RemoteNXTIOPort implements NXTProtocol, 
         // TODO Does it make sense to allow this to be remote?
         throw(new UnsupportedOperationException("Remote regulators are not supported"));
         //return null;
-    }  
+    }
+
+	@Override
+	public Future<ExceptionWrapper> closeRet() {
+		return AsyncExecutor.execute(this::close);
+	}
 }

@@ -540,7 +540,7 @@ public class ShortestPathFinder implements PathFinder
 		{
 			return " " + getX() + " , " + getY() + " ";
 		}
-		private Point _p; // the location of this SPNode
+		private final Point _p; // the location of this SPNode
 		private float _sourceDistance;
 		private Node _predecessor;
 		public ArrayList<Node> _blocked = new ArrayList<Node>();

@@ -15,14 +15,14 @@ public interface Shape {
 	 * 
 	 * @return the bounding Rectangle
 	 */
-	public RectangleInt32 getBounds();
+    RectangleInt32 getBounds();
 	
 	/**
 	 * Get the bounding Rectangle2D for the shape
 	 * 
 	 * @return the bounding Rectangle2D
 	 */
-	public Rectangle2D getBounds2D();
+    Rectangle2D getBounds2D();
 	
 	/**
 	 * Test if the shape contains the point (x,y)
@@ -31,7 +31,7 @@ public interface Shape {
 	 * @param y the y co-ordinate of the point
 	 * @return true iff the shape contains the point
 	 */
-	public boolean contains(double x, double y);
+    boolean contains(double x, double y);
 	
 	/**
 	 * Test if the shape contains the Point2D
@@ -39,7 +39,7 @@ public interface Shape {
 	 * @param p the Point2D
 	 * @return true iff the shape contains the point
 	 */
-	public boolean contains(Point2D p);
+    boolean contains(Point2D p);
 	
 	/**
 	 * Test if the shape intersects the rectangle with top left at (x,y), width w and height h.
@@ -50,7 +50,7 @@ public interface Shape {
 	 * @param h the height of the rectangle
 	 * @return true iff the shape intersects the rectangle
 	 */
-	public boolean intersects(double x, double y, double w, double h);
+    boolean intersects(double x, double y, double w, double h);
 	
 	/**
 	 * Test if the shape intersects the Rectangle2D r
@@ -58,7 +58,7 @@ public interface Shape {
 	 * @param r the Recangle2D
 	 * @return true iff the shape intersects the Rectangle2D
 	 */
-	public boolean intersects(Rectangle2D r);
+    boolean intersects(Rectangle2D r);
 	
 	/**
 	 * Test if the shape contains the rectangle with top left at (x,y), width w and height h.
@@ -69,7 +69,7 @@ public interface Shape {
 	 * @param h the height of the rectangle
 	 * @return true iff the shape contains the rectangle
 	 */
-	public boolean contains(double x, double y, double w, double h);
+    boolean contains(double x, double y, double w, double h);
 	
 	/**
 	 * Test if the shape contains the Rectangle2D
@@ -77,5 +77,5 @@ public interface Shape {
 	 * @param r the Rectangle2D
 	 * @return true iff the shape contains the Rectangle2D
 	 */
-	public boolean contains(Rectangle2D r);
+    boolean contains(Rectangle2D r);
 }

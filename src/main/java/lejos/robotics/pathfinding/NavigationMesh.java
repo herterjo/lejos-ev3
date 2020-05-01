@@ -19,7 +19,7 @@ public interface NavigationMesh {
 	 * @param neighbors The maximum number of neighbors to attempt to connect with.
 	 * @return the number of neighboring nodes it was able to connect with
 	 */
-	public int addNode(Node node, int neighbors);
+    int addNode(Node node, int neighbors);
 	
 	/**
 	 * Removes a node from the set and removes any existing connections with its neighbors.
@@ -28,7 +28,7 @@ public interface NavigationMesh {
 	 * @param node The node to remove.
 	 * @return Returns true if the node was removed, false if it did not exist in this set.
 	 */
-	public boolean removeNode(Node node);
+    boolean removeNode(Node node);
 	
 	/**
 	 * Attempts to connect two nodes together by adding them as neighbors. If map data exists for this
@@ -38,7 +38,7 @@ public interface NavigationMesh {
 	 * @param node2
 	 * @return Boolean value, true if the nodes were connected successfully, false if they could not connect.
 	 */
-	public boolean connect(Node node1, Node node2);
+    boolean connect(Node node1, Node node2);
 	
 	/**
 	 * Disconnects two nodes by removing them as neighbors. If they were not previously connected it returns false. 
@@ -46,20 +46,20 @@ public interface NavigationMesh {
 	 * @param node2
 	 * @return Returns false if they were not previously connected.
 	 */
-	public boolean disconnect(Node node1, Node node2);
+    boolean disconnect(Node node1, Node node2);
 	
 	// Note: Not used by NodePathFinder but seemed like a conspicuously absent method. 
 	/**
 	 * Returns a collection of all nodes within this navigation mesh.
 	 * @return A Collection of Nodes.
 	 */
-	public Collection <Node> getMesh();
+    Collection <Node> getMesh();
 	
 	// Note: Not used by NodePathFinder but seems useful for GUIs and such when parameters changed.
 	/**
 	 * Throws away the previous set of nodes and recalculates them all. If any setting were changed, such as
 	 * the spacing between nodes, then it will recalculate them with the new settings.  
 	 */
-	public void regenerate();
+    void regenerate();
 	
 }

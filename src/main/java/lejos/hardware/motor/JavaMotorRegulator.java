@@ -3,6 +3,7 @@ package lejos.hardware.motor;
 import lejos.hardware.port.TachoMotorPort;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.RegulatedMotorListener;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
@@ -109,7 +110,7 @@ public class JavaMotorRegulator implements MotorRegulator
         });
     }
 
-    public JavaMotorRegulator(TachoMotorPort p)
+    public JavaMotorRegulator(TachoMotorPort p) throws Exception
     {
         tachoPort = p;
         tachoPort.setPWMMode(TachoMotorPort.PWM_BRAKE);
@@ -119,24 +120,28 @@ public class JavaMotorRegulator implements MotorRegulator
     
     public Future<ReturnWrapper<Integer>> getTachoCount()
     {
-        return tachoPort.getTachoCount() - zeroTachoCnt;
+        return AsyncExecutor.execute(() -> tachoPort.getTachoCount().get().getValue() - zeroTachoCnt);
     }
     
     public synchronized Future<ExceptionWrapper> resetTachoCount()
     {
-        newMove(0, 1000, NO_LIMIT, false, true);
-        zeroTachoCnt = tachoPort.getTachoCount();
-        reset();
+        return AsyncExecutor.execute(() -> {
+            synchronized (this) {
+                AsyncExecutor.throwIfException(newMove(0, 1000, NO_LIMIT, false, true));
+                zeroTachoCnt = tachoPort.getTachoCount().get().getValue();
+                reset();
+            }
+        });
     }
 
-    public Future<ReturnWrapper<Boolean>> isMoving()
+    public synchronized Future<ReturnWrapper<Boolean>> isMoving()
     {
-        return moving;
+        return ReturnWrapper.getCompletedReturnNormal(moving);
     }
     
-    public Future<ReturnWrapper<Float>> getCurrentVelocity()
+    public synchronized Future<ReturnWrapper<Float>> getCurrentVelocity()
     {
-        return curVelocity;
+        return ReturnWrapper.getCompletedReturnNormal(curVelocity);
     }
     
     public void setStallThreshold(int error, int time)
@@ -152,14 +157,14 @@ public class JavaMotorRegulator implements MotorRegulator
      * @param hold
      * @param stalled
      */
-    protected synchronized void updateState(int velocity, boolean hold, boolean stalled)
+    protected synchronized void updateState(int velocity, boolean hold, boolean stalled) throws Exception
     {
         if (listener != null)
         {
             if (velocity == 0)
-                listener.rotationStopped(motor, getTachoCount(), stalled, System.currentTimeMillis());
+                listener.rotationStopped(motor, getTachoCount().get().getValue(), stalled, System.currentTimeMillis());
             else
-                listener.rotationStarted(motor, getTachoCount(), false, System.currentTimeMillis());
+                listener.rotationStarted(motor, getTachoCount().get().getValue(), false, System.currentTimeMillis());
         }
     }
     
@@ -185,15 +190,19 @@ public class JavaMotorRegulator implements MotorRegulator
     public Future<ExceptionWrapper> setControlParamaters(int typ, float moveP, float moveI,
                                                          float moveD, float holdP, float holdI, float holdD, int offset)
     {
-        // Stop the motor if needed
-        newMove(0, 1000, NO_LIMIT, false, true);
-        this.moveP = moveP;
-        this.moveI = moveI;
-        this.moveD = moveD;
-        this.holdP = holdP;
-        this.holdI = holdI;
-        this.holdD = holdD;
-        reset();
+        return AsyncExecutor.execute(() -> {
+            synchronized (this) {
+                // Stop the motor if needed
+                newMove(0, 1000, NO_LIMIT, false, true);
+                this.moveP = moveP;
+                this.moveI = moveI;
+                this.moveD = moveD;
+                this.holdP = holdP;
+                this.holdI = holdI;
+                this.holdD = holdD;
+                reset();
+            }
+        });
     }
 
 
@@ -201,6 +210,7 @@ public class JavaMotorRegulator implements MotorRegulator
     public Future<ExceptionWrapper> waitComplete()
     {
         waitStop();
+        return ExceptionWrapper.getCompletedException(null);
     }
 
 
@@ -212,18 +222,18 @@ public class JavaMotorRegulator implements MotorRegulator
 
 
     @Override
-    public Future<ReturnWrapper<Boolean>> isStalled()
+    public synchronized Future<ReturnWrapper<Boolean>> isStalled()
     {
-        return stalled;
+        return ReturnWrapper.getCompletedReturnNormal(stalled);
     }
 
 
     /**
      * Reset the tachometer readings
      */
-    protected synchronized void reset()
+    protected synchronized void reset() throws Exception
     {
-        curCnt = tachoCnt = getTachoCount();
+        curCnt = tachoCnt = getTachoCount().get().getValue();
         baseTime = now = System.currentTimeMillis();
     }
 
@@ -281,12 +291,16 @@ public class JavaMotorRegulator implements MotorRegulator
      */
     synchronized public Future<ReturnWrapper<Float>> getPosition()
     {
-        if (!active)
-        {
-            cont.addMotor(this);
-            active = true;
-        }
-        return curCnt;
+        return AsyncExecutor.execute(() -> {
+            synchronized (this) {
+                if (!active)
+                {
+                    cont.addMotor(this);
+                    active = true;
+                }
+                return curCnt;
+            }
+        });
         
     }
 
@@ -303,51 +317,55 @@ public class JavaMotorRegulator implements MotorRegulator
      */
     synchronized public Future<ExceptionWrapper> newMove(float speed, int acceleration, int limit, boolean hold, boolean waitComplete)
     {
-        if (!active)
-        {
-            cont.addMotor(this);
-            active = true;
-        }
-        // ditch any existing pending command
-        pending = false;
-        // no longer stalled
-        stalled = false;
-        // Stop moves always happen now
-        if (speed == 0)
-            startSubMove(0, acceleration, NO_LIMIT, hold);
-        else if (!moving)
-        {
-            // not moving so we start a new move
-            startSubMove(speed, acceleration, limit, hold);
-            updateState(Math.round(curTargetVelocity), hold, false);
-        }
-        else
-        {
-            // we already have a move in progress can we modify it to match
-            // the new request? We must ensure that the new move is in the
-            // same direction and that any stop will not exceed the current
-            // acceleration request.
-            float moveLen = limit - curCnt;
-            float acc = (curVelocity*curVelocity)/(2*(moveLen));
-            if (moveLen*curVelocity >= 0 && Math.abs(acc) <= acceleration)
-                startSubMove(speed, acceleration, limit, hold);
-            else
-            {
-                // Save the requested move
-                newSpeed = speed;
-                newAcceleration = acceleration;
-                newLimit = limit;
-                newHold = hold;
-                pending = true;
-                // stop the current move
-                startSubMove(0, acceleration, NO_LIMIT, true);
-                // If we need to wait for the existing command to end
+        return AsyncExecutor.execute(() -> {
+            synchronized (this) {
+                if (!active)
+                {
+                    cont.addMotor(this);
+                    active = true;
+                }
+                // ditch any existing pending command
+                pending = false;
+                // no longer stalled
+                stalled = false;
+                // Stop moves always happen now
+                if (speed == 0)
+                    startSubMove(0, acceleration, NO_LIMIT, hold);
+                else if (!moving)
+                {
+                    // not moving so we start a new move
+                    startSubMove(speed, acceleration, limit, hold);
+                    updateState(Math.round(curTargetVelocity), hold, false);
+                }
+                else
+                {
+                    // we already have a move in progress can we modify it to match
+                    // the new request? We must ensure that the new move is in the
+                    // same direction and that any stop will not exceed the current
+                    // acceleration request.
+                    float moveLen = limit - curCnt;
+                    float acc = (curVelocity*curVelocity)/(2*(moveLen));
+                    if (moveLen*curVelocity >= 0 && Math.abs(acc) <= acceleration)
+                        startSubMove(speed, acceleration, limit, hold);
+                    else
+                    {
+                        // Save the requested move
+                        newSpeed = speed;
+                        newAcceleration = acceleration;
+                        newLimit = limit;
+                        newHold = hold;
+                        pending = true;
+                        // stop the current move
+                        startSubMove(0, acceleration, NO_LIMIT, true);
+                        // If we need to wait for the existing command to end
+                        if (waitComplete)
+                            waitStop();
+                    }
+                }
                 if (waitComplete)
                     waitStop();
             }
-        }
-        if (waitComplete)
-            waitStop();
+        });
     }
 
     /**
@@ -364,6 +382,8 @@ public class JavaMotorRegulator implements MotorRegulator
         }
         if (pending)
             this.newSpeed = newSpeed;
+
+        return ExceptionWrapper.getCompletedException(null);
     }
 
     /**
@@ -379,13 +399,14 @@ public class JavaMotorRegulator implements MotorRegulator
         }
         if (pending)
             newAcceleration = newAcc;
+        return ExceptionWrapper.getCompletedException(null);
     }
 
     /**
      * The move has completed either by the motor stopping or by it stalling
      * @param stalled
      */
-    synchronized private void endMove(boolean stalled)
+    synchronized private void endMove(boolean stalled) throws Exception
     {
         moving = pending;
         this.stalled = stalled;
@@ -411,7 +432,7 @@ public class JavaMotorRegulator implements MotorRegulator
     /**
      * Monitors time and tachoCount to regulate velocity and stop motor rotation at limit angle
      */
-    synchronized void regulateMotor(long delta)
+    synchronized void regulateMotor(long delta) throws Exception
     {
         float error;
         now += delta;
@@ -517,7 +538,7 @@ public class JavaMotorRegulator implements MotorRegulator
          * Add a motor to the set of active motors.
          * @param m
          */
-        synchronized void addMotor(JavaMotorRegulator m)
+        synchronized void addMotor(JavaMotorRegulator m) throws Exception
         {
             JavaMotorRegulator [] newMotors = new JavaMotorRegulator[activeMotors.length+1];
             System.arraycopy(activeMotors, 0, newMotors, 0, activeMotors.length);
@@ -564,12 +585,16 @@ public class JavaMotorRegulator implements MotorRegulator
                     delta = System.currentTimeMillis() - now;
                     JavaMotorRegulator [] motors = activeMotors;
                     now += delta;
-                    for(JavaMotorRegulator m : motors)
-                        m.tachoCnt = m.tachoPort.getTachoCount() - m.zeroTachoCnt;
-                    for(JavaMotorRegulator m : motors)
-                        m.regulateMotor(delta);
-                    for(JavaMotorRegulator m : motors)
-                        m.tachoPort.controlMotor(m.power, m.mode);
+                    try {
+                        for(JavaMotorRegulator m : motors)
+                            m.tachoCnt = m.tachoPort.getTachoCount().get().getValue() - m.zeroTachoCnt;
+                        for(JavaMotorRegulator m : motors)
+                            m.regulateMotor(delta);
+                        for(JavaMotorRegulator m : motors)
+                            m.tachoPort.controlMotor(m.power, m.mode);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 Delay.msDelay(now + UPDATE_PERIOD - System.currentTimeMillis());
             }   // end keep going loop
@@ -581,7 +606,7 @@ public class JavaMotorRegulator implements MotorRegulator
     public Future<ExceptionWrapper> startSynchronization()
     {
         // TODO Auto-generated method stub
-        
+        return ExceptionWrapper.getCompletedException(null);
     }
 
 
@@ -589,7 +614,7 @@ public class JavaMotorRegulator implements MotorRegulator
     public Future<ExceptionWrapper> endSynchronization(boolean b)
     {
         // TODO Auto-generated method stub
-        
+        return ExceptionWrapper.getCompletedException(null);
     }
 
 
@@ -597,6 +622,5 @@ public class JavaMotorRegulator implements MotorRegulator
     public void synchronizeWith(MotorRegulator[] rl)
     {
         // TODO Auto-generated method stub
-        
     }
 }

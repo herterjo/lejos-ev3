@@ -19,6 +19,6 @@ public interface GPSListener extends EventListener{
 	 * To identify the type of NMEA sentence received, use NMEASentence.getHeader().
 	 * Then cast the sentence into the appropriate type. e.g. (GGASentence)sen
 	 */
-	public void sentenceReceived(NMEASentence sen);
+    void sentenceReceived(NMEASentence sen);
 
 }

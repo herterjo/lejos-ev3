@@ -10,7 +10,7 @@ import lejos.hardware.port.Port;
  **/
 public class LLC {
   private static RCXLink link;
-  private static byte[] data = new byte[1];
+  private static final byte[] data = new byte[1];
   
   private LLC() {
   }
@@ -27,7 +27,7 @@ public class LLC {
   /** 
    * Initialize LLC and set port
    **/
-  public static void init(Port port){
+  public static void init(Port port) throws Exception {
 	  link = new RCXLink(port);
 	  link.setDefaultSpeed();
 	  link.flush();

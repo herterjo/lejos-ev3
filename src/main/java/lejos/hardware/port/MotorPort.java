@@ -14,21 +14,21 @@ public interface MotorPort {
 	/**
 	 * MotorPort A.
 	 */
-	public static final Port A = BrickFinder.getDefault().getPort("A");
+    Port A = BrickFinder.getDefault().getPort("A");
 	
 	/**
 	 * MotorPort B.
 	 */
-	public static final Port B = BrickFinder.getDefault().getPort("B");
+    Port B = BrickFinder.getDefault().getPort("B");
 	
     /**
      * MotorPort C.
      */
-    public static final Port C = BrickFinder.getDefault().getPort("C");
+    Port C = BrickFinder.getDefault().getPort("C");
     
     /**
      * MotorPort D.
      */
-    public static final Port D = BrickFinder.getDefault().getPort("D");
+    Port D = BrickFinder.getDefault().getPort("D");
 
 }

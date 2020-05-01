@@ -34,10 +34,10 @@ public class GSVSentence extends NMEASentence{
 	private String nmeaHeader = "";
 	private int satellitesInView = 0;
 	private final int MAXIMUMSATELLITES = 4;
-	private Satellite ns1;
-	private Satellite ns2;
-	private Satellite ns3;
-	private Satellite ns4;
+	private final Satellite ns1;
+	private final Satellite ns2;
+	private final Satellite ns3;
+	private final Satellite ns4;
 	
 	//Header
 	public static final String HEADER = "$GPGSV";

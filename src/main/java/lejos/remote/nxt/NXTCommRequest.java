@@ -13,7 +13,7 @@ public interface NXTCommRequest {
 	 * Close the connection
 	 * @throws IOException
 	 */
-	public void close() throws IOException;
+    void close() throws IOException;
 	
 	/**
 	 * Send an LCP message to the NXT and receive a reply
@@ -23,7 +23,7 @@ public interface NXTCommRequest {
 	 * @return the reply
 	 * @throws IOException
 	 */
-	public byte[] sendRequest(byte [] message, int replyLen) throws IOException;
+    byte[] sendRequest(byte[] message, int replyLen) throws IOException;
 
 }
 

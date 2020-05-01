@@ -44,7 +44,7 @@ public class SumoEyesSensor extends AnalogSensor implements SensorConstants {
      *
      * @param port the sensor port
      */
-    public SumoEyesSensor(Port port) {
+    public SumoEyesSensor(Port port) throws Exception {
         super(port);
         this.port.setTypeAndMode(TYPE_LIGHT_INACTIVE,MODE_RAW);
     }

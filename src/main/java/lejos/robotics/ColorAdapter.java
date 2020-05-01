@@ -16,13 +16,13 @@ public class ColorAdapter implements ColorDetector, ColorIdentifier {
 		bufID=new float[colorIdentifier.sampleSize()];
 	}
 	
-	public int getColorID() {
+	public int getColorID() throws Exception {
 		colorIdentifier.fetchSample(bufID, 0);
 		return (int)bufID[0];
 	}
 	 
 	@Override
-	public Color getColor() {
+	public Color getColor() throws Exception {
 		colorDetector.fetchSample(bufDetect, 0);
 		Color color = new Color((int)(256*bufDetect[0]), (int)(256*bufDetect[1]), (int)(256*bufDetect[2]));
 		return color;

@@ -8,7 +8,7 @@ import lejos.hardware.port.PortException;
 import lejos.utility.Delay;
 
 public class RemoteNXTAudio implements Audio {
-	private NXTCommand nxtCommand;    
+	private final NXTCommand nxtCommand;
 	
 	public static int C2 = 523;
 	

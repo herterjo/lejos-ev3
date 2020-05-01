@@ -15,8 +15,7 @@ public class RCXMotor extends BasicMotor {
 		this.port = port;
 	}
 	
-	public RCXMotor(Port port)
-	{
+	public RCXMotor(Port port) throws Exception {
 	    this(port.open(BasicMotorPort.class));
 	    releaseOnClose(this.port);
 	}

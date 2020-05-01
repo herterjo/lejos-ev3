@@ -58,7 +58,7 @@ public class MindsensorsAccelerometer extends I2CSensor  {
 	private static final byte OFF_Z_ACCEL = 0x04;
 	private static final float TO_SI = 0.00980665f;
 	
-	private byte[] buf = new byte[6];
+	private final byte[] buf = new byte[6];
 	
 	/**
 	 * Creates a SampleProvider for the Mindsensors ACCL-Nx
@@ -87,7 +87,7 @@ public class MindsensorsAccelerometer extends I2CSensor  {
 	 * @param port the sensor port
 	 * @param address the I2C address of the sensor
 	 */
-	public MindsensorsAccelerometer(Port port, int address) {
+	public MindsensorsAccelerometer(Port port, int address) throws Exception {
 		super(port, address, TYPE_LOWSPEED_9V);
 		init();
 	}
@@ -97,7 +97,7 @@ public class MindsensorsAccelerometer extends I2CSensor  {
 	 * 
 	 * @param port the sensor port
 	 */
-    public MindsensorsAccelerometer(Port port) {
+    public MindsensorsAccelerometer(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS);
         init();
     }
@@ -142,7 +142,7 @@ public class MindsensorsAccelerometer extends I2CSensor  {
 	}
 
 	private class TiltMode implements SensorMode {
-	  private float toSI=180f/128f;
+	  private final float toSI=180f/128f;
 		@Override
 		public int sampleSize() {
 			return 3;

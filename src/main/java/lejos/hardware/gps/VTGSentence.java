@@ -32,8 +32,8 @@ public class VTGSentence extends NMEASentence{
 	private String nmeaHeader = "";
 	private final float KNOT = 1.852f;
 	private float speed = 0f;
-	private float trueCourse = 0f;
-	private float magneticCourse = 0f;
+	private final float trueCourse = 0f;
+	private final float magneticCourse = 0f;
 
 	//Header
 	public static final String HEADER = "$GPVTG";

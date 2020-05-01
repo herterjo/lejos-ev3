@@ -40,7 +40,7 @@ public class PSPNXController extends I2CSensor {
 	private static final byte X_RIGHT_JOYSTICK = 0x46;
 	private static final byte Y_RIGHT_JOYSTICK = 0x47;
 
-	private byte[] buf = new byte[2];
+	private final byte[] buf = new byte[2];
 
 	private void init()
 	{
@@ -58,11 +58,11 @@ public class PSPNXController extends I2CSensor {
         init();
     }
 
-    public PSPNXController(Port port) {
+    public PSPNXController(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS);
     }
 
-    public PSPNXController(Port port, int address)    {
+    public PSPNXController(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED);
         init();
     }
@@ -90,7 +90,7 @@ public class PSPNXController extends I2CSensor {
 	 * @return Data for all 16 buttons as a int array
 	 */
 	public int[] getButtons() {
-		int Buttons[] = new int[16];
+		int[] Buttons = new int[16];
 
 		getData(BUTTON_1, buf,2);
         Buttons[0] = ((buf[0] >> 7) & 0x01) > 0 ? 0 : 1;

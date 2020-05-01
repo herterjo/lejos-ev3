@@ -454,7 +454,7 @@ public class NXTCommand implements NXTProtocol {
 	public String getFriendlyName() throws IOException {
 		byte[] request = { SYSTEM_COMMAND_REPLY, GET_DEVICE_INFO };
 		byte[] reply = nxtComm.sendRequest(request, 33);
-		char nameChars[] = new char[16];
+		char[] nameChars = new char[16];
 		int len = 0;
 
 		for (int i = 0; i < 15 && reply[i + 3] != 0; i++) {
@@ -488,7 +488,7 @@ public class NXTCommand implements NXTProtocol {
 	public String getLocalAddress() throws IOException {
 		byte[] request = { SYSTEM_COMMAND_REPLY, GET_DEVICE_INFO };
 		byte[] reply = nxtComm.sendRequest(request, 33);
-		char addrChars[] = new char[14];
+		char[] addrChars = new char[14];
 
 		for (int i = 0; i < 7; i++) {
 			addrChars[i * 2] = hexChars.charAt((reply[i + 18] >> 4) & 0xF);

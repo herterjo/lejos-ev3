@@ -11,7 +11,7 @@ public interface RangeFinder {
 	 * 
 	 * @return the distance to the nearest object
 	 */
-	public float getRange();
+    float getRange() throws Exception;
 	
 	/**
 	 * If the sensor is capable, this method returns multiple range values from a single scan. Sensors that can only
@@ -19,5 +19,5 @@ public interface RangeFinder {
 	 * 
 	 * @return an array of ranges, ordered from closest to farthest.
 	 */
-	public float [] getRanges();
+    float [] getRanges() throws Exception;
 }

@@ -17,7 +17,7 @@ public interface Audio extends Sounds
      * <TR><TD>4</TD><TD>long, low buzz</TD></TR>
      * </TABLE>
      */
-    public void systemSound(int aCode);
+    void systemSound(int aCode);
     
     /**
      * Plays a tone, given its frequency and duration. 
@@ -25,10 +25,10 @@ public interface Audio extends Sounds
      * @param aDuration The duration of the tone, in milliseconds.
      * @param aVolume The volume of the playback 100 corresponds to 100%
      */
-    public void playTone(int aFrequency, int aDuration, int aVolume);
+    void playTone(int aFrequency, int aDuration, int aVolume);
     
 
-    public void playTone(int freq, int duration);
+    void playTone(int freq, int duration);
 
     
     /**
@@ -39,7 +39,7 @@ public interface Audio extends Sounds
      *         there is an error.
      * @throws FileNotFoundException 
      */
-    public int playSample(File file, int vol);
+    int playSample(File file, int vol);
 
 
     /**
@@ -49,7 +49,7 @@ public interface Audio extends Sounds
      *         there is an error.
      * @throws FileNotFoundException 
      */
-    public int playSample(File file);
+    int playSample(File file);
 
     /**
      * Queue a series of PCM samples to play at the
@@ -62,7 +62,7 @@ public interface Audio extends Sounds
      * @param vol playback volume
      * @return Number of samples actually queued
      */
-    public int playSample(byte [] data, int offset, int len, int freq, int vol);
+    int playSample(byte[] data, int offset, int len, int freq, int vol);
 
     /**
      * Play a note with attack, decay, sustain and release shape. This function
@@ -73,24 +73,24 @@ public interface Audio extends Sounds
      * @param freq The note to play (in Hz)
      * @param len  The duration of the note (in ms)
      */
-    public void playNote(int[] inst, int freq, int len);
+    void playNote(int[] inst, int freq, int len);
     
     /**
      * Set the master volume level
      * @param vol 0-100
      */
-    public void setVolume(int vol);
+    void setVolume(int vol);
 
     /**
      * Get the current master volume level
      * @return the current master volume 0-100
      */
-    public int getVolume();
+    int getVolume();
     
     /**
      * Load the current system settings associated with this class. Called
      * automatically to initialize the class. May be called if it is required
      * to reload any settings.
      */
-    public void loadSettings();
+    void loadSettings();
 }

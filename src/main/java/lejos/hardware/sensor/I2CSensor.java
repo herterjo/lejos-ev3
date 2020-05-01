@@ -65,8 +65,7 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
 	 * @param address I2C address
 	 * @param type type of I2C sensor
 	 */
-	public I2CSensor(Port port, int address, int type)
-	{
+	public I2CSensor(Port port, int address, int type) throws Exception {
         this(port.open(I2CPort.class), address);
         if (!this.port.setType(type))
         {
@@ -76,13 +75,11 @@ public class I2CSensor extends BaseSensor implements SensorConstants {
         releaseOnClose(this.port);
 	}
 
-    public I2CSensor(Port port)
-    {
+    public I2CSensor(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS, TYPE_LOWSPEED);
     }
 
-    public I2CSensor(Port port, int address)
-    {
+    public I2CSensor(Port port, int address) throws Exception {
         this(port, address, TYPE_LOWSPEED);
     }
 

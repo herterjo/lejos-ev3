@@ -11,11 +11,11 @@ public class EV3Key implements Key {
 	private static final int DEBOUNCE_TIME = 10;
 	private static final int KEY_PRESS_TIME = 100;
 	
-	private int iCode;
-	private EV3Keys keys;
+	private final int iCode;
+	private final EV3Keys keys;
 	
-	private static String[] keyNames = {"Up", "Enter", "Down", "Right", "Left", "Escape"};
-	private String name;
+	private static final String[] keyNames = {"Up", "Enter", "Down", "Right", "Left", "Escape"};
+	private final String name;
 	
 	private ArrayList<KeyListener> listeners;
 	

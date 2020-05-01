@@ -17,7 +17,7 @@ public class RMIRemoteRegulatedMotor extends UnicastRemoteObject implements RMIR
 	private static final long serialVersionUID = 224060987071610845L;
 	private RegulatedMotor motor;
 	
-	protected RMIRemoteRegulatedMotor(String portName, char motorType) throws RemoteException {
+	protected RMIRemoteRegulatedMotor(String portName, char motorType) throws Exception {
 		super(0);
 		Port p = LocalEV3.get().getPort(portName);
 		switch (motorType) {
@@ -47,12 +47,12 @@ public class RMIRemoteRegulatedMotor extends UnicastRemoteObject implements RMIR
 	}
 
 	@Override
-	public void stop(boolean immediateReturn) throws RemoteException {
+	public void stop(boolean immediateReturn) throws Exception {
 		motor.stop(immediateReturn);
 	}
 
 	@Override
-	public void flt(boolean immediateReturn) throws RemoteException {
+	public void flt(boolean immediateReturn) throws Exception {
 		motor.flt(immediateReturn);
 	}
 
@@ -63,38 +63,38 @@ public class RMIRemoteRegulatedMotor extends UnicastRemoteObject implements RMIR
 
 	@Override
 	public void rotate(int angle, boolean immediateReturn)
-			throws RemoteException {
+			throws Exception {
 		motor.rotate(angle, immediateReturn);
 	}
 
 	@Override
-	public void rotate(int angle) throws RemoteException {
+	public void rotate(int angle) throws Exception {
 		motor.rotate(angle);
 	}
 
 	@Override
-	public void rotateTo(int limitAngle) throws RemoteException {
+	public void rotateTo(int limitAngle) throws Exception {
 		motor.rotateTo(limitAngle);	
 	}
 
 	@Override
 	public void rotateTo(int limitAngle, boolean immediateReturn)
-			throws RemoteException {
+			throws Exception {
 		motor.rotateTo(limitAngle, immediateReturn);
 	}
 
 	@Override
-	public int getLimitAngle() throws RemoteException {
+	public int getLimitAngle() throws Exception {
 		return motor.getLimitAngle();
 	}
 
 	@Override
-	public void setSpeed(int speed) throws RemoteException {
+	public void setSpeed(int speed) throws Exception {
 		motor.setSpeed(speed);
 	}
 
 	@Override
-	public int getSpeed() throws RemoteException {
+	public int getSpeed() throws Exception {
 		return motor.getSpeed();
 	}
 
@@ -104,8 +104,8 @@ public class RMIRemoteRegulatedMotor extends UnicastRemoteObject implements RMIR
 	}
 
 	@Override
-	public boolean isStalled() throws RemoteException {
-		return motor.isStalled();
+	public boolean isStalled() throws Exception {
+		return motor.isStalled().get().getValue();
 	}
 
 	@Override
@@ -124,28 +124,28 @@ public class RMIRemoteRegulatedMotor extends UnicastRemoteObject implements RMIR
 	}
 
 	@Override
-	public void forward() throws RemoteException {
+	public void forward() throws Exception {
 		motor.forward();	
 	}
 
 	@Override
-	public void backward() throws RemoteException {
+	public void backward() throws Exception {
 		motor.backward();	
 	}
 
 	@Override
-	public void resetTachoCount() throws RemoteException {
+	public void resetTachoCount() throws Exception {
 		motor.resetTachoCount();
 	}
 
 	@Override
-	public int getTachoCount() throws RemoteException {
-		return motor.getTachoCount();
+	public int getTachoCount() throws Exception {
+		return motor.getTachoCount().get().getValue();
 	}
 
 	@Override
-	public boolean isMoving() throws RemoteException {
-		return motor.isMoving();
+	public boolean isMoving() throws Exception {
+		return motor.isMoving().get().getValue();
 	}
 }
 

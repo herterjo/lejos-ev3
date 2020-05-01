@@ -17,5 +17,5 @@ public interface BeaconLocator {
      *    
      * @return an ArrayList of double values indicating angles to the beacons 
      */
-	public ArrayList<Double> locate();
+    ArrayList<Double> locate();
 }

@@ -1,9 +1,9 @@
 package lejos.hardware;
 
 public class BrickInfo {
-	private String name;
-	private String ipAddress;
-	private String type;
+	private final String name;
+	private final String ipAddress;
+	private final String type;
 	
 	public BrickInfo(String name, String ipAddress, String type) {
 		this.name = name;

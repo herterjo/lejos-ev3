@@ -12,7 +12,7 @@ import lejos.hardware.sensor.I2CSensor;
  * 
  */
 public class RCXMotorMultiplexer extends I2CSensor {
-	private byte[] buf = new byte[2];
+	private final byte[] buf = new byte[2];
 
     public static final int DEFAULT_RCXMMUX_ADDRESS = 0xb4;
 
@@ -31,12 +31,12 @@ public class RCXMotorMultiplexer extends I2CSensor {
         super(port, address);
     }
 
-    public RCXMotorMultiplexer(Port port) {
+    public RCXMotorMultiplexer(Port port) throws Exception {
         this(port, DEFAULT_RCXMMUX_ADDRESS);
 
     }
 
-    public RCXMotorMultiplexer(Port port, int address) {
+    public RCXMotorMultiplexer(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED_9V);
     }
 

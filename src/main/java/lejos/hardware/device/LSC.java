@@ -18,8 +18,8 @@ import java.util.ArrayList;
 public class LSC extends I2CSensor {
 
 	//Servo Management
-	private ArrayList<LServo> arrServo;//ServoController manage until 10 RC Servos
-	private ArrayList<LDCMotor> arrDCMotor;//ServoController manage until 10 DC Motors
+	private final ArrayList<LServo> arrServo;//ServoController manage until 10 RC Servos
+	private final ArrayList<LDCMotor> arrDCMotor;//ServoController manage until 10 DC Motors
 	private final int MAXIMUM_SERVOS_DCMOTORS = 10;//LSC Suports until 10 RC Servos
 	
 	//Exception handling
@@ -27,8 +27,8 @@ public class LSC extends I2CSensor {
 	private final String ERROR_SERVO_LOCATION =  "Error with Servo location";
 	
 	//I2C
-	private byte SPI_PORT;	
-	private I2CPort portConnected;
+	private final byte SPI_PORT;
+	private final I2CPort portConnected;
 	
     /**
      * 
@@ -56,7 +56,7 @@ public class LSC extends I2CSensor {
      * @param SPI_PORT
      * 
      */
-    public LSC(Port port,byte SPI_PORT){
+    public LSC(Port port,byte SPI_PORT) throws Exception {
         super(port, NXTe.NXTE_ADDRESS);
         this.portConnected = this.port;
         this.SPI_PORT = SPI_PORT;
@@ -171,16 +171,16 @@ public class LSC extends I2CSensor {
 		byte h_byte;
 		byte l_byte;		
 		
-		sendData((int)this.SPI_PORT, (byte)0x00);
-		getData((int)this.SPI_PORT, bufReadResponse, 1);
+		sendData(this.SPI_PORT, (byte)0x00);
+		getData(this.SPI_PORT, bufReadResponse, 1);
 		
 		while(bufReadResponse[0] != 99){
-			sendData((int)this.SPI_PORT, (byte)0xFF);
-			sendData((int)this.SPI_PORT, (byte)0xFF);
-			sendData((int)this.SPI_PORT, (byte)0x7E);			
+			sendData(this.SPI_PORT, (byte)0xFF);
+			sendData(this.SPI_PORT, (byte)0xFF);
+			sendData(this.SPI_PORT, (byte)0x7E);
 
-			sendData((int)this.SPI_PORT, (byte)0x00);
-			getData((int)this.SPI_PORT, bufReadResponse, 1);
+			sendData(this.SPI_PORT, (byte)0x00);
+			getData(this.SPI_PORT, bufReadResponse, 1);
 			
 			if((int)bufReadResponse[0] == 99){
 				break;
@@ -200,10 +200,10 @@ public class LSC extends I2CSensor {
 		l_byte = (byte)channel;
 	     
 	    //High Byte Write
-		sendData((int)this.SPI_PORT, h_byte);
+		sendData(this.SPI_PORT, h_byte);
 
 	    //Low Byte Write
-		sendData((int)this.SPI_PORT, l_byte);
+		sendData(this.SPI_PORT, l_byte);
 	}
 	
 	/**
@@ -218,9 +218,9 @@ public class LSC extends I2CSensor {
 		l_byte = (byte)channel;
 	     
 	    //High Byte Write
-		sendData((int)this.SPI_PORT, h_byte);
+		sendData(this.SPI_PORT, h_byte);
 
 	    //Low Byte Write
-		sendData((int)this.SPI_PORT, l_byte);		
+		sendData(this.SPI_PORT, l_byte);
 	}
 }

@@ -35,7 +35,7 @@ public class GSASentence extends NMEASentence{
 	private String mode = "";
 	private int modeValue = 0;
 	private final int MAXIMUMSV = 12;
-	private int[] SV;
+	private final int[] SV;
 	private float PDOP = 0f;
 	private float HDOP = 0f;
 	private float VDOP = 0f;

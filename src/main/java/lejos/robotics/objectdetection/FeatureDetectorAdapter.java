@@ -57,8 +57,19 @@ public abstract class FeatureDetectorAdapter implements FeatureDetector {
 		public void run() {
 			while(true) {
 				// Only performs scan if detection is enabled.
-				Feature f = (enabled?scan():null);
-				if(f != null) notifyListeners(f);
+				Feature f = null;
+				try {
+					f = (enabled?scan():null);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+				if(f != null) {
+					try {
+						notifyListeners(f);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
 				
 				try {
 					long elapsed_time = System.currentTimeMillis() - prev_time;
@@ -76,7 +87,7 @@ public abstract class FeatureDetectorAdapter implements FeatureDetector {
 		}
 	}
 
-	protected void notifyListeners(Feature feature) {
+	protected void notifyListeners(Feature feature) throws Exception {
 		if(listeners != null) { 
 			for(FeatureListener l : listeners) {
 				l.featureDetected(feature, this);
@@ -84,6 +95,6 @@ public abstract class FeatureDetectorAdapter implements FeatureDetector {
 		}
 	}
 	
-	public abstract Feature scan();
+	public abstract Feature scan() throws Exception;
 
 }

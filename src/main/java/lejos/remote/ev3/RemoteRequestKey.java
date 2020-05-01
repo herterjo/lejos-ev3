@@ -9,11 +9,11 @@ import lejos.hardware.KeyListener;
 import lejos.internal.ev3.EV3Key;
 
 public class RemoteRequestKey implements Key {
-	private RemoteRequestKeys keys;
-	private int iCode;
-	private String name;
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final RemoteRequestKeys keys;
+	private final int iCode;
+	private final String name;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	
 	private ArrayList<KeyListener> listeners;
 	

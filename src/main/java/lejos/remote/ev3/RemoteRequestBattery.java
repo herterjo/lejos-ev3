@@ -6,8 +6,8 @@ import java.io.ObjectOutputStream;
 import lejos.hardware.Power;
 
 public class RemoteRequestBattery implements Power {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	
 	public RemoteRequestBattery(ObjectInputStream is, ObjectOutputStream os) {
 		this.is = is;

@@ -1,10 +1,13 @@
 package lejos.remote.nxt;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
 import lejos.hardware.port.PortException;
+import lejos.utility.AsyncExecutor;
+import lejos.utility.ExceptionWrapper;
 
 public class RemoteNXTI2CPort extends RemoteNXTIOPort implements I2CPort
 {
@@ -88,7 +91,7 @@ public class RemoteNXTI2CPort extends RemoteNXTIOPort implements I2CPort
 			try {
 				byte[] ret = nxtCommand.LSGetStatus((byte) port);
 				if (ret == null || ret.length < 1) throw new I2CException("Remote NXT I2C LSGetStatus error");
-				status = (int) ret[0];
+				status = ret[0];
 			} catch (IOException e) {
 				throw new PortException(e);
 			}
@@ -146,4 +149,8 @@ public class RemoteNXTI2CPort extends RemoteNXTIOPort implements I2CPort
         return true;
     }
 
+    @Override
+    public Future<ExceptionWrapper> closeRet() {
+        return AsyncExecutor.execute(this::close);
+    }
 }

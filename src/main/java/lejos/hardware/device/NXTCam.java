@@ -53,13 +53,11 @@ public class NXTCam extends I2CSensor {
 		this(port, DEFAULT_I2C_ADDRESS);
 	}
 
-    public NXTCam(Port port, int address)
-    {
+    public NXTCam(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED_9V);
     }
     
-    public NXTCam(Port port)
-    {
+    public NXTCam(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS);
     }
 

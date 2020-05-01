@@ -25,7 +25,7 @@ public class PublishedSource {
 	protected static final int MAX_AGE = 10000;
 	protected static final int MAX_SAMPLE_MESSAGE_SIZE = 128;
 	
-	private static Listener listener = new Listener();
+	private static final Listener listener = new Listener();
 	
 	static {
 		listener.setDaemon(true);
@@ -106,7 +106,7 @@ public class PublishedSource {
 		if (socket != null) socket.close();
 	}
 	
-	private static Map<String,PublishedSource> sources = new HashMap<String,PublishedSource>();
+	private static final Map<String,PublishedSource> sources = new HashMap<String,PublishedSource>();
 	
 	public static Collection<PublishedSource> getSources() {
 		Delay.msDelay(SOCKET_TIMEOUT); // Wait to get new sources

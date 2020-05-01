@@ -9,8 +9,8 @@ import lejos.hardware.lcd.GraphicsLCD;
 import lejos.hardware.lcd.Image;
 
 public class RemoteRequestGraphicsLCD implements GraphicsLCD {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 
 	public RemoteRequestGraphicsLCD(ObjectInputStream is, ObjectOutputStream os) {
 		this.is = is;

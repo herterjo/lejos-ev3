@@ -2,7 +2,11 @@ package lejos.robotics.chassis;
 
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Move;
+import lejos.utility.ExceptionWrapper;
 import lejos.utility.Matrix;
+import lejos.utility.ReturnWrapper;
+
+import java.util.concurrent.Future;
 
 
 /**
@@ -55,67 +59,67 @@ public interface Chassis {
    * @return
    * Linear speed in robot units/second
    */
-  public double getLinearSpeed();
+  double getLinearSpeed();
   
   /** Sets the linear speed as is used in travel, arc, and rotate methods
    * @param linearSpeed
    * Linear speed in robot units/second
    */
-  public void setLinearSpeed(double linearSpeed);
+  void setLinearSpeed(double linearSpeed);
   
   /** Gets the setting for angular speed as is used in travel, arc, and rotate methods
    * @return
    * Angular speed in degrees/second.
    */
-  public double getAngularSpeed();
+  double getAngularSpeed();
   
   /** Sets the angular speed as is used in travel, arc, and rotate methods
    * @param angularSpeed
    * Angular speed in degrees/second.
    */
-  public void setAngularSpeed(double angularSpeed);
+  void setAngularSpeed(double angularSpeed);
   
   /** Gets the setting for linear acceleration as is used in travel, arc, rotate and setvelocity methods
    * @return
    * Linear acceleration in robot units/second^2
    */
-  public double getLinearAcceleration();
+  double getLinearAcceleration();
   
   /** Sets the linear acceleration as is used in travel, arc, rotate and setvelocity methods
    * @param linearAcceleration
    * Linear acceleration in robot units/second^2
    */
-  public void setLinearAcceleration(double linearAcceleration);
+  void setLinearAcceleration(double linearAcceleration);
   
   /** Gets the setting for angular acceleration as is used in travel, arc, rotate and setvelocity methods
    * @return
    * Angular acceleration in degrees/second^2.
    */
-  public double getAngularAcceleration();
+  double getAngularAcceleration();
   
   /** Sets the angular acceleration as is used in travel, arc, rotate and setvelocity methods
    * @param angularAcceleration
    * Angular Acceleration in degrees/second^2.
    */
-  public void setAngularAcceleration(double angularAcceleration);
+  void setAngularAcceleration(double angularAcceleration);
   
   /** Returns a matrix containing the current speed of the robot.
    * @return
    * A matrix (3x1) containing the current speed of the robot. First row contains linear speed, second row contains direction of linear speed, third row contains angular speed.
    */
-  public Matrix getCurrentSpeed();
+  Future<ReturnWrapper<Matrix>> getCurrentSpeed();
 
   /**
    * Returns true if the robot is moving.
    * 
    * @return true if the robot is moving
    */
-  public boolean isMoving();
+  Future<ReturnWrapper<Boolean>> isMoving();
 
   /**
    * Makes the robot stop and returns immediately.
    */
-  public void stop();
+  void stop();
 
   
   /** Moves the chassis with specified speed
@@ -124,7 +128,7 @@ public interface Chassis {
    * @param angularSpeed
    * angular component of the robot speed expressed in degrees/second.
    */
-  public void setVelocity(double linearSpeed, double angularSpeed);
+  void setVelocity(double linearSpeed, double angularSpeed);
   
   /** Moves a holonomic chassis with specified speed
    * @param linearSpeed
@@ -132,9 +136,9 @@ public interface Chassis {
    * @param direction
    * The direction of the linear speed
    * @param angularSpeed
-   * angular component of the robot speed expressed in degrees/second.
+   * @return
    */
-  public void setVelocity(double linearSpeed, double direction, double angularSpeed);
+  Future<ExceptionWrapper> setVelocity(double linearSpeed, double direction, double angularSpeed);
   
   /** Moves a holonomic robot with the specified speed. <br>
    * The method will throw an exception when issued on a differential chassis.
@@ -145,13 +149,13 @@ public interface Chassis {
    * @param angularSpeed
    * angular component of the robot speed expressed in degrees/second.
    */
-  public void travelCartesian(double xSpeed, double ySpeed, double angularSpeed );
+  void travelCartesian(double xSpeed, double ySpeed, double angularSpeed);
 
   /** Moves the chassis the specified distance 
    * @param linear
    * linear component of the robot speed, expressed in the same unit as the wheel diameter.
    */
-  public void travel(double linear);
+  void travel(double linear) throws Exception;
   
   /** Moves the chassis in an arc 
    * @param radius
@@ -164,41 +168,41 @@ public interface Chassis {
    * The number of degrees of the arc. A positive number of degrees makes the robot go forward,
    * a negative number makes it go backward.  
    */
-  public void arc(double radius, double angle);
+  void arc(double radius, double angle) throws Exception;
 
   /**
    * Returns the maximum speed of the robot.
    * 
    * @return Speed in robot units
    */
-  public double getMaxLinearSpeed();
+  Future<ReturnWrapper<Double>> getMaxLinearSpeed();
 
   /**
    * Returns how fast the robot can rotate.
    * 
    * @return Speed in degrees / second
    */
-  public double getMaxAngularSpeed();
+  Future<ReturnWrapper<Double>> getMaxAngularSpeed();
 
   /**
    * Blocks while the chassis is moving, returns when all wheels have stopped
    * (including stops caused by stalls)
    */
-  public void waitComplete();
+  void waitComplete();
 
   /**
    * Returns true if at least one of the wheels is stalled
    * 
    * @return true if at least one of the wheels is stalled
    */
-  public boolean isStalled();
+  Future<ReturnWrapper<Boolean>> isStalled();
 
   /**
    * Returns the smallest possible radius this chassis is able turn
    * 
    * @return radius in robot units
    */
-  public double getMinRadius();
+  double getMinRadius();
 
   /** Sets the speed of the chassis for the moveTo method
    * 
@@ -207,7 +211,7 @@ public interface Chassis {
    * @param angularSpeed
    * angular component of the robot speed expressed in degrees/second.
    */
-  public void setSpeed(double linearSpeed, double angularSpeed);
+  void setSpeed(double linearSpeed, double angularSpeed);
 
   /** Sets the acceleration of the chassis for the moveTo and travel methods
    * @param forwardAcceleration
@@ -215,50 +219,52 @@ public interface Chassis {
    * @param angularAcceleration
    * angular component of the robot speed expressed acceleration, expressed in degrees/second^2.
    */
-  public void setAcceleration(double forwardAcceleration, double angularAcceleration);
+  void setAcceleration(double forwardAcceleration, double angularAcceleration);
   
   /** Returns an Pose provider that uses odometry to keep track of the pose of the chassis
    * @return an Pose provider that uses odometry to keep track of the pose of the chassis
    */
-  public PoseProvider getPoseProvider();  
+  PoseProvider getPoseProvider() throws Exception;
   
   /** Method used by the MovePilot to tell the chassis that a new move has started. This method is used in conjuction with the getDisplacement method.
-   * 
+   *
+   * @return
    */
-  public void moveStart();
+  Future<ExceptionWrapper> moveStart();
   
   /** Method used by the MovePilot to update a move object that describes the move executed since the last call to startMove. <p>
    * This method is only to be used by applications that apply just moves that meet the following conditions:<ul>
    * <li> The move must start and end with the robot being motionless</li>
    * <li> The speed ratio between the wheels must be constant during the move</li>
    * </ul>
-   *  
+   *
    * @param move
    * The move object to update
+   * @return
    */
-  public Move getDisplacement(Move move);
+  Future<ReturnWrapper<Move>> getDisplacement(Move move);
 
   /** Rotates the chassis for the specified number of degrees
    * @param angular
    */
-  void rotate(double angular);
+  void rotate(double angular) throws Exception;
 
   /** Returns the linear component of the current speed of the robot
    * @return
    * linear speed in robot units/second
    */
-  double getLinearVelocity();
+  Future<ReturnWrapper<Double>> getLinearVelocity();
 
   /** Returns the current direction of the linear speed component of the robot
    * @return
    * direction in degrees 
    */
-  double getLinearDirection();
+  Future<ReturnWrapper<Double>> getLinearDirection();
 
   /** Returns the angular component of the current speed of the robot
    * @return
    * Angular speed in degrees/second
    */
-  double getAngularVelocity();
+  Future<ReturnWrapper<Double>> getAngularVelocity();
   
 }

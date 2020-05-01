@@ -1,11 +1,14 @@
 package lejos.remote.nxt;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import lejos.hardware.port.AnalogPort;
 import lejos.hardware.port.PortException;
 import lejos.hardware.sensor.EV3SensorConstants;
 import lejos.hardware.sensor.SensorConstants;
+import lejos.utility.AsyncExecutor;
+import lejos.utility.ExceptionWrapper;
 
 /**
  * This class provides access to the EV3 Analog based sensor ports and other
@@ -117,5 +120,10 @@ public class RemoteNXTAnalogPort extends RemoteNXTIOPort implements AnalogPort
 	@Override
 	public float getPin1() {
         return (float)readRawValue()*EV3SensorConstants.ADC_REF/SensorConstants.NXT_ADC_RES;
+	}
+
+	@Override
+	public Future<ExceptionWrapper> closeRet() {
+		return AsyncExecutor.execute(this::close);
 	}
 }

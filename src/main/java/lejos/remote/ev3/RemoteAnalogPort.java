@@ -21,12 +21,14 @@ public class RemoteAnalogPort extends RemoteIOPort  implements AnalogPort {
 			rmi = rmiEV3.openAnalogPort(getName());
 		} catch (RemoteException e) {
 			throw new PortException(e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		return res;
 	}
 	
 	@Override
-	public Future<ExceptionWrapper> close() {
+	public void close() {
 		super.close();
 		try {
 			rmi.close();

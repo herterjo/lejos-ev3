@@ -16,13 +16,14 @@ public class Matrix implements Cloneable, java.io.Serializable {
 /** Array for internal storage of elements.
    @serial internal array storage.
    */
-   private double[][] A;
+   private final double[][] A;
 
    /** Row and column dimensions.
    @serial row dimension.
    @serial column dimension.
    */
-   private int m, n;
+   private final int m;
+    private final int n;
 
 /* ------------------------
    Constructors
@@ -91,7 +92,7 @@ public class Matrix implements Cloneable, java.io.Serializable {
    @exception  IllegalArgumentException Array length must be a multiple of m.
    */
 
-   public Matrix (double vals[], int m) throws IllegalArgumentException {
+   public Matrix (double[] vals, int m) throws IllegalArgumentException {
       this.m = m;
       n = (m != 0 ? vals.length/m : 0);
       if (m*n != vals.length) {
@@ -778,7 +779,7 @@ public class Matrix implements Cloneable, java.io.Serializable {
       for(int j=0;j<n;j++) {
         System.out.print(A[i][j] + " ");
       }
-      System.out.println("");
+      System.out.println();
     }
   }
 

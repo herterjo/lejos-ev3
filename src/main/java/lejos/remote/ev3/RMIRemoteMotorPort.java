@@ -6,13 +6,14 @@ import java.rmi.server.UnicastRemoteObject;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.port.TachoMotorPort;
 import lejos.remote.ev3.RMIMotorPort;
+import lejos.utility.AsyncExecutor;
 
 public class RMIRemoteMotorPort extends UnicastRemoteObject implements RMIMotorPort {
 
 	private static final long serialVersionUID = -5729213618672262271L;
-	private TachoMotorPort port;
+	private final TachoMotorPort port;
 	
-	protected RMIRemoteMotorPort(String portName) throws RemoteException {
+	protected RMIRemoteMotorPort(String portName) throws Exception {
 		super(0);
 		port = LocalEV3.get().getPort(portName).open(TachoMotorPort.class);
 	}
@@ -24,12 +25,12 @@ public class RMIRemoteMotorPort extends UnicastRemoteObject implements RMIMotorP
 	}
 
 	@Override
-	public int getTachoCount() throws RemoteException {
-		return port.getTachoCount();
+	public int getTachoCount() throws Exception{
+		return port.getTachoCount().get().getValue();
 	}
 
 	@Override
-	public void resetTachoCount() throws RemoteException {
+	public void resetTachoCount() throws Exception {
 		port.resetTachoCount();
 	}
 

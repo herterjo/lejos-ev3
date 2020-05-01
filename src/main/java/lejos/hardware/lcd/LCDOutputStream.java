@@ -20,7 +20,7 @@ public class LCDOutputStream extends OutputStream {
 	private int col = 0;
 	private int line = 0;
 	
-	private TextLCD lcd;
+	private final TextLCD lcd;
 	
 	public LCDOutputStream(TextLCD lcd)
 	{

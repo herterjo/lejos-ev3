@@ -53,7 +53,7 @@ import lejos.hardware.port.Port;
  * 
  */
 public class MindsensorsLineLeader extends I2CSensor {
-	private byte[] buf = new byte[8];
+	private final byte[] buf = new byte[8];
 	private final static byte COMMAND = 0x41;
 
     /**
@@ -83,7 +83,7 @@ public class MindsensorsLineLeader extends I2CSensor {
      * @param port
      * @param address I2C address for the device
      */
-    public MindsensorsLineLeader(Port port, int address) {
+    public MindsensorsLineLeader(Port port, int address) throws Exception {
         super(port, address, TYPE_LOWSPEED_9V);
         init();
     }
@@ -93,7 +93,7 @@ public class MindsensorsLineLeader extends I2CSensor {
      *
      * @param port
      */
-    public MindsensorsLineLeader(Port port) {
+    public MindsensorsLineLeader(Port port) throws Exception {
         this(port, DEFAULT_I2C_ADDRESS);
         init();
     }

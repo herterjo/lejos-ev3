@@ -3,6 +3,7 @@ package lejos.internal.ev3;
 import java.io.IOError;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -13,6 +14,7 @@ import com.sun.jna.Structure;
 import lejos.hardware.DeviceException;
 import lejos.hardware.port.UARTPort;
 import lejos.internal.io.NativeDevice;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.Delay;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
@@ -83,7 +85,7 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
      */
     public static class TYPES extends Structure
     {
-        public byte Name[] = new byte[12];
+        public byte[] Name = new byte[12];
         public byte Type;
         public byte Connection;
         public byte Mode;
@@ -107,26 +109,26 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"Name",
-            "Type",
-            "Connection",
-            "Mode",
-            "DataSets",
-            "Format",
-            "Figures",
-            "Decimals",
-            "Views",
-            "RawMin",
-            "RawMax",
-            "PctMin",
-            "PctMax",
-            "SiMin",
-            "SiMax",
-            "InvalidTime",
-            "IdValue",
-            "Pins",
-            "Symbol",
-            "Align"});
+            return Arrays.asList("Name",
+                    "Type",
+                    "Connection",
+                    "Mode",
+                    "DataSets",
+                    "Format",
+                    "Figures",
+                    "Decimals",
+                    "Views",
+                    "RawMin",
+                    "RawMax",
+                    "PctMin",
+                    "PctMax",
+                    "SiMin",
+                    "SiMax",
+                    "InvalidTime",
+                    "IdValue",
+                    "Pins",
+                    "Symbol",
+                    "Align");
         }
 
         /*
@@ -152,9 +154,9 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {"TypeData",
-            "Port",
-            "Mode"});
+            return Arrays.asList("TypeData",
+                    "Port",
+                    "Mode");
         }
 
     }
@@ -167,9 +169,8 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
         protected List getFieldOrder()
         {
             // TODO Auto-generated method stub
-            return Arrays.asList(new String[] {
-            "Port",
-            "BitRate"});
+            return Arrays.asList("Port",
+                    "BitRate");
         }
     }
     
@@ -425,23 +426,32 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
     @Override
     public Future<ReturnWrapper<Boolean>> open(int typ, int port, EV3Port ref)
     {
-        if (!super.open(typ, port, ref))
-            return false;
-        // clear mode data cache
-        modeCnt = 0;
-        return true;
+        return AsyncExecutor.execute(() -> {
+            synchronized (this) {
+                if (!super.open(typ, port, ref).get().getValue())
+                    return false;
+                // clear mode data cache
+                modeCnt = 0;
+                return true;
+            }
+        });
     }
 
     /** {@inheritDoc}
      * @return
      */    
     @Override
-    public Future<ExceptionWrapper> close()
+    public void close()
     {
         disconnect();
         super.close();
     }
-    
+
+    @Override
+    public Future<ExceptionWrapper> closeRet() {
+        return AsyncExecutor.execute(this::close);
+    }
+
     /**
      * Set the current operating mode
      * @param mode new mode to set
@@ -596,7 +606,7 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
             for(int i = 0; i < name.length; i++)
                 if (name[i] == 0)
                     len = i;
-            return new String(name, 0, len, Charset.forName("US-ASCII")).trim();
+            return new String(name, 0, len, StandardCharsets.US_ASCII).trim();
         }
         else 
             return "Unknown";
@@ -624,7 +634,7 @@ public class EV3UARTPort extends EV3IOPort implements UARTPort
      */
     public String toString()
     {
-        float divTable[] = {1f, 10f, 100f, 1000f, 10000f, 100000f};
+        float[] divTable = {1f, 10f, 100f, 1000f, 10000f, 100000f};
         TYPES info = modeInfo[currentMode];
         float val;
         switch(info.Format)

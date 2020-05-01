@@ -13,5 +13,5 @@ public interface TimerListener
    /**
     * Called every time the Timer fires.
     */
-   public void timedOut();
+   void timedOut();
 }

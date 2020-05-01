@@ -22,7 +22,7 @@ import lejos.internal.io.SystemSettings;
  *
  */
 public class LCP {
-	private static byte[] i2cBuffer = new byte[16];
+	private static final byte[] i2cBuffer = new byte[16];
     private static File[] files = null;
     private static String[] fileNames = null;
     private static int fileIdx = -1;
@@ -31,7 +31,7 @@ public class LCP {
     private static FileOutputStream out = null;
     private static FileInputStream in = null;
     private static int numFiles;	
-	private static char[] charBuffer = new char[20];
+	private static final char[] charBuffer = new char[20];
 	//public static InBox[] inBoxes = new InBox[20];
     
 	// Command types constants. Indicates type of packet being sent or received.
@@ -114,7 +114,7 @@ public class LCP {
     
     private static LCPMessageListener listener = null;
 	
-    private static Port[] PORTS = {SensorPort.S1, SensorPort.S2, SensorPort.S3, SensorPort.S4};
+    private static final Port[] PORTS = {SensorPort.S1, SensorPort.S2, SensorPort.S3, SensorPort.S4};
     
 	private LCP()
 	{
@@ -136,7 +136,7 @@ public class LCP {
 	 * @param cmd the buffer containing the command
 	 * @param cmdLen the length of the command
 	 */
-	public static int emulateCommand(byte[] cmd, int cmdLen, byte[] reply)
+	public static int emulateCommand(byte[] cmd, int cmdLen, byte[] reply) throws Exception
 	{
 		final byte cmdId = cmd[1];
 		
@@ -213,17 +213,17 @@ public class LCP {
 		case GET_OUTPUT_STATE: {
 			byte port = cmd[2]; 
 			NXTRegulatedMotor m = Motor.A;
-			int tacho = m.getTachoCount();
+			int tacho = m.getTachoCount().get().getValue();
 			
 			reply[3] = port;
 			reply[4] = (byte)(m.getSpeed() * 100 / 900); // Power
 			// MODE CALCULATION:
 			byte mode = 0;
-			if (m.isMoving()) mode = 0x01; // 0x01 = MOTORON
+			if (m.isMoving().get().getValue()) mode = 0x01; // 0x01 = MOTORON
 			reply[5] = mode; // Only contains isMoving (MOTORON) at moment
 			// REGULATION_MODE CALCULATION:
 			byte regulation_mode = 0; // 0 = idle
-			if (m.isMoving()) mode = 0x01; // 0x01 = MOTOR_SPEED
+			if (m.isMoving().get().getValue()) mode = 0x01; // 0x01 = MOTOR_SPEED
 			// !! This returns same as run state (below). Whats the diff?
 			reply[6] = regulation_mode; // Regulation mode
 			// TURN RATIO CALC (ignored):
@@ -231,7 +231,7 @@ public class LCP {
 			reply[7] = turn_ratio; // Turn ratio
 			// RUN_STATE CALCULATION:
 			byte run_state = 0;
-			if (m.isMoving()) run_state = 0x20; // 0x20 = RUNNING
+			if (m.isMoving().get().getValue()) run_state = 0x20; // 0x20 = RUNNING
 			reply[8] = run_state; // Run state
 			int limit = m.getLimitAngle();
 			// Tacho Limit

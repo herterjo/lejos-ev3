@@ -20,7 +20,7 @@ public interface RangeMap {
 	 * @param pose the pose of the robot
 	 * @return the range
 	 */
-  public float range(Pose pose);
+    float range(Pose pose);
   
   /**
    * Test if a point is within the mapped area
@@ -28,12 +28,12 @@ public interface RangeMap {
    * @param p the point
    * @return true iff the point is within the mapped area
    */
-  public boolean inside(Point p);
+  boolean inside(Point p);
   
   /**
    * Get the bounding rectangle for the mapped area
    * 
    * @return the bounding rectangle
    */
-  public Rectangle getBoundingRect();
+  Rectangle getBoundingRect();
 }

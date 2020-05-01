@@ -11,7 +11,7 @@ import lejos.robotics.SampleProvider;
  */
 
 public class SumFilter extends AbstractFilter {
-  private SampleBuffer worker;
+  private final SampleBuffer worker;
   
   public SumFilter(SampleProvider source, int length) {
     super(source);
@@ -25,7 +25,7 @@ public class SumFilter extends AbstractFilter {
     }
   }
 
-  public void fetchSample(float[] sample, int offset) {
+  public void fetchSample(float[] sample, int offset) throws Exception {
     worker.fetchSample(sample, offset);
   }
   
@@ -49,7 +49,7 @@ public class SumFilter extends AbstractFilter {
       latest = new float[sampleSize];
     }
 
-    public void fetchSample(float[] sample, int off) {
+    public void fetchSample(float[] sample, int off) throws Exception {
       super.fetchSample(latest, 0);
 
       for (int i = 0; i < sampleSize; i++) {
@@ -85,7 +85,7 @@ public class SumFilter extends AbstractFilter {
     }
 
     @Override
-    public void fetchSample(float[] sample, int off) {
+    public void fetchSample(float[] sample, int off) throws Exception {
       /*
        * to increase performance this method keeps the sum in memory. If a new
        * sample is taken then the oldest available sample is substracted from

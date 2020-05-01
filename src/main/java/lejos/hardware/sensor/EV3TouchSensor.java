@@ -56,8 +56,7 @@ public class EV3TouchSensor extends AnalogSensor
         init();
     }
 
-    public EV3TouchSensor(Port port)
-    {
+    public EV3TouchSensor(Port port) throws Exception {
         super(port);
         init();
     }

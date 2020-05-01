@@ -141,8 +141,7 @@ public class EV3ColorSensor extends UARTSensor implements LampController, ColorI
         initModes();
     }
 
-    public EV3ColorSensor(Port port)
-    {
+    public EV3ColorSensor(Port port) throws Exception {
         super(port);
         initModes();
     }

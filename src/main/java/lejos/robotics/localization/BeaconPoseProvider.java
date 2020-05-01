@@ -56,11 +56,11 @@ public class BeaconPoseProvider implements PoseProvider, MoveListener {
 	//  pose estimate. If not, then probably a false beacon was scanned and a true beacon was missed (rare) which resulted in it 
 	// thinking it successfully scanned in 3 actual beacons. In this case, it should go with odometry. 
 	
-	private BeaconTriangle bt;
-	private BeaconLocator bl;
-	private OdometryPoseProvider opp;
+	private final BeaconTriangle bt;
+	private final BeaconLocator bl;
+	private final OdometryPoseProvider opp;
 	private int moves = 0; // number of moves it has made since getPose() scanned
-	private int scanInterval; // perform scan after scanInterval moves have been made
+	private final int scanInterval; // perform scan after scanInterval moves have been made
 	private double distance = 0; // distance traveled since getPose() scanned
 	private boolean hasScanned = false; // whether it has successfully scanned position yet
 	
@@ -117,7 +117,7 @@ public class BeaconPoseProvider implements PoseProvider, MoveListener {
 		return relativeAngle;
 	}
 	
-	public Pose getPose() {
+	public Pose getPose() throws Exception {
 	    if(moves >= scanInterval) {
 	    	ArrayList<Double> beaconAngles = bl.locate();
 			//System.out.println("BEFORE SORT:");
@@ -186,9 +186,6 @@ public class BeaconPoseProvider implements PoseProvider, MoveListener {
 	 * Then determine which beacon is clockwise of this angle.
 	 * 
 	 * @param beacons an array of three angles.
-	 * @param a1
-	 * @param a2
-	 * @param a3
 	 */
 	private static boolean sortBeacons(ArrayList<Double> beacons, ArrayList<Double> angles) {
 		// Could take a1, a2, a3 instead. Then do sanity check when done to make sure the difference between a1 and 1, a2 and 2,

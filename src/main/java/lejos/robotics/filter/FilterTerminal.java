@@ -4,9 +4,9 @@ import lejos.robotics.SampleProvider;
 
 public class FilterTerminal {
 
-  private SampleProvider source;
+  private final SampleProvider source;
   private int index = 0;
-  private float[] sample; 
+  private final float[] sample;
 
   public FilterTerminal(SampleProvider source) {
     this.source = source;
@@ -20,17 +20,16 @@ public class FilterTerminal {
     else throw new  IllegalArgumentException("Index exceeds sample size");
   }
   
-  public boolean isFalse() {
+  public boolean isFalse() throws Exception {
     source.fetchSample(sample, 0);
-    if (sample[index] == 0) return true;
-    return false;
+    return sample[index] == 0;
   }
   
-  public boolean isTrue() {
+  public boolean isTrue() throws Exception {
     return !isFalse();
   }
   
-  public float fetch() {
+  public float fetch() throws Exception {
     source.fetchSample(sample, 0);
     return sample[index];
   }

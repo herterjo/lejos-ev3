@@ -47,7 +47,7 @@ public class RCXLightSensor extends AnalogSensor implements SensorConstants,
    * @param port
    *          port, e.g. Port.S1
    */
-  public RCXLightSensor(Port port) {
+  public RCXLightSensor(Port port) throws Exception {
     super(port);
     init();
   }

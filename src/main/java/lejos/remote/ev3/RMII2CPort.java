@@ -16,12 +16,12 @@ public interface RMII2CPort extends Remote {
      * @param readLen The length of the read
      * @return < 0 error otherwise the number of bytes read
      */
-    public byte[] i2cTransaction(int deviceAddress, byte[]writeBuf,
-            int writeOffset, int writeLen, 
-            int readLen) throws RemoteException;
+    byte[] i2cTransaction(int deviceAddress, byte[] writeBuf,
+                          int writeOffset, int writeLen,
+                          int readLen) throws RemoteException;
     
 	
-	public void close() throws RemoteException;
+	void close() throws RemoteException;
 	
     boolean setType(int type) throws RemoteException;
 }

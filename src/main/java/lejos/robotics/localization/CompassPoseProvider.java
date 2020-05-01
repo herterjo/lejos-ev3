@@ -15,14 +15,14 @@ import lejos.robotics.navigation.Pose;
  */
 public class CompassPoseProvider extends OdometryPoseProvider {
 
-	private DirectionFinder compass;
+	private final DirectionFinder compass;
 	
 	public CompassPoseProvider(MoveProvider mp, DirectionFinder compass) {
 		super(mp);
 		this.compass = compass;
 	}
 
-	public Pose getPose() {
+	public Pose getPose() throws Exception {
 		Pose temp = super.getPose();
 		temp.setHeading(compass.getDegreesCartesian());
 		return temp;

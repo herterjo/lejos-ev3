@@ -79,7 +79,7 @@ public class CruizcoreGyro extends I2CSensor {
      * 16bit signed little endian values are returned.
      */
 
-    private byte[]            inBuf        = new byte[11];
+    private final byte[]            inBuf        = new byte[11];
     private static final byte GYRO_ADDRESS = 0x02;
 
     // values returned are signed short integers multiplied by 100
@@ -118,7 +118,7 @@ public class CruizcoreGyro extends I2CSensor {
         init();
     }
 
-    public CruizcoreGyro(Port port) {
+    public CruizcoreGyro(Port port) throws Exception {
         super(port, GYRO_ADDRESS);
         init();
     }

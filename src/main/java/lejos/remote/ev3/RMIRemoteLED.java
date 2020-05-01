@@ -12,7 +12,7 @@ import lejos.utility.ReturnWrapper;
 
 public class RMIRemoteLED extends UnicastRemoteObject implements RMILED  {
 	private static final long serialVersionUID = -660643720408840563L;
-	private LED led = LocalEV3.get().getLED();
+	private final LED led = LocalEV3.get().getLED();
 
 	protected RMIRemoteLED() throws RemoteException {
 		super(0);

@@ -27,11 +27,11 @@ public class MCLParticleSet implements Transmittable {
   private float angleNoiseFactor = 4f;
   private int numParticles;
   private MCLParticle[] particles;
-  private RangeMap map;
+  private final RangeMap map;
   private float maxWeight, totalWeight;
   private int border = 10;	// The minimum distance from the edge of the map
-  private Random random = new Random(); // to generate a particle.
-  private Rectangle boundingRect;
+  private final Random random = new Random(); // to generate a particle.
+  private final Rectangle boundingRect;
   private static boolean debug = false;
   private int _iterations;
 
@@ -264,8 +264,7 @@ public MCLParticleSet(RangeMap map, int numParticles, Pose initialPose,
     }
 
    if(debug) System.out.println("Calc Weights Max wt " +maxWeight+" Zeros "+zeros);
-    if(maxWeight < .01)return false;
-    return true;
+      return !(maxWeight < .01);
   }
 
   /**

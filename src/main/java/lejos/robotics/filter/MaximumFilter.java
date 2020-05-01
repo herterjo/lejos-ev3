@@ -15,7 +15,7 @@ public class MaximumFilter extends SampleBuffer {
   float[] buf, oldest;
 
   @Override
-  public void fetchSample(float[] sample, int off) {
+  public void fetchSample(float[] sample, int off) throws Exception {
     getOldest(oldest, 0);
     super.fetchSample(buf, 0);
     for (int i = 0; i < sampleSize; i++) {

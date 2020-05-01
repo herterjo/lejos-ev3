@@ -93,12 +93,12 @@ public class HiTechnicBarometer extends I2CSensor {
     init();
   }
 
-  public HiTechnicBarometer(final Port port, final int address) {
+  public HiTechnicBarometer(final Port port, final int address) throws Exception {
     super(port, address, TYPE_LOWSPEED);
     init();
   }
 
-  public HiTechnicBarometer(final Port port) {
+  public HiTechnicBarometer(final Port port) throws Exception {
     this(port, DEFAULT_I2C_ADDRESS);
     init();
   }

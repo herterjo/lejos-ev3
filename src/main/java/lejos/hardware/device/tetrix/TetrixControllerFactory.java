@@ -60,20 +60,20 @@ public class TetrixControllerFactory  {
     
     private int currentMotorIndex=0;
     private int currentServoIndex=0;
-    private Port port;
-    private Finder finder;
+    private final Port port;
+    private final Finder finder;
     
     /**
      * Instantiate a <code>TetrixControllerFactory</code> using the specified NXT sensor port.
      * @param port The NXT sensor port the Tetrix controller is connected to
      */
-    public TetrixControllerFactory(Port port){
+    public TetrixControllerFactory(Port port) throws Exception {
         this.port=port;
         finder = new Finder(port);
     }
     
     private class Finder extends I2CSensor {
-        Finder(Port port) {
+        Finder(Port port) throws Exception {
             super(port);
         }
         

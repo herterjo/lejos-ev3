@@ -15,7 +15,7 @@ public interface BasicSensorPort extends SensorConstants {
      * Get the current operating mode of the sensor
      * @return the current mode
      */
-    public int getMode();
+    int getMode();
 	
     /**
      * Get the current type setting. Note that types are typically used to 
@@ -23,14 +23,14 @@ public interface BasicSensorPort extends SensorConstants {
      * used for EV3 sensors. 
      * @return the current sensor type
      */
-    public int getType();
+    int getType();
 
     /**
      * Set the current operating mode for the sensor attached to the port.
      * @param mode the new mode
      * @return true if the mode has been accepted
      */
-    public boolean setMode(int mode);
+    boolean setMode(int mode);
 
     /**
      * Set the operating type for the attached sensor. Normally type setting is
@@ -39,10 +39,10 @@ public interface BasicSensorPort extends SensorConstants {
      * @param type
      * @return true if type accepted
      */
-    public boolean setType(int type);
+    boolean setType(int type);
 	
     @Deprecated
-    public boolean setTypeAndMode(int type, int mode);
+    boolean setTypeAndMode(int type, int mode);
 
 }
 

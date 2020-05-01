@@ -111,7 +111,7 @@ public class HiTechnicCompass extends I2CSensor implements Calibrate {
    * @param address
    *          The I2C address used by the sensor
    */
-  public HiTechnicCompass(Port port, int address) {
+  public HiTechnicCompass(Port port, int address) throws Exception {
     super(port, address);
     init();
   }
@@ -122,7 +122,7 @@ public class HiTechnicCompass extends I2CSensor implements Calibrate {
    * @param port
    *          Sensor port for the compass
    */
-  public HiTechnicCompass(Port port) {
+  public HiTechnicCompass(Port port) throws Exception {
     super(port);
     init();
   }

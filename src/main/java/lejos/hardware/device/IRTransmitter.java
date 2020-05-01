@@ -12,29 +12,29 @@ public interface IRTransmitter {
 	 * @param data the raw data
 	 * @param len the number of bytes
 	 */
-	public void sendBytes(byte [] data, int len);
+    void sendBytes(byte[] data, int len);
 	
 	/**
 	 * Send a packet of data to the RCX
 	 * @param packet
 	 */
-	public void sendPacket(byte[] packet);
+    void sendPacket(byte[] packet);
 	
 	/**
 	 * Send a remote control command to the RCX
 	 * 
 	 * @param msg the code for the remote command
 	 */
-	public void sendRemoteCommand(int msg);
+    void sendRemoteCommand(int msg);
 	
-	public void runProgram(int programNumber);
+	void runProgram(int programNumber);
 	
-	public void forwardStep(int motor);
+	void forwardStep(int motor);
 	
-	public void backwardStep(int motor);
+	void backwardStep(int motor);
 	
-	public void beep();
+	void beep();
 	
-	public void stopAllPrograms();
+	void stopAllPrograms();
 	
 }

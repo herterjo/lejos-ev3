@@ -3,6 +3,7 @@ package lejos.internal.ev3;
 import lejos.hardware.port.I2CException;
 import lejos.hardware.port.I2CPort;
 import lejos.internal.io.NativeDevice;
+import lejos.utility.AsyncExecutor;
 import lejos.utility.ExceptionWrapper;
 import lejos.utility.ReturnWrapper;
 
@@ -55,11 +56,13 @@ public class EV3I2CPort extends EV3IOPort implements I2CPort {
      * @return
      */
     public Future<ReturnWrapper<Boolean>> open(int t, int p, EV3Port r) {
-        if (!super.open(t, p, r))
-            return false;
-        // Set pin state to a sane default
-        setPinMode(CMD_FLOAT);
-        return true;
+        return AsyncExecutor.execute(() -> {
+            if (!super.open(t, p, r).get().getValue())
+                return false;
+            // Set pin state to a sane default
+            setPinMode(CMD_FLOAT);
+            return true;
+        });
     }
 
     /**
@@ -67,10 +70,15 @@ public class EV3I2CPort extends EV3IOPort implements I2CPort {
      * @return
      */
     @Override
-    public Future<ExceptionWrapper> close() {
+    public void close() {
         cmd[0] = (byte) port;
         i2c.ioctl(IIC_DISCONNECT, cmd);
         super.close();
+    }
+
+    @Override
+    public Future<ExceptionWrapper> closeRet() {
+        return AsyncExecutor.execute(this::close);
     }
 
 
@@ -116,7 +124,7 @@ public class EV3I2CPort extends EV3IOPort implements I2CPort {
                                             int readLen) {
         //long st = System.currentTimeMillis();
        i2cGeneral(deviceAddress, writeBuf, writeOffset, writeLen, readLen);
-        int result = (int) cmd[1];
+        int result = cmd[1];
         if (result == STATUS_FAIL)
             throw new I2CException("I2C I/O error");
         if (result == STATUS_BUSY)

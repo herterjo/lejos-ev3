@@ -8,8 +8,8 @@ import java.util.Map;
 import lejos.hardware.Keys;
 
 public class RemoteRequestKeys implements Keys {
-	private ObjectInputStream is;
-	private ObjectOutputStream os;
+	private final ObjectInputStream is;
+	private final ObjectOutputStream os;
 	
 	private Map<Integer,RemoteRequestKey> listeners;
 	
@@ -133,8 +133,8 @@ public class RemoteRequestKeys implements Keys {
 				
 				int mask  = 1;
 				for (int i=0;i<NUM_KEYS;i++) {
-					if ((state & (mask << PRESS_EVENT_SHIFT))  != 0 || (state & (mask << RELEASE_EVENT_SHIFT)) != 0) {;
-						RemoteRequestKey key = listeners.get(mask);
+					if ((state & (mask << PRESS_EVENT_SHIFT))  != 0 || (state & (mask << RELEASE_EVENT_SHIFT)) != 0) {
+                        RemoteRequestKey key = listeners.get(mask);
 						if (key != null) key.callListeners();
 					}
 					mask <<= 1;

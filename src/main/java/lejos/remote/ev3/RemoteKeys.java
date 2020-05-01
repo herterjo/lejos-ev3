@@ -8,7 +8,7 @@ import lejos.hardware.Keys;
 import lejos.hardware.port.PortException;
 
 public class RemoteKeys implements Keys {
-	private RMIKeys keys;
+	private final RMIKeys keys;
 	private Map<Integer,RemoteKey> listeners;
 	
 	private static final int PRESS_EVENT_SHIFT = 0;
@@ -156,8 +156,8 @@ public class RemoteKeys implements Keys {
 				
 				int mask  = 1;
 				for (int i=0;i<NUM_KEYS;i++) {
-					if ((state & (mask << PRESS_EVENT_SHIFT))  != 0 || (state & (mask << RELEASE_EVENT_SHIFT)) != 0) {;
-						RemoteKey key = listeners.get(mask);
+					if ((state & (mask << PRESS_EVENT_SHIFT))  != 0 || (state & (mask << RELEASE_EVENT_SHIFT)) != 0) {
+                        RemoteKey key = listeners.get(mask);
 						if (key != null) key.callListeners();
 					}
 					mask <<= 1;
